@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>a11y-primitives Demo</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      padding: 2rem;
+      max-width: 800px;
+      margin: 0 auto;
+      background: #f5f5f5;
+    }
+
+    h1 {
+      color: #1f1f1f;
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      color: #666;
+      margin-bottom: 2rem;
+    }
+
+    .section {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      color: #1f1f1f;
+      margin-bottom: 1rem;
+      font-size: 1.25rem;
+    }
+
+    .description {
+      color: #666;
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    button {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: background 0.2s;
+    }
+
+    .btn-primary {
+      background: #1a7f37;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #156630;
+    }
+
+    .btn-secondary {
+      background: #e0e0e0;
+      color: #333;
+    }
+
+    .btn-secondary:hover {
+      background: #d0d0d0;
+    }
+
+    .btn-danger {
+      background: #c1121f;
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background: #9a0f1a;
+    }
+
+    .output {
+      background: #f9f9f9;
+      border: 1px solid #e0e0e0;
+      border-radius: 4px;
+      padding: 0.75rem;
+      font-family: monospace;
+      font-size: 0.85rem;
+      min-height: 60px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .modal {
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      max-width: 400px;
+      width: 90%;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .modal h2 {
+      margin-top: 0;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .status {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+
+    .status-active {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .status-inactive {
+      background: #f8d7da;
+      color: #721c24;
+    }
+  </style>
+</head>
+<body>
+  <h1>a11y-primitives Demo</h1>
+  <p class="subtitle">Framework-agnostic accessibility primitives for vanilla JavaScript</p>
+
+  <!-- Announcer Demo -->
+  <div class="section">
+    <h2>📢 Announcer</h2>
+    <p class="description">Screen reader announcements using ARIA live regions. Try with a screen reader enabled.</p>
+    <div class="controls">
+      <button class="btn-primary" id="announce-polite-btn">Announce (Polite)</button>
+      <button class="btn-danger" id="announce-urgent-btn">Announce (Urgent)</button>
+    </div>
+    <div class="output" id="announcer-output">Announcements will appear here (and be spoken by screen readers)</div>
+  </div>
+
+  <!-- Reduced Motion Demo -->
+  <div class="section">
+    <h2>🎭 Reduced Motion</h2>
+    <p class="description">Detects system preference for reduced motion.</p>
+    <div class="controls">
+      <button class="btn-secondary" id="check-reduced-btn">Check Current</button>
+      <button class="btn-secondary" id="toggle-listener-btn">Toggle Listener</button>
+    </div>
+    <div class="output" id="reduced-motion-output">
+      Status: <span id="reduced-motion-status" class="status status-inactive">Unknown</span>
+    </div>
+  </div>
+
+  <!-- Focus Stack Demo -->
+  <div class="section">
+    <h2>🎯 Focus Stack</h2>
+    <p class="description">Focus restoration for transient UI. Click "Enter Focus Stack" then "Exit Focus Stack" to test focus restoration.</p>
+    <div class="controls">
+      <button class="btn-primary" id="focus-trigger">Enter Focus Stack</button>
+      <button class="btn-danger" id="exit-focus-stack-btn">Exit Focus Stack</button>
+      <button class="btn-secondary" id="clear-focus-stack-btn">Clear Stack</button>
+    </div>
+    <div class="output" id="focus-stack-output">Focus stack operations will appear here</div>
+  </div>
+
+  <!-- Focus Trap Demo -->
+  <div class="section">
+    <h2>🔒 Focus Trap</h2>
+    <p class="description">Traps focus within a container (for modals). Tab/Shift+Tab will cycle within the modal.</p>
+    <div class="controls">
+      <button class="btn-primary" id="open-modal-btn">Open Modal</button>
+    </div>
+    <div class="output" id="focus-trap-output">Focus trap operations will appear here</div>
+  </div>
+
+  <!-- Singleton Demo -->
+  <div class="section">
+    <h2>🔄 Singleton Factory</h2>
+    <p class="description">HMR-safe singleton pattern. Each call returns the same instance.</p>
+    <div class="controls">
+      <button class="btn-secondary" id="create-singleton-btn">Create Instance</button>
+      <button class="btn-secondary" id="register-cleanup-btn">Register Cleanup</button>
+    </div>
+    <div class="output" id="singleton-output">Singleton operations will appear here</div>
+  </div>
+
+  <!-- Dropdown Demo -->
+  <div class="section">
+    <h2>📋 Dropdown Menu</h2>
+    <p class="description">Accessible dropdown with keyboard navigation, focus trap, and announcements.</p>
+    <div class="controls">
+      <button class="btn-primary" id="dropdown-trigger">Open Menu</button>
+    </div>
+    <div id="dropdown-menu" class="dropdown-menu" style="display: none; position: relative; background: white; border: 1px solid #e0e0e0; border-radius: 4px; padding: 0.5rem; margin-top: 0.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+      <button class="dropdown-item" role="menuitem" style="display: block; width: 100%; text-align: left; padding: 0.5rem; border: none; background: none; cursor: pointer; border-radius: 4px;">Option 1</button>
+      <button class="dropdown-item" role="menuitem" style="display: block; width: 100%; text-align: left; padding: 0.5rem; border: none; background: none; cursor: pointer; border-radius: 4px;">Option 2</button>
+      <button class="dropdown-item" role="menuitem" style="display: block; width: 100%; text-align: left; padding: 0.5rem; border: none; background: none; cursor: pointer; border-radius: 4px;">Option 3</button>
+    </div>
+    <div class="output" id="dropdown-output" style="margin-top: 0.5rem;">Dropdown operations will appear here</div>
+  </div>
+
+  <!-- Tabs Demo -->
+  <div class="section">
+    <h2>📑 Tabs</h2>
+    <p class="description">Accessible tabs with keyboard navigation and announcements.</p>
+    <div role="tablist" id="tabs-demo" style="display: flex; border-bottom: 2px solid #e0e0e0; margin-bottom: 1rem;">
+      <button role="tab" id="tab-1" aria-controls="panel-1" aria-selected="true" tabindex="0" style="padding: 0.75rem 1.5rem; border: none; background: none; cursor: pointer; border-bottom: 2px solid #1a7f37; color: #1a7f37; font-weight: 500;">Tab 1</button>
+      <button role="tab" id="tab-2" aria-controls="panel-2" aria-selected="false" tabindex="-1" style="padding: 0.75rem 1.5rem; border: none; background: none; cursor: pointer; color: #666;">Tab 2</button>
+      <button role="tab" id="tab-3" aria-controls="panel-3" aria-selected="false" tabindex="-1" style="padding: 0.75rem 1.5rem; border: none; background: none; cursor: pointer; color: #666;">Tab 3</button>
+    </div>
+    <div id="panel-1" role="tabpanel" aria-labelledby="tab-1" style="padding: 1rem;">
+      <p>This is the content for Tab 1. Use arrow keys to navigate between tabs.</p>
+    </div>
+    <div id="panel-2" role="tabpanel" aria-labelledby="tab-2" hidden style="padding: 1rem;">
+      <p>This is the content for Tab 2. Tabs announce changes to screen readers.</p>
+    </div>
+    <div id="panel-3" role="tabpanel" aria-labelledby="tab-3" hidden style="padding: 1rem;">
+      <p>This is the content for Tab 3. Focus management is handled automatically.</p>
+    </div>
+    <div class="output" id="tabs-output">Tab operations will appear here</div>
+  </div>
+
+  <!-- Modal -->
+  <div id="modal" class="modal-overlay hidden">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <h2 id="modal-title">Modal with Focus Trap</h2>
+      <p>This modal has focus trapping enabled. Try pressing Tab and Shift+Tab.</p>
+      <div class="controls">
+        <button class="btn-primary" id="modal-close-btn">Close (Escape also works)</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import {
+      announce,
+      checkReducedMotion,
+      onReducedMotionChange,
+      pushFocusStack,
+      popFocusStack,
+      setInitialFocusReference,
+      clearFocusStack,
+      activateFocusTrap,
+      deactivateFocusTrap,
+      createSingleton,
+      registerCleanup,
+      Dropdown,
+      Tabs,
+    } from '../dist/index.js';
+
+    // Make functions available globally for onclick handlers
+    window.announce = announce;
+    window.checkReducedMotion = checkReducedMotion;
+    window.onReducedMotionChange = onReducedMotionChange;
+    window.pushFocusStack = pushFocusStack;
+    window.popFocusStack = popFocusStack;
+    window.setInitialFocusReference = setInitialFocusReference;
+    window.clearFocusStack = clearFocusStack;
+    window.activateFocusTrap = activateFocusTrap;
+    window.deactivateFocusTrap = deactivateFocusTrap;
+    window.createSingleton = createSingleton;
+    window.registerCleanup = registerCleanup;
+
+    // Announcer Demo
+    document.getElementById('announce-polite-btn')?.addEventListener('click', () => {
+      announce('This is a polite announcement');
+      document.getElementById('announcer-output').textContent = 'Announced: "This is a polite announcement" (polite region)';
+    });
+
+    document.getElementById('announce-urgent-btn')?.addEventListener('click', () => {
+      announce('This is an urgent announcement', { urgent: true });
+      document.getElementById('announcer-output').textContent = 'Announced: "This is an urgent announcement" (assertive region)';
+    });
+
+    // Reduced Motion Demo
+    let reducedMotionListener = null;
+    const statusEl = document.getElementById('reduced-motion-status');
+    const outputEl = document.getElementById('reduced-motion-output');
+
+    const checkReduced = () => {
+      const prefers = checkReducedMotion();
+      statusEl.textContent = prefers ? 'Reduced Motion ON' : 'Reduced Motion OFF';
+      statusEl.className = prefers ? 'status status-active' : 'status status-inactive';
+      outputEl.textContent = `Current preference: ${prefers ? 'Reduced motion enabled' : 'Reduced motion disabled'}`;
+    };
+
+    const toggleListener = () => {
+      if (reducedMotionListener) {
+        reducedMotionListener();
+        reducedMotionListener = null;
+        outputEl.textContent = 'Listener removed';
+      } else {
+        reducedMotionListener = onReducedMotionChange((prefers) => {
+          statusEl.textContent = prefers ? 'Reduced Motion ON' : 'Reduced Motion OFF';
+          statusEl.className = prefers ? 'status status-active' : 'status status-inactive';
+          outputEl.textContent = `Preference changed to: ${prefers ? 'Reduced motion enabled' : 'Reduced motion disabled'}`;
+        });
+        outputEl.textContent = 'Listener registered (change your system preference to test)';
+      }
+    };
+
+    document.getElementById('check-reduced-btn')?.addEventListener('click', checkReduced);
+    document.getElementById('toggle-listener-btn')?.addEventListener('click', toggleListener);
+
+    // Initial check
+    checkReduced();
+
+    // Focus Stack Demo
+    const focusOutput = document.getElementById('focus-stack-output');
+
+    document.getElementById('focus-trigger')?.addEventListener('click', () => {
+      const trigger = document.getElementById('focus-trigger');
+      setInitialFocusReference(trigger);
+      pushFocusStack(trigger);
+      focusOutput.textContent = `Focus stack: entered from button (stack size: 1)`;
+    });
+
+    document.getElementById('exit-focus-stack-btn')?.addEventListener('click', () => {
+      popFocusStack();
+      focusOutput.textContent = 'Focus stack: exited (focus restored to trigger)';
+    });
+
+    document.getElementById('clear-focus-stack-btn')?.addEventListener('click', () => {
+      clearFocusStack();
+      focusOutput.textContent = 'Focus stack: cleared';
+    });
+
+    // Focus Trap Demo
+    const trapOutput = document.getElementById('focus-trap-output');
+    const modal = document.getElementById('modal');
+    const modalContent = modal.querySelector('.modal');
+
+    const openModal = () => {
+      modal.classList.remove('hidden');
+      activateFocusTrap(modalContent);
+      document.getElementById('modal-close-btn').focus();
+      trapOutput.textContent = 'Focus trap: activated (Tab/Shift+Tab will cycle within modal)';
+    };
+
+    const closeModal = () => {
+      deactivateFocusTrap();
+      modal.classList.add('hidden');
+      trapOutput.textContent = 'Focus trap: deactivated (focus restored to trigger)';
+    };
+
+    document.getElementById('open-modal-btn')?.addEventListener('click', openModal);
+    document.getElementById('modal-close-btn')?.addEventListener('click', closeModal);
+
+    // Close modal on Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+        closeModal();
+      }
+    });
+
+    // Singleton Demo
+    const singletonOutput = document.getElementById('singleton-output');
+    let singletonInstance = null;
+
+    const createSingletonInstance = () => {
+      const instance = createSingleton(() => ({ count: 0, data: [] }), '__demoSingleton__');
+      instance.count++;
+      instance.data.push(`Instance created at ${new Date().toLocaleTimeString()}`);
+      singletonInstance = instance;
+      singletonOutput.textContent = `Singleton instance: count=${instance.count}, data=${JSON.stringify(instance.data)}`;
+    };
+
+    const registerCleanupHandler = () => {
+      registerCleanup('__demoSingleton__', () => {
+        singletonOutput.textContent = 'Cleanup registered (runs on HMR replacement)';
+      });
+    };
+
+    document.getElementById('create-singleton-btn')?.addEventListener('click', createSingletonInstance);
+    document.getElementById('register-cleanup-btn')?.addEventListener('click', registerCleanupHandler);
+
+    // Initial singleton creation
+    createSingletonInstance();
+
+    // Dropdown Demo
+    const dropdownOutput = document.getElementById('dropdown-output');
+    const dropdown = new Dropdown({
+      trigger: document.getElementById('dropdown-trigger'),
+      menu: document.getElementById('dropdown-menu'),
+      onOpen: () => {
+        dropdownOutput.textContent = 'Dropdown: opened (use Arrow keys to navigate, Enter to select, Escape to close)';
+      },
+      onClose: () => {
+        dropdownOutput.textContent = 'Dropdown: closed';
+      },
+    });
+
+    // Add click handlers to dropdown items
+    document.querySelectorAll('.dropdown-item').forEach((item, index) => {
+      item.addEventListener('click', () => {
+        dropdownOutput.textContent = `Dropdown: selected Option ${index + 1}`;
+      });
+    });
+
+    // Tabs Demo
+    const tabsOutput = document.getElementById('tabs-output');
+    const tabs = new Tabs({
+      tabList: document.getElementById('tabs-demo'),
+      onTabChange: (index) => {
+        tabsOutput.textContent = `Tabs: switched to Tab ${index + 1}`;
+      },
+    });
+  </script>
+</body>
+</html>
