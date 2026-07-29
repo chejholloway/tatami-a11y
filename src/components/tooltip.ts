@@ -13,7 +13,12 @@ import { checkReducedMotion } from '../shared/reducedMotion.js';
 export interface TooltipOptions {
   trigger: HTMLElement;
   tooltip: HTMLElement;
+  /** Called when the tooltip becomes visible. Follows the same onOpen/onClose convention as Dropdown, Modal, etc. */
+  onOpen?: () => void;
+  onClose?: () => void;
+  /** @deprecated Use onOpen instead — kept for backwards compatibility */
   onShow?: () => void;
+  /** @deprecated Use onClose instead — kept for backwards compatibility */
   onHide?: () => void;
 }
 
@@ -21,8 +26,8 @@ export class Tooltip {
   private trigger: HTMLElement;
   private tooltip: HTMLElement;
   private isVisible: boolean = false;
-  private onShow?: () => void;
-  private onHide?: () => void;
+  private onOpen?: () => void;
+  private onClose?: () => void;
 
   private triggerMouseEnterHandler = () => this.show();
   private triggerMouseLeaveHandler = () => this.hide();
@@ -33,8 +38,9 @@ export class Tooltip {
   constructor(options: TooltipOptions) {
     this.trigger = options.trigger;
     this.tooltip = options.tooltip;
-    this.onShow = options.onShow;
-    this.onHide = options.onHide;
+    // Support both new names and the deprecated aliases so existing consumers don't break
+    this.onOpen = options.onOpen ?? options.onShow;
+    this.onClose = options.onClose ?? options.onHide;
 
     this.init();
   }
@@ -75,7 +81,7 @@ export class Tooltip {
       });
     }
 
-    this.onShow?.();
+    this.onOpen?.();
   }
 
   public hide(): void {
@@ -95,7 +101,7 @@ export class Tooltip {
       this.tooltip.style.display = 'none';
     }
 
-    this.onHide?.();
+    this.onClose?.();
   }
 
   private hideImmediately(): void {

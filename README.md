@@ -273,6 +273,138 @@ const combobox = new Combobox({
 });
 ```
 
+### `Tooltip`
+
+Accessible tooltip that appears on hover and keyboard focus. Wires `aria-describedby` between the trigger and the tooltip, dismisses on Escape, and respects reduced motion.
+
+```js
+import { Tooltip } from 'tatami-a11y';
+
+const tooltip = new Tooltip({
+  trigger: document.getElementById('tooltip-trigger'),
+  tooltip: document.getElementById('tooltip-content'),
+  onOpen: () => console.log('Tooltip shown'),
+  onClose: () => console.log('Tooltip hidden'),
+});
+
+// Public API
+tooltip.show();
+tooltip.hide();
+tooltip.destroy(); // remove all event listeners
+```
+
+**Required HTML:**
+```html
+<button id="tooltip-trigger">Hover or focus me</button>
+<div id="tooltip-content">Helpful context about the button above</div>
+```
+
+The component auto-generates an `id` on the tooltip element if none is present, so `aria-describedby` always points at the right target.
+
+**Keyboard:** `Escape` dismisses the tooltip when it is visible. No other key bindings are needed — the trigger retains its normal keyboard behaviour.
+
+---
+
+### `Carousel`
+
+Accessible carousel built on WAI-ARIA's `region`/`group` pattern. Announces slide changes via the shared announcer, includes a play/pause control for auto-rotation, and disables auto-play automatically when `prefers-reduced-motion` is active.
+
+```js
+import { Carousel } from 'tatami-a11y';
+
+const carousel = new Carousel({
+  container: document.getElementById('carousel'),
+  autoPlay: true,          // Optional: start rotating on init (default: false)
+  autoPlayInterval: 4000,  // Optional: ms between slides (default: 5000)
+  onSlideChange: (index) => console.log('Now on slide', index + 1),
+});
+
+// Public API
+carousel.next();
+carousel.prev();
+carousel.goToSlide(2);
+carousel.play();
+carousel.pause();
+carousel.togglePlay();
+carousel.destroy();
+```
+
+**Required HTML structure** — the component finds its children by data attributes:
+```html
+<div id="carousel">
+  <div data-carousel-track>
+    <div data-carousel-slide>Slide 1</div>
+    <div data-carousel-slide>Slide 2</div>
+    <div data-carousel-slide>Slide 3</div>
+  </div>
+  <button data-carousel-prev>Previous</button>
+  <button data-carousel-playpause>Pause / Play</button>
+  <button data-carousel-next>Next</button>
+</div>
+```
+
+Control buttons are optional — if absent the carousel still works, just without those interaction points. User interaction with next/prev automatically pauses auto-rotation.
+
+---
+
+### `Dialog` (non-modal)
+
+An accessible floating panel that uses `role="dialog"` with `aria-modal="false"`. Unlike `Modal`, it does **not** trap focus — users can freely tab out. Uses the focus stack to restore focus gracefully when closed.
+
+```js
+import { Dialog } from 'tatami-a11y';
+
+const dialog = new Dialog({
+  trigger: document.getElementById('dialog-trigger'),
+  dialog: document.getElementById('dialog-panel'),
+  onOpen: () => console.log('Dialog opened'),
+  onClose: () => console.log('Dialog closed'),
+});
+
+// Public API
+dialog.open();
+dialog.close();
+dialog.destroy();
+```
+
+**When to use this vs `Modal`:** use `Modal` when you need to block interaction with the rest of the page (e.g. a confirmation prompt). Use `Dialog` for persistent floating panels — notification centres, side drawers, live chat widgets — where users need to be able to reference the rest of the page while the panel is open.
+
+**Keyboard:** `Escape` closes the dialog. Focus is restored to the triggering element via the focus stack.
+
+---
+
+### `Disclosure`
+
+The simplest accessible show/hide pattern: a button that expands and collapses a region. Correctly wires `aria-expanded` and `aria-controls` so screen readers announce the current state on every toggle — which most hand-rolled implementations forget to do.
+
+```js
+import { Disclosure } from 'tatami-a11y';
+
+const disclosure = new Disclosure({
+  trigger: document.getElementById('details-toggle'),
+  content: document.getElementById('details-panel'),
+  onToggle: (isExpanded) => console.log(isExpanded ? 'Expanded' : 'Collapsed'),
+});
+
+// Public API
+disclosure.expand();
+disclosure.collapse();
+disclosure.toggle();
+disclosure.destroy();
+```
+
+**Required HTML:**
+```html
+<button id="details-toggle">Show advanced settings</button>
+<div id="details-panel">
+  <!-- anything here -->
+</div>
+```
+
+The component auto-generates an `id` on the content element if none is present, so `aria-controls` always resolves correctly.
+
+**Keyboard:** no extra bindings needed — the trigger is a `<button>` so it responds to `Enter` and `Space` natively.
+
 ## Demo
 
 Try the live demo at [tatami-a11y-demo.surge.sh](https://tatami-a11y-demo.surge.sh)

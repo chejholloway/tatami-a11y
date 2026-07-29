@@ -528,10 +528,10 @@
     const tooltip = new Tooltip({
       trigger: document.getElementById('tooltip-trigger'),
       tooltip: document.getElementById('tooltip-content'),
-      onShow: () => {
+      onOpen: () => {
         tooltipOutput.textContent = 'Tooltip: shown';
       },
-      onHide: () => {
+      onClose: () => {
         tooltipOutput.textContent = 'Tooltip: hidden';
       }
     });
