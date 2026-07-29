@@ -282,5 +282,116 @@ describe('Accordion', () => {
 
       expect(header.getAttribute('aria-expanded')).toBe('false');
     });
+
+    it('should clear handler arrays', () => {
+      accordionInstance = new Accordion({ container });
+      accordionInstance.destroy();
+
+      // Should not throw after destroy
+      expect(() => accordionInstance.togglePanel(0)).not.toThrow();
+    });
+  });
+
+  describe('reduced motion', () => {
+    it('should handle reduced motion preference', () => {
+      accordionInstance = new Accordion({ container });
+      accordionInstance.expandPanel(0);
+
+      const panel = container.querySelector('#panel-1') as HTMLElement;
+      expect(panel.hidden).toBe(false);
+    });
+
+    it('should apply transition when reduced motion is false', () => {
+      accordionInstance = new Accordion({ container });
+      accordionInstance.expandPanel(0);
+
+      const panel = container.querySelector('#panel-1') as HTMLElement;
+      expect(panel.style.transition).toBeTruthy();
+    });
+  });
+
+  describe('edge cases', () => {
+    it('should handle single panel', () => {
+      const singleContainer = document.createElement('div');
+      singleContainer.innerHTML = `
+        <button id="single-header" role="button" aria-controls="single-panel">Single Panel</button>
+        <div id="single-panel">Single Content</div>
+      `;
+      document.body.appendChild(singleContainer);
+
+      accordionInstance = new Accordion({ container: singleContainer });
+      accordionInstance.expandPanel(0);
+
+      const header = singleContainer.querySelector('#single-header');
+      const panel = singleContainer.querySelector('#single-panel');
+
+      expect(header?.getAttribute('aria-expanded')).toBe('true');
+      expect((panel as HTMLElement)?.hidden).toBe(false);
+
+      singleContainer.remove();
+    });
+
+    it('should handle invalid panel index', () => {
+      accordionInstance = new Accordion({ container });
+      
+      expect(() => accordionInstance.togglePanel(-1)).not.toThrow();
+      expect(() => accordionInstance.togglePanel(10)).not.toThrow();
+      expect(() => accordionInstance.expandPanel(-1)).not.toThrow();
+      expect(() => accordionInstance.collapsePanel(10)).not.toThrow();
+    });
+
+    it('should handle missing aria-controls', () => {
+      const badContainer = document.createElement('div');
+      badContainer.innerHTML = `
+        <button id="bad-header" role="button">Bad Header</button>
+      `;
+      document.body.appendChild(badContainer);
+
+      accordionInstance = new Accordion({ container: badContainer });
+
+      expect(accordionInstance).toBeDefined();
+
+      badContainer.remove();
+    });
+
+    it('should handle panel not found', () => {
+      const orphanContainer = document.createElement('div');
+      orphanContainer.innerHTML = `
+        <button id="orphan-header" role="button" aria-controls="nonexistent-panel">Orphan Header</button>
+      `;
+      document.body.appendChild(orphanContainer);
+
+      accordionInstance = new Accordion({ container: orphanContainer });
+
+      expect(accordionInstance).toBeDefined();
+
+      orphanContainer.remove();
+    });
+
+    it('should handle rapid expand/collapse', () => {
+      accordionInstance = new Accordion({ container });
+      
+      accordionInstance.expandPanel(0);
+      accordionInstance.collapsePanel(0);
+      accordionInstance.expandPanel(0);
+      accordionInstance.collapsePanel(0);
+
+      const header = container.querySelector('#header-1');
+      expect(header?.getAttribute('aria-expanded')).toBe('false');
+    });
+  });
+
+  describe('focus management', () => {
+    it('should update current index on focus', () => {
+      accordionInstance = new Accordion({ container });
+      const header2 = container.querySelector('#header-2') as HTMLElement;
+      
+      header2.focus();
+      const arrowDownEvent = new KeyboardEvent('keydown', { key: 'ArrowDown' });
+      header2.dispatchEvent(arrowDownEvent);
+
+      const header3 = container.querySelector('#header-3') as HTMLElement;
+      expect(document.activeElement).toBe(header3);
+    });
   });
 });

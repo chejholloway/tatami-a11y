@@ -105,6 +105,60 @@ registerCleanup('__mySingleton__', () => {
 });
 ```
 
+## Building Custom Components
+
+The real power of `tatami-a11y` is using these shared primitives to build your own accessible components, without worrying about edge cases like stale DOM nodes or hot module reloading breaking your live regions. 
+
+Here is an example of how you might compose them to build a custom accessible slide-over panel:
+
+```js
+import { 
+  activateFocusTrap, 
+  deactivateFocusTrap,
+  pushFocusStack,
+  popFocusStack,
+  setInitialFocusReference,
+  announce 
+} from 'tatami-a11y';
+
+class CustomSlideOver {
+  constructor(triggerElement, panelElement) {
+    this.trigger = triggerElement;
+    this.panel = panelElement;
+    
+    this.trigger.addEventListener('click', () => this.open());
+    this.panel.querySelector('.close-btn').addEventListener('click', () => this.close());
+  }
+
+  open() {
+    this.panel.classList.add('is-open');
+    
+    // 1. Tell the screen reader
+    announce('Slide-over opened');
+    
+    // 2. Remember where focus came from
+    setInitialFocusReference(this.trigger);
+    pushFocusStack(this.trigger);
+    
+    // 3. Keep keyboard users inside the panel
+    activateFocusTrap(this.panel);
+  }
+
+  close() {
+    this.panel.classList.remove('is-open');
+    
+    // 1. Let keyboard users back out
+    deactivateFocusTrap();
+    
+    // 2. Restore focus gracefully (even if the trigger was removed from DOM)
+    popFocusStack();
+    
+    // 3. Tell the screen reader
+    announce('Slide-over closed');
+  }
+}
+```
+
 ## Components
 
 ### `Dropdown`

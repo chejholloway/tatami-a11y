@@ -244,6 +244,11 @@ export class Dropdown {
     const target = e.target as HTMLElement;
     if (!this.trigger.contains(target) && !this.menu.contains(target)) {
       this.close();
+    } else if (this.menu.contains(target)) {
+      const isMenuItem = target.closest('[role="menuitem"], [role="menuitemcheckbox"], [role="menuitemradio"]');
+      if (isMenuItem) {
+        this.close();
+      }
     }
   }
 

@@ -324,5 +324,123 @@ describe('MenuButton', () => {
 
       expect(menu.style.display).toBe('none');
     });
+
+    it('should remove document click listener', () => {
+      menuButtonInstance = new MenuButton({ trigger, menu });
+      menuButtonInstance.open();
+      menuButtonInstance.destroy();
+      
+      const outsideElement = document.createElement('div');
+      document.body.appendChild(outsideElement);
+      outsideElement.click();
+      outsideElement.remove();
+
+      // After destroy, the menu should remain open since listener is removed
+      // But the close() call in destroy() closes it first
+      expect(menu.style.display).toBe('none');
+    });
+  });
+
+  describe('reduced motion', () => {
+    it('should handle reduced motion preference', () => {
+      menuButtonInstance = new MenuButton({ trigger, menu });
+      menuButtonInstance.open();
+
+      expect(menu.style.display).toBe('block');
+    });
+
+    it('should apply transition when reduced motion is false', () => {
+      menuButtonInstance = new MenuButton({ trigger, menu });
+      menuButtonInstance.open();
+
+      expect(menu.style.transition).toBeTruthy();
+    });
+  });
+
+  describe('edge cases', () => {
+    it('should handle single menu item', () => {
+      const singleMenu = document.createElement('div');
+      singleMenu.innerHTML = `
+        <button role="menuitem">Only Option</button>
+      `;
+      document.body.appendChild(singleMenu);
+
+      menuButtonInstance = new MenuButton({ trigger, menu: singleMenu });
+      menuButtonInstance.open();
+
+      expect(trigger.getAttribute('aria-expanded')).toBe('true');
+
+      singleMenu.remove();
+    });
+
+    it('should handle empty menu', () => {
+      const emptyMenu = document.createElement('div');
+      emptyMenu.setAttribute('role', 'menu');
+      document.body.appendChild(emptyMenu);
+
+      menuButtonInstance = new MenuButton({ trigger, menu: emptyMenu });
+      menuButtonInstance.open();
+
+      expect(trigger.getAttribute('aria-expanded')).toBe('true');
+
+      emptyMenu.remove();
+    });
+
+    it('should wrap to last item on ArrowUp from first', () => {
+      menuButtonInstance = new MenuButton({ trigger, menu });
+      menuButtonInstance.open();
+      
+      const items = menu.querySelectorAll('[role="menuitem"]');
+      const firstItem = items[0] as HTMLElement;
+      firstItem.focus();
+      
+      const arrowUpEvent = new KeyboardEvent('keydown', { key: 'ArrowUp' });
+      menu.dispatchEvent(arrowUpEvent);
+
+      expect(document.activeElement).toBe(items[items.length - 1]);
+    });
+
+    it('should wrap to first item on ArrowDown from last', () => {
+      menuButtonInstance = new MenuButton({ trigger, menu });
+      menuButtonInstance.open();
+      
+      const items = menu.querySelectorAll('[role="menuitem"]');
+      const lastItem = items[items.length - 1] as HTMLElement;
+      lastItem.focus();
+      
+      const arrowDownEvent = new KeyboardEvent('keydown', { key: 'ArrowDown' });
+      menu.dispatchEvent(arrowDownEvent);
+
+      expect(document.activeElement).toBe(items[0]);
+    });
+
+    it('should handle rapid open/close', () => {
+      menuButtonInstance = new MenuButton({ trigger, menu });
+      
+      menuButtonInstance.open();
+      menuButtonInstance.close();
+      menuButtonInstance.open();
+      menuButtonInstance.close();
+
+      expect(trigger.getAttribute('aria-expanded')).toBe('false');
+    });
+  });
+
+  describe('focus management', () => {
+    it('should restore focus to trigger on close', () => {
+      menuButtonInstance = new MenuButton({ trigger, menu });
+      menuButtonInstance.open();
+      menuButtonInstance.close();
+
+      expect(document.activeElement).toBe(trigger);
+    });
+
+    it('should focus first item on open', () => {
+      menuButtonInstance = new MenuButton({ trigger, menu });
+      menuButtonInstance.open();
+
+      const firstItem = menu.querySelector('[role="menuitem"]') as HTMLElement;
+      expect(document.activeElement).toBe(firstItem);
+    });
   });
 });

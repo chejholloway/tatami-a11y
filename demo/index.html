@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>a11y-primitives Demo</title>
+  <title>tatami-a11y demo</title>
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
   <link rel="stylesheet" href="style-modern.css">
 </head>
 <body>
@@ -196,6 +197,67 @@
     <div class="output mt-0-5" id="combobox-output">Combobox operations will appear here</div>
   </div>
 
+  <!-- Tooltip Demo -->
+  <div class="section">
+    <h2>💬 Tooltip</h2>
+    <p class="description">Accessible tooltip that appears on hover and focus. Try tabbing to it, or hitting Escape to close.</p>
+    <div class="controls">
+      <button class="btn-primary" id="tooltip-trigger">Hover or Focus Me</button>
+    </div>
+    <div id="tooltip-content" class="tooltip-demo" style="display: none;">
+      This is helpful additional information!
+    </div>
+    <div class="output mt-0-5" id="tooltip-output">Tooltip operations will appear here</div>
+  </div>
+
+  <!-- Carousel Demo -->
+  <div class="section">
+    <h2>🎠 Carousel</h2>
+    <p class="description">Accessible carousel with announcements and play/pause for reduced motion compliance.</p>
+    <div id="carousel-demo" class="carousel-demo">
+      <div data-carousel-track class="carousel-track-demo">
+        <div data-carousel-slide class="carousel-slide-demo">Slide 1</div>
+        <div data-carousel-slide class="carousel-slide-demo" style="display: none;">Slide 2</div>
+        <div data-carousel-slide class="carousel-slide-demo" style="display: none;">Slide 3</div>
+      </div>
+      <div class="carousel-controls-demo">
+        <button class="btn-secondary" data-carousel-prev>Previous</button>
+        <button class="btn-primary" data-carousel-playpause>Pause/Play</button>
+        <button class="btn-secondary" data-carousel-next>Next</button>
+      </div>
+    </div>
+    <div class="output mt-0-5" id="carousel-output">Carousel operations will appear here</div>
+  </div>
+
+  <!-- Non-Modal Dialog Demo -->
+  <div class="section">
+    <h2>💬 Non-Modal Dialog</h2>
+    <p class="description">A dialog that doesn't trap focus, allowing users to tab out. Excellent for persistent floating panels.</p>
+    <div class="controls">
+      <button class="btn-primary" id="dialog-trigger">Open Non-Modal Dialog</button>
+    </div>
+    <div id="dialog-content" class="dialog-demo" style="display: none;">
+      <h3>Floating Panel</h3>
+      <p>I am open but I do not trap your focus!</p>
+      <button class="btn-secondary mt-1" id="dialog-close-btn">Close me</button>
+    </div>
+    <div class="output mt-0-5" id="dialog-output">Dialog operations will appear here</div>
+  </div>
+
+  <!-- Disclosure Demo -->
+  <div class="section">
+    <h2>🔽 Disclosure</h2>
+    <p class="description">Simple show/hide accessible widget.</p>
+    <div class="controls" style="display: block;">
+      <button class="disclosure-trigger-demo" id="disclosure-trigger">Toggle Advanced Settings</button>
+      <div id="disclosure-content" class="disclosure-content-demo" style="display: none;">
+        <p>Here are some advanced settings you can configure.</p>
+        <label><input type="checkbox"> Enable turbo mode</label>
+      </div>
+    </div>
+    <div class="output mt-1" id="disclosure-output">Disclosure operations will appear here</div>
+  </div>
+
   <script type="module">
     import {
       announce,
@@ -216,6 +278,10 @@
       Toast,
       MenuButton,
       Combobox,
+      Tooltip,
+      Carousel,
+      Dialog,
+      Disclosure,
     } from '../dist/index.js';
 
     // Make functions available globally for onclick handlers
@@ -455,6 +521,58 @@
       onSelect: (value, index) => {
         comboboxOutput.textContent = `Combobox: selected ${value}`;
       },
+    });
+
+    // Tooltip Demo
+    const tooltipOutput = document.getElementById('tooltip-output');
+    const tooltip = new Tooltip({
+      trigger: document.getElementById('tooltip-trigger'),
+      tooltip: document.getElementById('tooltip-content'),
+      onShow: () => {
+        tooltipOutput.textContent = 'Tooltip: shown';
+      },
+      onHide: () => {
+        tooltipOutput.textContent = 'Tooltip: hidden';
+      }
+    });
+
+    // Carousel Demo
+    const carouselOutput = document.getElementById('carousel-output');
+    const carousel = new Carousel({
+      container: document.getElementById('carousel-demo'),
+      autoPlay: true,
+      autoPlayInterval: 3000,
+      onSlideChange: (index) => {
+        carouselOutput.textContent = `Carousel: transitioned to slide ${index + 1}`;
+      }
+    });
+
+    // Non-Modal Dialog Demo
+    const dialogOutput = document.getElementById('dialog-output');
+    const dialog = new Dialog({
+      trigger: document.getElementById('dialog-trigger'),
+      dialog: document.getElementById('dialog-content'),
+      onOpen: () => {
+        dialogOutput.textContent = 'Dialog: opened (non-modal)';
+      },
+      onClose: () => {
+        dialogOutput.textContent = 'Dialog: closed';
+      }
+    });
+    
+    // Close button for Dialog
+    document.getElementById('dialog-close-btn')?.addEventListener('click', () => {
+      dialog.close();
+    });
+
+    // Disclosure Demo
+    const disclosureOutput = document.getElementById('disclosure-output');
+    const disclosure = new Disclosure({
+      trigger: document.getElementById('disclosure-trigger'),
+      content: document.getElementById('disclosure-content'),
+      onToggle: (isExpanded) => {
+        disclosureOutput.textContent = `Disclosure: ${isExpanded ? 'expanded' : 'collapsed'}`;
+      }
     });
   </script>
 </body>

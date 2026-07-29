@@ -46,8 +46,7 @@ export class Tabs {
           return document.getElementById(panelId);
         }
         return null;
-      })
-      .filter((panel): panel is HTMLElement => panel !== null);
+      }) as any;
 
     // Set up each tab
     this.tabs.forEach((tab, index) => {
@@ -66,6 +65,7 @@ export class Tabs {
 
     // Set up each panel
     this.panels.forEach((panel, index) => {
+      if (!panel) return;
       panel.setAttribute('role', 'tabpanel');
       panel.setAttribute('aria-labelledby', this.tabs[index].id);
       if (index !== 0) {
@@ -86,7 +86,7 @@ export class Tabs {
 
     currentTab.setAttribute('aria-selected', 'false');
     currentTab.setAttribute('tabindex', '-1');
-    this.hidePanel(currentPanel);
+    if (currentPanel) this.hidePanel(currentPanel);
 
     // Activate new tab
     const newTab = this.tabs[index];
@@ -95,7 +95,7 @@ export class Tabs {
     newTab.setAttribute('aria-selected', 'true');
     newTab.setAttribute('tabindex', '0');
     newTab.focus();
-    this.showPanel(newPanel);
+    if (newPanel) this.showPanel(newPanel);
 
     this.currentIndex = index;
 
@@ -110,6 +110,7 @@ export class Tabs {
   }
 
   private showPanel(panel: HTMLElement): void {
+    if (!panel) return;
     const prefersReducedMotion = checkReducedMotion();
     panel.hidden = false;
 
@@ -124,6 +125,7 @@ export class Tabs {
   }
 
   private hidePanel(panel: HTMLElement): void {
+    if (!panel) return;
     const prefersReducedMotion = checkReducedMotion();
 
     if (!prefersReducedMotion) {

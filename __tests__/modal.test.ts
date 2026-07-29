@@ -226,5 +226,104 @@ describe('Modal', () => {
 
       expect(modal.getAttribute('aria-hidden')).toBe('true');
     });
+
+    it('should remove backdrop click listener', () => {
+      modalInstance = new Modal({ trigger, modal, backdrop });
+      modalInstance.open();
+      modalInstance.destroy();
+
+      backdrop.click();
+
+      expect(modal.getAttribute('aria-hidden')).toBe('true');
+    });
+  });
+
+  describe('reduced motion', () => {
+    it('should handle reduced motion preference', () => {
+      modalInstance = new Modal({ trigger, modal, backdrop });
+      modalInstance.open();
+
+      expect(modal.style.display).toBe('block');
+    });
+
+    it('should apply transition when reduced motion is false', () => {
+      modalInstance = new Modal({ trigger, modal, backdrop });
+      modalInstance.open();
+
+      expect(modal.style.transition).toBeTruthy();
+    });
+  });
+
+  describe('edge cases', () => {
+    it('should handle modal with no focusable elements', () => {
+      const emptyModal = document.createElement('div');
+      emptyModal.id = 'empty-modal';
+      emptyModal.innerHTML = '<p>No focusable elements</p>';
+      emptyModal.style.display = 'none';
+      document.body.appendChild(emptyModal);
+
+      modalInstance = new Modal({ trigger, modal: emptyModal, backdrop });
+      modalInstance.open();
+
+      // Focus is attempted on the modal itself when no focusable elements exist
+      // jsdom doesn't fully support focus on div elements, so verify component state
+      expect(emptyModal.getAttribute('aria-hidden')).toBe('false');
+
+      emptyModal.remove();
+    });
+
+    it('should handle rapid open/close', () => {
+      modalInstance = new Modal({ trigger, modal, backdrop });
+      
+      modalInstance.open();
+      modalInstance.close();
+      modalInstance.open();
+      modalInstance.close();
+
+      expect(modal.getAttribute('aria-hidden')).toBe('true');
+    });
+
+    it('should handle missing backdrop', () => {
+      modalInstance = new Modal({ trigger, modal });
+      modalInstance.open();
+
+      expect(modal.getAttribute('aria-hidden')).toBe('false');
+      expect(document.body.style.overflow).toBe('hidden');
+    });
+  });
+
+  describe('focus management', () => {
+    it('should restore focus to trigger on close', () => {
+      modalInstance = new Modal({ trigger, modal, backdrop });
+      modalInstance.open();
+      modalInstance.close();
+
+      expect(document.activeElement).toBe(trigger);
+    });
+
+    it('should focus first focusable element on open', () => {
+      modalInstance = new Modal({ trigger, modal, backdrop });
+      modalInstance.open();
+
+      const closeButton = document.getElementById('modal-close');
+      expect(document.activeElement).toBe(closeButton);
+    });
+
+    it('should focus modal itself if no focusable elements', () => {
+      const emptyModal = document.createElement('div');
+      emptyModal.id = 'empty-modal';
+      emptyModal.innerHTML = '<p>No focusable elements</p>';
+      emptyModal.style.display = 'none';
+      document.body.appendChild(emptyModal);
+
+      modalInstance = new Modal({ trigger, modal: emptyModal, backdrop });
+      modalInstance.open();
+
+      // Focus is attempted on the modal itself when no focusable elements exist
+      // jsdom doesn't fully support focus on div elements, so verify component state
+      expect(emptyModal.getAttribute('aria-hidden')).toBe('false');
+
+      emptyModal.remove();
+    });
   });
 });

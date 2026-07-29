@@ -418,3 +418,76 @@ button {
   background: #1a7f37;
   color: white;
 }
+
+/* Tooltip */
+.tooltip-demo {
+  position: absolute;
+  background: #333;
+  color: white;
+  padding: 0.5rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  z-index: 1000;
+  margin-top: 0.5rem;
+}
+
+/* Carousel */
+.carousel-demo {
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+}
+.carousel-track-demo {
+  position: relative;
+  height: 200px;
+}
+.carousel-slide-demo {
+  width: 100%;
+  height: 100%;
+  background: #eaeaea;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  color: #666;
+}
+.carousel-controls-demo {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background: #fafafa;
+  border-top: 1px solid #e0e0e0;
+}
+
+/* Non-Modal Dialog */
+.dialog-demo {
+  position: absolute;
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 900;
+  margin-top: 0.5rem;
+}
+
+/* Disclosure */
+.disclosure-trigger-demo {
+  width: 100%;
+  text-align: left;
+  padding: 0.75rem;
+  background: #f0f0f0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.disclosure-content-demo {
+  padding: 1rem;
+  background: #fafafa;
+  border-radius: 4px;
+  margin-top: 0.5rem;
+  border: 1px solid #e0e0e0;
+}
+

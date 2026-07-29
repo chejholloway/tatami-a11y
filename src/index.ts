@@ -31,3 +31,7 @@ export { Accordion } from './components/accordion.js';
 export { Toast } from './components/toast.js';
 export { MenuButton } from './components/menuButton.js';
 export { Combobox } from './components/combobox.js';
+export { Tooltip } from './components/tooltip.js';
+export { Carousel } from './components/carousel.js';
+export { Dialog } from './components/dialog.js';
+export { Disclosure } from './components/disclosure.js';

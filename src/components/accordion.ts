@@ -52,8 +52,7 @@ export class Accordion {
           return document.getElementById(panelId);
         }
         return null;
-      })
-      .filter((panel): panel is HTMLElement => panel !== null);
+      }) as any;
 
     // Set up each header-panel pair
     this.headers.forEach((header, index) => {
@@ -95,7 +94,6 @@ export class Accordion {
     if (index < 0 || index >= this.headers.length) return;
 
     const header = this.headers[index];
-    const panel = this.panels[index];
     const isExpanded = header.getAttribute('aria-expanded') === 'true';
 
     if (isExpanded) {
@@ -125,7 +123,7 @@ export class Accordion {
 
     // Expand this panel
     header.setAttribute('aria-expanded', 'true');
-    this.showPanel(panel);
+    if (panel) this.showPanel(panel);
 
     // Announce
     const panelName = header.textContent || `Panel ${index + 1}`;
@@ -146,7 +144,7 @@ export class Accordion {
 
     // Collapse this panel
     header.setAttribute('aria-expanded', 'false');
-    this.hidePanel(panel);
+    if (panel) this.hidePanel(panel);
 
     // Announce
     const panelName = header.textContent || `Panel ${index + 1}`;
@@ -157,6 +155,7 @@ export class Accordion {
   }
 
   private showPanel(panel: HTMLElement): void {
+    if (!panel) return;
     const prefersReducedMotion = checkReducedMotion();
     panel.hidden = false;
 
@@ -173,6 +172,7 @@ export class Accordion {
   }
 
   private hidePanel(panel: HTMLElement): void {
+    if (!panel) return;
     const prefersReducedMotion = checkReducedMotion();
 
     if (!prefersReducedMotion) {
