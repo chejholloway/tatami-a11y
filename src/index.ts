@@ -28,3 +28,6 @@ export { Dropdown } from './components/dropdown.js';
 export { Tabs } from './components/tabs.js';
 export { Modal } from './components/modal.js';
 export { Accordion } from './components/accordion.js';
+export { Toast } from './components/toast.js';
+export { MenuButton } from './components/menuButton.js';
+export { Combobox } from './components/combobox.js';

@@ -150,6 +150,52 @@
     </div>
   </div>
 
+  <!-- Toast Demo -->
+  <div class="section">
+    <h2>🍞 Toast Notifications</h2>
+    <p class="description">Accessible toast notifications with auto-dismissal, focus management, and keyboard shortcuts (Alt+T to jump to toasts).</p>
+    <div class="controls">
+      <button class="btn-primary" id="toast-info-btn">Show Info Toast</button>
+      <button class="btn-secondary" id="toast-success-btn">Show Success Toast</button>
+      <button class="btn-danger" id="toast-error-btn">Show Error Toast</button>
+      <button class="btn-secondary" id="toast-warning-btn">Show Warning Toast</button>
+      <button class="btn-secondary" id="toast-dismiss-all-btn">Dismiss All</button>
+    </div>
+    <div class="output" id="toast-output">Toast operations will appear here</div>
+  </div>
+
+  <!-- Menu Button Demo -->
+  <div class="section">
+    <h2>📋 Menu Button</h2>
+    <p class="description">Accessible menu button with keyboard navigation, focus trap, and announcements.</p>
+    <div class="controls">
+      <button class="btn-primary" id="menu-button-trigger">Open Menu</button>
+    </div>
+    <div id="menu-button-menu" class="menu-button-menu menu-button-menu-demo" style="display: none;">
+      <button class="menu-button-item menu-button-item-demo" role="menuitem">Option 1</button>
+      <button class="menu-button-item menu-button-item-demo" role="menuitem">Option 2</button>
+      <button class="menu-button-item menu-button-item-demo" role="menuitem">Option 3</button>
+    </div>
+    <div class="output mt-0-5" id="menu-button-output">Menu button operations will appear here</div>
+  </div>
+
+  <!-- Combobox Demo -->
+  <div class="section">
+    <h2>🔍 Combobox</h2>
+    <p class="description">Accessible combobox with filtering, keyboard navigation, and announcements.</p>
+    <div class="controls">
+      <input type="text" id="combobox-input" class="combobox-input combobox-input-demo" placeholder="Type to filter fruits..." autocomplete="off">
+    </div>
+    <div id="combobox-listbox" class="combobox-listbox combobox-listbox-demo" style="display: none;">
+      <div class="combobox-option combobox-option-demo" role="option" data-value="Apple">Apple</div>
+      <div class="combobox-option combobox-option-demo" role="option" data-value="Banana">Banana</div>
+      <div class="combobox-option combobox-option-demo" role="option" data-value="Cherry">Cherry</div>
+      <div class="combobox-option combobox-option-demo" role="option" data-value="Date">Date</div>
+      <div class="combobox-option combobox-option-demo" role="option" data-value="Elderberry">Elderberry</div>
+    </div>
+    <div class="output mt-0-5" id="combobox-output">Combobox operations will appear here</div>
+  </div>
+
   <script type="module">
     import {
       announce,
@@ -167,6 +213,9 @@
       Tabs,
       Modal,
       Accordion,
+      Toast,
+      MenuButton,
+      Combobox,
     } from '../dist/index.js';
 
     // Make functions available globally for onclick handlers
@@ -347,6 +396,64 @@
       container: document.getElementById('accordion-demo'),
       onToggle: (index, isExpanded) => {
         accordionOutput.textContent = `Accordion: Panel ${index + 1} ${isExpanded ? 'expanded' : 'collapsed'}`;
+      },
+    });
+
+    // Toast Demo
+    const toastOutput = document.getElementById('toast-output');
+    
+    document.getElementById('toast-info-btn')?.addEventListener('click', () => {
+      Toast.info('This is an info message');
+      toastOutput.textContent = 'Toast: Info message shown';
+    });
+    
+    document.getElementById('toast-success-btn')?.addEventListener('click', () => {
+      Toast.success('This is a success message');
+      toastOutput.textContent = 'Toast: Success message shown';
+    });
+    
+    document.getElementById('toast-error-btn')?.addEventListener('click', () => {
+      Toast.error('This is an error message');
+      toastOutput.textContent = 'Toast: Error message shown';
+    });
+    
+    document.getElementById('toast-warning-btn')?.addEventListener('click', () => {
+      Toast.warning('This is a warning message');
+      toastOutput.textContent = 'Toast: Warning message shown';
+    });
+    
+    document.getElementById('toast-dismiss-all-btn')?.addEventListener('click', () => {
+      Toast.dismissAll();
+      toastOutput.textContent = 'Toast: All toasts dismissed';
+    });
+
+    // Menu Button Demo
+    const menuButtonOutput = document.getElementById('menu-button-output');
+    const menuButton = new MenuButton({
+      trigger: document.getElementById('menu-button-trigger'),
+      menu: document.getElementById('menu-button-menu'),
+      onOpen: () => {
+        menuButtonOutput.textContent = 'Menu Button: opened (use Arrow keys to navigate, Enter to select, Escape to close)';
+      },
+      onClose: () => {
+        menuButtonOutput.textContent = 'Menu Button: closed';
+      },
+    });
+
+    // Add click handlers to menu items
+    document.querySelectorAll('.menu-button-item').forEach((item, index) => {
+      item.addEventListener('click', () => {
+        menuButtonOutput.textContent = `Menu Button: selected Option ${index + 1}`;
+      });
+    });
+
+    // Combobox Demo
+    const comboboxOutput = document.getElementById('combobox-output');
+    const combobox = new Combobox({
+      input: document.getElementById('combobox-input'),
+      listbox: document.getElementById('combobox-listbox'),
+      onSelect: (value, index) => {
+        comboboxOutput.textContent = `Combobox: selected ${value}`;
       },
     });
   </script>

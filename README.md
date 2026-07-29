@@ -165,6 +165,60 @@ const accordion = new Accordion({
 });
 ```
 
+### `Toast`
+
+Accessible toast notifications with auto-dismissal, focus management, and keyboard shortcuts (Alt+T to jump to toasts).
+
+```js
+import { Toast } from 'tatami-a11y';
+
+// Show toast with variant
+Toast.info('This is an info message');
+Toast.success('Changes saved successfully');
+Toast.warning('Please review your changes');
+Toast.error('Something went wrong');
+
+// Custom options
+Toast.show('Custom message', { variant: 'success', duration: 3000 });
+
+// Dismiss toasts
+Toast.dismiss('toast-id');
+Toast.dismissAll();
+
+// Configure position
+Toast.configure({ position: 'top-right' });
+```
+
+### `MenuButton`
+
+Accessible menu button with keyboard navigation, focus trap, and announcements.
+
+```js
+import { MenuButton } from 'tatami-a11y';
+
+const menuButton = new MenuButton({
+  trigger: document.getElementById('menu-trigger'),
+  menu: document.getElementById('menu'),
+  onOpen: () => console.log('Menu opened'),
+  onClose: () => console.log('Menu closed'),
+});
+```
+
+### `Combobox`
+
+Accessible combobox/autocomplete with filtering, keyboard navigation, and announcements.
+
+```js
+import { Combobox } from 'tatami-a11y';
+
+const combobox = new Combobox({
+  input: document.getElementById('combobox-input'),
+  listbox: document.getElementById('combobox-listbox'),
+  onSelect: (value, index) => console.log('Selected:', value),
+  filter: (item, query) => item.toLowerCase().includes(query.toLowerCase()), // Optional custom filter
+});
+```
+
 ## Demo
 
 Try the live demo at [tatami-a11y-demo.surge.sh](https://tatami-a11y-demo.surge.sh)

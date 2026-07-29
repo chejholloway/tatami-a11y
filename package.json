@@ -17,13 +17,17 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsup src/index.ts --format esm,cjs --dts --clean",
+    "build": "tsup src/index.ts --format esm,cjs --dts --clean && pnpm run build:surge",
+    "build:surge": "node scripts/build-surge.js",
     "dev": "tsup src/index.ts --format esm,cjs --dts --watch",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:verbose": "node scripts/test-verbose.js",
     "typecheck": "tsc --noEmit",
-    "serve": "http-server . -p 8080 -o /demo/index.html"
+    "serve": "http-server . -p 8080 -o /demo/index.html",
+    "deploy": "surge surge tatami-a11y-demo.surge.sh",
+    "prepublishOnly": "pnpm run test && pnpm run build",
+    "publish": "npm publish"
   },
   "keywords": [
     "accessibility",
