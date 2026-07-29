@@ -146,3 +146,103 @@ button {
   background: #f8d7da;
   color: #721c24;
 }
+
+/* Dropdown menu */
+.dropdown-menu {
+  display: none;
+  position: relative;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 0.5rem;
+  margin-top: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.dropdown-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 0.5rem;
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+/* Tabs */
+.tablist-demo {
+  display: flex;
+  border-bottom: 2px solid #e0e0e0;
+  margin-bottom: 1rem;
+}
+
+.tab-demo {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: #666;
+}
+
+.tab-demo[aria-selected="true"] {
+  border-bottom: 2px solid #1a7f37;
+  color: #1a7f37;
+  font-weight: 500;
+}
+
+.tabpanel-demo {
+  padding: 1rem;
+}
+
+/* Accordion */
+.accordion-header {
+  width: 100%;
+  text-align: left;
+  padding: 0.75rem;
+  border: none;
+  background: #f0f0f0;
+  cursor: pointer;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+}
+
+.accordion-panel {
+  padding: 1rem;
+  background: #fafafa;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+}
+
+/* Modal */
+.modal-overlay-demo {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-component-demo {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  display: none;
+}
+
+/* Utilities */
+.mt-0-5 {
+  margin-top: 0.5rem;
+}
+
+.mt-1 {
+  margin-top: 1rem;
+}

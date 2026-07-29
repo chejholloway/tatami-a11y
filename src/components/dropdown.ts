@@ -36,6 +36,10 @@ export class Dropdown {
   private onClose?: () => void;
   private menuItems: HTMLElement[] = [];
   private currentIndex: number = -1;
+  private triggerClickHandler: () => void = () => this.toggle();
+  private triggerKeydownHandler: (e: KeyboardEvent) => void = (e) => this.handleTriggerKeyDown(e);
+  private menuKeydownHandler: (e: KeyboardEvent) => void = (e) => this.handleMenuKeyDown(e);
+  private documentClickHandler: (e: MouseEvent) => void = (e) => this.handleDocumentClick(e);
 
   constructor(options: DropdownOptions) {
     this.trigger = options.trigger;
@@ -59,12 +63,12 @@ export class Dropdown {
     );
 
     // Set up event listeners
-    this.trigger.addEventListener('click', () => this.toggle());
-    this.trigger.addEventListener('keydown', (e) => this.handleTriggerKeyDown(e));
-    this.menu.addEventListener('keydown', (e) => this.handleMenuKeyDown(e));
+    this.trigger.addEventListener('click', this.triggerClickHandler);
+    this.trigger.addEventListener('keydown', this.triggerKeydownHandler);
+    this.menu.addEventListener('keydown', this.menuKeydownHandler);
 
     // Close on click outside
-    document.addEventListener('click', (e) => this.handleDocumentClick(e));
+    document.addEventListener('click', this.documentClickHandler);
 
     // Initially hide menu
     this.hideMenu();
@@ -244,10 +248,10 @@ export class Dropdown {
   }
 
   public destroy(): void {
-    this.trigger.removeEventListener('click', () => this.toggle());
-    this.trigger.removeEventListener('keydown', (e) => this.handleTriggerKeyDown(e));
-    this.menu.removeEventListener('keydown', (e) => this.handleMenuKeyDown(e));
-    document.removeEventListener('click', (e) => this.handleDocumentClick(e));
+    this.trigger.removeEventListener('click', this.triggerClickHandler);
+    this.trigger.removeEventListener('keydown', this.triggerKeydownHandler);
+    this.menu.removeEventListener('keydown', this.menuKeydownHandler);
+    document.removeEventListener('click', this.documentClickHandler);
 
     if (this.isOpen) {
       this.close();

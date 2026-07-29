@@ -23,6 +23,8 @@ export class Tabs {
   private panels!: HTMLElement[];
   private currentIndex: number = 0;
   private onTabChange?: (index: number) => void;
+  private tabClickHandlers: Array<() => void> = [];
+  private tabKeydownHandlers: Array<(e: KeyboardEvent) => void> = [];
 
   constructor(options: TabOptions) {
     this.tabList = options.tabList;
@@ -51,8 +53,15 @@ export class Tabs {
     this.tabs.forEach((tab, index) => {
       tab.setAttribute('aria-selected', index === 0 ? 'true' : 'false');
       tab.setAttribute('tabindex', index === 0 ? '0' : '-1');
-      tab.addEventListener('click', () => this.activateTab(index));
-      tab.addEventListener('keydown', (e) => this.handleTabKeyDown(e, index));
+      
+      const clickHandler = () => this.activateTab(index);
+      const keydownHandler = (e: KeyboardEvent) => this.handleTabKeyDown(e, index);
+      
+      this.tabClickHandlers.push(clickHandler);
+      this.tabKeydownHandlers.push(keydownHandler);
+      
+      tab.addEventListener('click', clickHandler);
+      tab.addEventListener('keydown', keydownHandler);
     });
 
     // Set up each panel
@@ -156,9 +165,11 @@ export class Tabs {
   }
 
   public destroy(): void {
-    this.tabs.forEach((tab) => {
-      tab.removeEventListener('click', () => this.activateTab(0));
-      tab.removeEventListener('keydown', (e) => this.handleTabKeyDown(e, 0));
+    this.tabs.forEach((tab, index) => {
+      tab.removeEventListener('click', this.tabClickHandlers[index]);
+      tab.removeEventListener('keydown', this.tabKeydownHandlers[index]);
     });
+    this.tabClickHandlers = [];
+    this.tabKeydownHandlers = [];
   }
 }

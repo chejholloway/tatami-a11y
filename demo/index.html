@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>a11y-primitives Demo</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style-modern.css">
 </head>
 <body>
-  <h1>a11y-primitives Demo</h1>
+  <h1>tatami-a11y demo</h1>
   <p class="subtitle">Framework-agnostic accessibility primitives for vanilla JavaScript</p>
 
   <!-- Announcer Demo -->
@@ -74,30 +74,30 @@
     <div class="controls">
       <button class="btn-primary" id="dropdown-trigger">Open Menu</button>
     </div>
-    <div id="dropdown-menu" class="dropdown-menu" style="display: none; position: relative; background: white; border: 1px solid #e0e0e0; border-radius: 4px; padding: 0.5rem; margin-top: 0.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-      <button class="dropdown-item" role="menuitem" style="display: block; width: 100%; text-align: left; padding: 0.5rem; border: none; background: none; cursor: pointer; border-radius: 4px;">Option 1</button>
-      <button class="dropdown-item" role="menuitem" style="display: block; width: 100%; text-align: left; padding: 0.5rem; border: none; background: none; cursor: pointer; border-radius: 4px;">Option 2</button>
-      <button class="dropdown-item" role="menuitem" style="display: block; width: 100%; text-align: left; padding: 0.5rem; border: none; background: none; cursor: pointer; border-radius: 4px;">Option 3</button>
+    <div id="dropdown-menu" class="dropdown-menu dropdown-menu-demo">
+      <button class="dropdown-item dropdown-item-demo" role="menuitem">Option 1</button>
+      <button class="dropdown-item dropdown-item-demo" role="menuitem">Option 2</button>
+      <button class="dropdown-item dropdown-item-demo" role="menuitem">Option 3</button>
     </div>
-    <div class="output" id="dropdown-output" style="margin-top: 0.5rem;">Dropdown operations will appear here</div>
+    <div class="output mt-0-5" id="dropdown-output">Dropdown operations will appear here</div>
   </div>
 
   <!-- Tabs Demo -->
   <div class="section">
     <h2>📑 Tabs</h2>
     <p class="description">Accessible tabs with keyboard navigation and announcements.</p>
-    <div role="tablist" id="tabs-demo" style="display: flex; border-bottom: 2px solid #e0e0e0; margin-bottom: 1rem;">
-      <button role="tab" id="tab-1" aria-controls="panel-1" aria-selected="true" tabindex="0" style="padding: 0.75rem 1.5rem; border: none; background: none; cursor: pointer; border-bottom: 2px solid #1a7f37; color: #1a7f37; font-weight: 500;">Tab 1</button>
-      <button role="tab" id="tab-2" aria-controls="panel-2" aria-selected="false" tabindex="-1" style="padding: 0.75rem 1.5rem; border: none; background: none; cursor: pointer; color: #666;">Tab 2</button>
-      <button role="tab" id="tab-3" aria-controls="panel-3" aria-selected="false" tabindex="-1" style="padding: 0.75rem 1.5rem; border: none; background: none; cursor: pointer; color: #666;">Tab 3</button>
+    <div role="tablist" id="tabs-demo" class="tablist-demo">
+      <button role="tab" id="tab-1" aria-controls="panel-1" aria-selected="true" tabindex="0" class="tab-demo">Tab 1</button>
+      <button role="tab" id="tab-2" aria-controls="panel-2" aria-selected="false" tabindex="-1" class="tab-demo">Tab 2</button>
+      <button role="tab" id="tab-3" aria-controls="panel-3" aria-selected="false" tabindex="-1" class="tab-demo">Tab 3</button>
     </div>
-    <div id="panel-1" role="tabpanel" aria-labelledby="tab-1" style="padding: 1rem;">
+    <div id="panel-1" role="tabpanel" aria-labelledby="tab-1" class="tabpanel-demo">
       <p>This is the content for Tab 1. Use arrow keys to navigate between tabs.</p>
     </div>
-    <div id="panel-2" role="tabpanel" aria-labelledby="tab-2" hidden style="padding: 1rem;">
+    <div id="panel-2" role="tabpanel" aria-labelledby="tab-2" hidden class="tabpanel-demo">
       <p>This is the content for Tab 2. Tabs announce changes to screen readers.</p>
     </div>
-    <div id="panel-3" role="tabpanel" aria-labelledby="tab-3" hidden style="padding: 1rem;">
+    <div id="panel-3" role="tabpanel" aria-labelledby="tab-3" hidden class="tabpanel-demo">
       <p>This is the content for Tab 3. Focus management is handled automatically.</p>
     </div>
     <div class="output" id="tabs-output">Tab operations will appear here</div>
@@ -118,14 +118,14 @@
     <h2>📁 Accordion</h2>
     <p class="description">Accessible accordion with keyboard navigation and announcements.</p>
     <div id="accordion-demo">
-      <button id="accordion-header-1" aria-controls="accordion-panel-1" style="width: 100%; text-align: left; padding: 0.75rem; border: none; background: #f0f0f0; cursor: pointer; border-radius: 4px; margin-bottom: 0.5rem;">Panel 1</button>
-      <div id="accordion-panel-1" style="padding: 1rem; background: #fafafa; border-radius: 4px; margin-bottom: 0.5rem; display: none;">Content for panel 1. Use arrow keys to navigate between panels.</div>
-      <button id="accordion-header-2" aria-controls="accordion-panel-2" style="width: 100%; text-align: left; padding: 0.75rem; border: none; background: #f0f0f0; cursor: pointer; border-radius: 4px; margin-bottom: 0.5rem;">Panel 2</button>
-      <div id="accordion-panel-2" style="padding: 1rem; background: #fafafa; border-radius: 4px; margin-bottom: 0.5rem; display: none;">Content for panel 2. Accordion announces expand/collapse states.</div>
-      <button id="accordion-header-3" aria-controls="accordion-panel-3" style="width: 100%; text-align: left; padding: 0.75rem; border: none; background: #f0f0f0; cursor: pointer; border-radius: 4px; margin-bottom: 0.5rem;">Panel 3</button>
-      <div id="accordion-panel-3" style="padding: 1rem; background: #fafafa; border-radius: 4px; margin-bottom: 0.5rem; display: none;">Content for panel 3. Focus management is handled automatically.</div>
+      <button id="accordion-header-1" aria-controls="accordion-panel-1" class="accordion-header accordion-header-demo">Panel 1</button>
+      <div id="accordion-panel-1" class="accordion-panel accordion-panel-demo" hidden>Content for panel 1. Use arrow keys to navigate between panels.</div>
+      <button id="accordion-header-2" aria-controls="accordion-panel-2" class="accordion-header accordion-header-demo">Panel 2</button>
+      <div id="accordion-panel-2" class="accordion-panel accordion-panel-demo" hidden>Content for panel 2. Accordion announces expand/collapse states.</div>
+      <button id="accordion-header-3" aria-controls="accordion-panel-3" class="accordion-header accordion-header-demo">Panel 3</button>
+      <div id="accordion-panel-3" class="accordion-panel accordion-panel-demo" hidden>Content for panel 3. Focus management is handled automatically.</div>
     </div>
-    <div class="output" id="accordion-output" style="margin-top: 1rem;">Accordion operations will appear here</div>
+    <div class="output mt-1" id="accordion-output">Accordion operations will appear here</div>
   </div>
 
   <!-- Modal (Focus Trap Demo) -->
@@ -140,8 +140,8 @@
   </div>
 
   <!-- Modal Component Demo Modal -->
-  <div id="modal-component-backdrop" class="modal-overlay hidden" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); display: none; align-items: center; justify-content: center; z-index: 1000;">
-    <div id="modal-component" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-component-title" style="background: white; padding: 2rem; border-radius: 8px; max-width: 400px; width: 90%; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); display: none;">
+  <div id="modal-component-backdrop" class="modal-overlay modal-overlay-demo hidden">
+    <div id="modal-component" class="modal modal-component-demo" role="dialog" aria-modal="true" aria-labelledby="modal-component-title">
       <h2 id="modal-component-title">Modal Component</h2>
       <p>This is the Modal component using tatami-a11y primitives. It has focus trapping, focus restoration, and announcements.</p>
       <div class="controls">
