@@ -4,5 +4,6 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     globals: true,
+    tsconfig: './tsconfig.test.json',
   },
 });

@@ -135,6 +135,36 @@ const tabs = new Tabs({
 });
 ```
 
+### `Modal`
+
+Accessible modal dialog with backdrop, focus trap, and announcements.
+
+```js
+import { Modal } from 'tatami-a11y';
+
+const modal = new Modal({
+  trigger: document.getElementById('modal-trigger'),
+  modal: document.getElementById('modal'),
+  backdrop: document.getElementById('modal-backdrop'),
+  onOpen: () => console.log('Modal opened'),
+  onClose: () => console.log('Modal closed'),
+});
+```
+
+### `Accordion`
+
+Accessible accordion with keyboard navigation and announcements.
+
+```js
+import { Accordion } from 'tatami-a11y';
+
+const accordion = new Accordion({
+  container: document.getElementById('accordion'),
+  allowMultiple: false, // Optional: allow multiple panels open
+  onToggle: (index, isExpanded) => console.log(`Panel ${index} ${isExpanded ? 'expanded' : 'collapsed'}`),
+});
+```
+
 ## Demo
 
 Try the live demo at [tatami-a11y-demo.surge.sh](https://tatami-a11y-demo.surge.sh)

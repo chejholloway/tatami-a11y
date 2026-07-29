@@ -21,6 +21,7 @@
     "dev": "tsup src/index.ts --format esm,cjs --dts --watch",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:verbose": "node scripts/test-verbose.js",
     "typecheck": "tsc --noEmit",
     "serve": "http-server . -p 8080 -o /demo/index.html"
   },
@@ -39,6 +40,7 @@
   "license": "MIT",
   "devDependencies": {
     "http-server": "^14.1.1",
+    "jsdom": "^30.0.0",
     "tsup": "^8.0.0",
     "typescript": "^5.0.0",
     "vitest": "^1.0.0"

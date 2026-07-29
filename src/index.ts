@@ -26,3 +26,5 @@ export {
 // Components
 export { Dropdown } from './components/dropdown.js';
 export { Tabs } from './components/tabs.js';
+export { Modal } from './components/modal.js';
+export { Accordion } from './components/accordion.js';
