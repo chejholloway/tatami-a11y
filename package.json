@@ -1,6 +1,6 @@
 {
   "name": "tatami-a11y",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Framework-agnostic, accessibility-first UI primitives for vanilla JavaScript",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -14,7 +14,9 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "shared_a11y_primitives_problem.png"
   ],
   "scripts": {
     "build": "tsup src/index.ts --format esm,cjs --dts --clean && pnpm run build:surge",
@@ -27,7 +29,11 @@
     "serve": "http-server . -p 8080 -o /demo/index.html",
     "deploy": "surge surge tatami-a11y-demo.surge.sh",
     "prepublishOnly": "pnpm run test && pnpm run build",
-    "publish": "npm publish"
+    "publish": "npm publish",
+    "release": "standard-version",
+    "release:minor": "standard-version --release-as minor",
+    "release:major": "standard-version --release-as major",
+    "release:patch": "standard-version --release-as patch"
   },
   "keywords": [
     "accessibility",
@@ -45,6 +51,7 @@
   "devDependencies": {
     "http-server": "^14.1.1",
     "jsdom": "^30.0.0",
+    "standard-version": "^9.5.0",
     "tsup": "^8.0.0",
     "typescript": "^5.0.0",
     "vitest": "^1.0.0"

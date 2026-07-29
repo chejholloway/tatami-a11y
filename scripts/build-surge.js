@@ -15,41 +15,37 @@ if (!fs.existsSync(surgeDir)) {
   fs.mkdirSync(surgeDir, { recursive: true });
 }
 
-// Copy dist folder
-if (fs.existsSync(distDir)) {
-  const surgeDistDir = path.join(surgeDir, 'dist');
-  copyDirectory(distDir, surgeDistDir);
-  console.log('✓ Copied dist to surge folder');
+// Copy dist/index.js to surge/index.js
+const distIndexPath = path.join(distDir, 'index.js');
+const surgeIndexPath = path.join(surgeDir, 'index.js');
+if (fs.existsSync(distIndexPath)) {
+  fs.copyFileSync(distIndexPath, surgeIndexPath);
+  console.log('✓ Copied dist/index.js to surge/index.js');
 } else {
-  console.warn('⚠ dist folder not found, skipping');
+  console.warn('⚠ dist/index.js not found, skipping');
 }
 
-// Copy demo folder
-if (fs.existsSync(demoDir)) {
-  const surgeDemoDir = path.join(surgeDir, 'demo');
-  copyDirectory(demoDir, surgeDemoDir);
-  console.log('✓ Copied demo to surge folder');
+// Copy demo/style-modern.css to surge/style-modern.css
+const cssPath = path.join(demoDir, 'style-modern.css');
+const surgeCssPath = path.join(surgeDir, 'style-modern.css');
+if (fs.existsSync(cssPath)) {
+  fs.copyFileSync(cssPath, surgeCssPath);
+  console.log('✓ Copied demo/style-modern.css to surge/style-modern.css');
 } else {
-  console.warn('⚠ demo folder not found, skipping');
+  console.warn('⚠ demo/style-modern.css not found, skipping');
+}
+
+// Copy demo/index.html to surge/index.html and fix import path
+const demoHtmlPath = path.join(demoDir, 'index.html');
+const surgeHtmlPath = path.join(surgeDir, 'index.html');
+if (fs.existsSync(demoHtmlPath)) {
+  let htmlContent = fs.readFileSync(demoHtmlPath, 'utf-8');
+  // Replace '../dist/index.js' with './index.js'
+  htmlContent = htmlContent.replace(/'\.\.\/dist\/index\.js'/g, "'./index.js'");
+  fs.writeFileSync(surgeHtmlPath, htmlContent);
+  console.log('✓ Copied demo/index.html to surge/index.html (fixed import path)');
+} else {
+  console.warn('⚠ demo/index.html not found, skipping');
 }
 
 console.log('✓ Surge folder ready for deployment');
-
-function copyDirectory(src, dest) {
-  if (!fs.existsSync(dest)) {
-    fs.mkdirSync(dest, { recursive: true });
-  }
-
-  const entries = fs.readdirSync(src, { withFileTypes: true });
-
-  for (const entry of entries) {
-    const srcPath = path.join(src, entry.name);
-    const destPath = path.join(dest, entry.name);
-
-    if (entry.isDirectory()) {
-      copyDirectory(srcPath, destPath);
-    } else {
-      fs.copyFileSync(srcPath, destPath);
-    }
-  }
-}
