@@ -1,12 +1,21 @@
 # Changelog
 
-All notable changes to tatami-a11y are documented here.
+All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+### 0.2.1 (2026-07-29)
 
----
 
-## [Unreleased]
+### Features
+
+* add accessible Dropdown and Tabs components ([ca151de](https://github.com/chejholloway/tatani-a11y/commit/ca151ded971ef15820ab58fe8f2208cb0441fa95))
+* **components:** 🍞 Add Toast notification component ([e842eca](https://github.com/chejholloway/tatani-a11y/commit/e842eca9a12ee01129572d2259724408ac8558fa))
+* **components:** add Tooltip, Carousel, Dialog, and Disclosure components ([1171394](https://github.com/chejholloway/tatani-a11y/commit/1171394d4ba2d28ad7f59d036a15414983dfc81f))
+
+
+### Bug Fixes
+
+* **components:** 🔧 fix event listener cleanup in dropdown and tabs components ([8ae006a](https://github.com/chejholloway/tatani-a11y/commit/8ae006a1cc503c895953dc8a08a07c94f26f8aa9))
+* **demo:** 🎨 toast button colors, disclosure purple, carousel display reset ([f4fff86](https://github.com/chejholloway/tatani-a11y/commit/f4fff86d2fbbdc49717942410b0353e9c9887af4)), closes [#7c3](https://github.com/chejholloway/tatani-a11y/issues/7c3)
 
 ## [0.3.0] — 2026-07-29
 

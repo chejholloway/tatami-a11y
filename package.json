@@ -1,6 +1,6 @@
 {
   "name": "tatami-a11y",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Framework-agnostic, accessibility-first UI primitives for vanilla JavaScript",
   "type": "module",
   "main": "./dist/index.cjs",
