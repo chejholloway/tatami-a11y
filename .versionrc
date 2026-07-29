@@ -9,6 +9,10 @@
       "section": "Bug Fixes"
     },
     {
+      "type": "perf",
+      "section": "Performance Improvements"
+    },
+    {
       "type": "chore",
       "hidden": true
     },
@@ -22,10 +26,6 @@
     },
     {
       "type": "refactor",
-      "hidden": true
-    },
-    {
-      "type": "perf",
       "hidden": true
     },
     {

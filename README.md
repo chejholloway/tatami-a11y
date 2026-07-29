@@ -405,6 +405,144 @@ The component auto-generates an `id` on the content element if none is present, 
 
 **Keyboard:** no extra bindings needed — the trigger is a `<button>` so it responds to `Enter` and `Space` natively.
 
+### `DatePicker`
+
+Date pickers are the most consistently broken accessible component on the web. Most implementations fail on at least one of these: screen readers don't distinguish today from selected, arrow keys don't navigate the grid, the month navigation buttons have no accessible name, or focus is silently dropped when the month changes.
+
+This implements the [WAI-ARIA Date Picker Dialog pattern](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/examples/datepicker-dialog/) fully: a `role="grid"` calendar with roving `tabindex`, `aria-current="date"` on today, `aria-selected` on the chosen day, a live region on the month heading, and focus trap + stack for the dialog.
+
+```js
+import { DatePicker } from 'tatami-a11y';
+
+const dp = new DatePicker({
+  input:           document.getElementById('dp-input'),
+  dialog:          document.getElementById('dp-dialog'),
+  toggleButton:    document.getElementById('dp-toggle'),
+  monthYearLabel:  document.getElementById('dp-month-label'),
+  prevMonthButton: document.getElementById('dp-prev'),
+  nextMonthButton: document.getElementById('dp-next'),
+  calendarGrid:    document.getElementById('dp-grid'),
+  dateFormat: 'YYYY-MM-DD',   // or 'MM/DD/YYYY' or 'DD/MM/YYYY'
+  minDate:    new Date(2020, 0, 1),
+  maxDate:    new Date(2030, 11, 31),
+  onOpen:  ()                  => console.log('Calendar opened'),
+  onClose: ()                  => console.log('Calendar closed'),
+  onSelect: (date, formatted)  => console.log('Selected:', formatted),
+  onMonthChange: (year, month) => console.log('Now viewing:', year, month),
+});
+
+// Public API
+dp.open();
+dp.close();
+dp.toggle();
+dp.setValue(new Date(2025, 5, 15)); // programmatic selection
+dp.clearValue();
+dp.getSelectedDate();               // returns Date | null
+dp.destroy();
+```
+
+**Required HTML skeleton:**
+```html
+<input type="text" id="dp-input" />
+<button id="dp-toggle">Choose date</button>
+
+<div id="dp-dialog">
+  <button id="dp-prev">Previous month</button>
+  <div id="dp-month-label"></div>
+  <button id="dp-next">Next month</button>
+  <div id="dp-grid"></div>
+</div>
+```
+
+The component renders the column headers and day cells into `calendarGrid` on every month change. All ARIA attributes are managed automatically.
+
+**Keyboard (inside calendar):**
+
+| Key | Action |
+|---|---|
+| `Arrow` keys | Move one day in that direction |
+| `Home` | First day of current week |
+| `End` | Last day of current week |
+| `Ctrl+Home` | First day of current month |
+| `Ctrl+End` | Last day of current month |
+| `PageUp` | Previous month |
+| `PageDown` | Next month |
+| `Shift+PageUp` | Previous year |
+| `Shift+PageDown` | Next year |
+| `Enter` / `Space` | Select focused date |
+| `Escape` | Close without selecting |
+
+---
+
+### `CommandPalette`
+
+The `Ctrl+K` pattern looks simple — search input, list of results — but the accessibility is genuinely hard. `aria-activedescendant` must track the highlighted result without moving DOM focus off the input, result counts need a live region, grouped results need `role="group"`, and the whole thing needs a focus trap that restores correctly when dismissed.
+
+```js
+import { CommandPalette } from 'tatami-a11y';
+
+const palette = new CommandPalette({
+  overlay:      document.getElementById('cp-overlay'),
+  dialog:       document.getElementById('cp-dialog'),
+  input:        document.getElementById('cp-input'),
+  listbox:      document.getElementById('cp-listbox'),
+  statusRegion: document.getElementById('cp-status'),
+  backdrop:     document.getElementById('cp-backdrop'), // optional
+  hotkey: 'k', // opens on Ctrl+K / Meta+K (default)
+  commands: [
+    {
+      id: 'new-file',
+      label: 'New File',
+      description: 'Create a new file in the current directory',
+      group: 'Files',
+      shortcut: '⌘N',
+      action: () => createFile(),
+    },
+    {
+      id: 'settings',
+      label: 'Open Settings',
+      group: 'Application',
+      action: () => openSettings(),
+    },
+  ],
+  onSelect: (item) => console.log('Executed:', item.label),
+  onOpen:   ()     => console.log('Palette opened'),
+  onClose:  ()     => console.log('Palette closed'),
+});
+
+// Public API
+palette.open();
+palette.close();
+palette.setCommands(newCommandList);   // replace the full list
+palette.addCommand({ id, label, action });
+palette.removeCommand('settings');
+palette.destroy();
+```
+
+**Required HTML skeleton:**
+```html
+<div id="cp-overlay">
+  <div id="cp-backdrop"></div>
+  <div id="cp-dialog">
+    <input type="text" id="cp-input" placeholder="Type a command…" />
+    <div id="cp-status"></div>
+    <div id="cp-listbox"></div>
+  </div>
+</div>
+```
+
+The component renders all result options into `listbox`. Items with a `group` property are wrapped in `role="group"` containers with `aria-labelledby` pointing at the group heading. Items with a `description` get `aria-describedby`.
+
+**Keyboard:**
+
+| Key | Action |
+|---|---|
+| `ArrowDown` | Move highlight down (wraps) |
+| `ArrowUp` | Move highlight up (wraps) |
+| `Enter` | Execute highlighted command |
+| `Escape` | Close without executing |
+| `Ctrl+K` / `Meta+K` | Toggle open/closed (configurable via `hotkey`) |
+
 ## Demo
 
 Try the live demo at [tatami-a11y-demo.surge.sh](https://tatami-a11y-demo.surge.sh)
@@ -422,6 +560,28 @@ pnpm run serve
 ```
 
 The demo includes interactive examples of all shared utilities and components.
+
+## Publishing
+
+Commits follow [Conventional Commits](https://www.conventionalcommits.org/) so versioning is automatic:
+
+```bash
+# Auto-detect next version from commit messages
+pnpm run release
+
+# Or specify the bump explicitly
+pnpm run release:patch  # 0.2.0 → 0.2.1
+pnpm run release:minor  # 0.2.0 → 0.3.0
+pnpm run release:major  # 0.2.0 → 1.0.0
+```
+
+This updates `package.json`, generates the `CHANGELOG.md`, and creates a git tag. Then publish:
+
+```bash
+npm publish
+```
+
+The `prepublishOnly` script runs tests and build automatically before publishing.
 
 ## Development
 

@@ -147,7 +147,8 @@ export class Carousel {
       if (!prefersReducedMotion) {
         slide.style.transition = 'opacity 0.3s ease';
         slide.style.opacity = isActive ? '1' : '0';
-        slide.style.position = isActive ? 'relative' : 'absolute'; // Basic stacked visual handling
+        slide.style.position = isActive ? 'relative' : 'absolute';
+        slide.style.display = '';
       } else {
         slide.style.display = isActive ? 'block' : 'none';
       }

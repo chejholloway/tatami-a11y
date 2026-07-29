@@ -8,6 +8,19 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Thi
 
 ## [Unreleased]
 
+## [0.3.0] — 2026-07-29
+
+### Added
+
+- **`DatePicker`** — Full WAI-ARIA Date Picker Dialog pattern. `role="grid"` calendar with roving `tabindex`, `aria-current="date"` on today, `aria-selected` on the chosen day, live region on the month heading, focus trap + focus stack. Keyboard: all Arrow keys for 2D grid navigation, `PageUp`/`PageDown` for month, `Shift+Page` for year, `Home`/`End` for week boundary, `Ctrl+Home`/`Ctrl+End` for month boundary. Supports `minDate`/`maxDate`, `dateFormat` (`YYYY-MM-DD` | `MM/DD/YYYY` | `DD/MM/YYYY`), `onOpen`/`onClose`/`onSelect`/`onMonthChange` callbacks, and public `setValue`/`clearValue`/`getSelectedDate` API.
+- **`CommandPalette`** — Accessible `Ctrl+K` command palette. `aria-activedescendant` tracks the highlighted result without moving DOM focus off the input (the hard part). Live region announces result counts as you type. Grouped commands use `role="group"` + `aria-labelledby`. Descriptions get `aria-describedby`. Full keyboard navigation (Arrow, Enter, Escape), focus trap + stack, configurable hotkey, backdrop support. Public `setCommands`/`addCommand`/`removeCommand` API for async command loading.
+
+### Tests
+
+- Total tests: 428 → 560 (31% increase).
+- `DatePicker`: 66 tests covering constructor ARIA setup, open/close lifecycle, idempotency, month navigation (including year wrap and Shift+Page year jump), day selection via click and Enter, all Arrow/Home/End/PageUp/PageDown keyboard patterns, min/max constraint enforcement, public API (`setValue`/`clearValue`/`getSelectedDate`), leap year handling, reduced motion, and destroy.
+- `CommandPalette`: 66 tests covering constructor ARIA setup, open/close lifecycle, idempotency, filtering (default + custom filter + description match), status region updates, "No results" state, option ARIA semantics (unique ids, aria-describedby, role="group"), keyboard navigation (Arrow wrapping, Enter execution, Escape), click interaction, hotkey (Ctrl+K, Meta+K, custom), public command management API, reduced motion, destroy, and edge cases.
+
 ## [0.2.0] — 2026-07-29
 
 ### Added

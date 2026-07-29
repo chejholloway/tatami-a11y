@@ -190,7 +190,6 @@ describe('Tooltip', () => {
     it('should still honour deprecated onShow/onHide aliases for backwards compatibility', () => {
       const onShow = vi.fn();
       const onHide = vi.fn();
-      // @ts-expect-error — testing deprecated API path
       tooltipInstance = new Tooltip({ trigger, tooltip: tooltipElement, onShow, onHide });
       tooltipInstance.show();
       expect(onShow).toHaveBeenCalledOnce();

@@ -35,3 +35,7 @@ export { Tooltip } from './components/tooltip.js';
 export { Carousel } from './components/carousel.js';
 export { Dialog } from './components/dialog.js';
 export { Disclosure } from './components/disclosure.js';
+export { DatePicker } from './components/datePicker.js';
+export { CommandPalette } from './components/commandPalette.js';
+export type { DatePickerOptions } from './components/datePicker.js';
+export type { CommandPaletteOptions, CommandItem } from './components/commandPalette.js';
