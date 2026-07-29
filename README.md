@@ -543,6 +543,108 @@ The component renders all result options into `listbox`. Items with a `group` pr
 | `Escape` | Close without executing |
 | `Ctrl+K` / `Meta+K` | Toggle open/closed (configurable via `hotkey`) |
 
+### `TreeView`
+
+An accessible tree view with expand/collapse, keyboard navigation (Arrow keys, Home, End, typeahead), and single/multi-select. Uses `createRovingTabindex` with a custom `beforeKey` handler for tree-specific keys (ArrowRight/Left for expand/collapse, Enter/Space/typeahead for selection).
+
+```js
+import { TreeView } from 'tatami-a11y';
+
+const tv = new TreeView({
+  tree: document.getElementById('my-tree'),
+  multiselect: true,                                     // optional, default false
+  onSelect: (node, index) => console.log('Selected:', node.textContent, 'at', index),
+});
+
+// Public API
+tv.getItems();              // visible treeitems
+tv.selectNode(2);           // select by visual index
+tv.getSelectedNodes();      // returns array of selected indices
+tv.destroy();
+```
+
+**Required HTML structure — nested `<ul>`/`<li>` with `data-children` and optional `data-expanded`:**
+```html
+<ul id="my-tree">
+  <li data-label="Fruits" data-children="true">
+    <span class="label">Fruits</span>
+    <ul>
+      <li data-label="Apple"><span class="label">Apple</span></li>
+      <li data-label="Cherry" data-expanded="true" data-children="true">
+        <span class="label">Cherry</span>
+        <ul>
+          <li data-label="Sour"><span class="label">Sour</span></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li data-label="Grains"><span class="label">Grains</span></li>
+</ul>
+```
+
+The component recursively walks the DOM to apply `role="treeitem"`, `aria-level`, `aria-setsize`, `aria-posinset`, `aria-expanded`, and `aria-selected`. Expand/collapse state lives in the DOM via `aria-expanded`. Children of collapsed branches are hidden with `aria-hidden`.
+
+**Keyboard:**
+
+| Key | Action |
+|---|---|
+| `ArrowDown` / `ArrowUp` | Next / previous visible item |
+| `ArrowRight` | Expand closed branch |
+| `ArrowLeft` | Collapse open branch, or focus parent |
+| `Home` / `End` | First / last visible item |
+| `Enter` / `Space` | Select (single), replace selection (multi) |
+| `Ctrl+Space` | (multi) Toggle focused item without affecting others |
+| Character key | Typeahead — jump to matching visible node |
+
+---
+
+### `ReorderableList`
+
+A keyboard-driven reorderable list where items are rearranged with `Ctrl+ArrowUp/Down`, `Ctrl+Home/End`. Announces each move via the shared announcer so screen reader users always know where the item landed.
+
+```js
+import { ReorderableList } from 'tatami-a11y';
+
+const list = new ReorderableList({
+  list: document.getElementById('my-list'),
+  orientation: 'vertical',                               // or 'horizontal'
+  announce: (msg) => console.log(msg),                   // defaults to shared announce()
+  onReorder: (items, movedItem, newIndex) => {
+    console.log('Reordered:', movedItem.textContent, 'to index', newIndex);
+  },
+});
+
+// Public API
+list.getItems();    // current items in DOM order
+list.destroy();
+```
+
+**Required HTML — simple `<ul>`/`<li>` list:**
+```html
+<ul id="my-list">
+  <li>Apples</li>
+  <li>Bananas</li>
+  <li>Cherries</li>
+</ul>
+```
+
+The component sets `role="list"` on the container, `role="listitem"` on each child, and keeps `aria-posinset`/`aria-setsize` in sync after every reorder. Reordering swaps DOM nodes directly via `insertBefore`.
+
+**Keyboard:**
+
+| Key | Action |
+|---|---|
+| `ArrowUp` / `ArrowDown` | Navigate items |
+| `Home` / `End` | First / last item |
+| `Ctrl+ArrowUp` | Move focused item up |
+| `Ctrl+ArrowDown` | Move focused item down |
+| `Ctrl+Home` | Move focused item to start |
+| `Ctrl+End` | Move focused item to end |
+
+Boundary keys are no-ops at the limits (first item can't move up, last item can't move down).
+
+---
+
 ## Demo
 
 Try the live demo at [tatami-a11y-demo.surge.sh](https://tatami-a11y-demo.surge.sh)

@@ -310,6 +310,23 @@
     <div class="output" id="treeview-output">Tree view operations will appear here</div>
   </div>
 
+  <!-- Reorderable List -->
+  <div class="section">
+    <h2>🔀 Reorderable List</h2>
+    <p class="description">Accessible reorderable list with Ctrl+ArrowUp/Down to move items, Ctrl+Home/End to move to boundaries. Screen reader announcements on each move.</p>
+    <div class="controls">
+      <button class="btn-secondary" id="reorder-reset-btn">Reset Order</button>
+    </div>
+    <ul id="reorderable-demo">
+      <li><span class="label">🍎 Apples</span></li>
+      <li><span class="label">🍌 Bananas</span></li>
+      <li><span class="label">🍒 Cherries</span></li>
+      <li><span class="label">🍇 Grapes</span></li>
+      <li><span class="label">🍊 Oranges</span></li>
+    </ul>
+    <div class="output" id="reorderable-output">Try Ctrl+ArrowUp/Down to reorder items</div>
+  </div>
+
   <!-- Date Picker -->
   <div class="section">
     <h2>📅 Date Picker</h2>
@@ -389,7 +406,7 @@
       createSingleton, registerCleanup,
       Dropdown, Tabs, Modal, Accordion, Toast,
       MenuButton, Combobox, Tooltip, Carousel,
-      Dialog, Disclosure,       DatePicker, CommandPalette, TreeView,
+      Dialog, Disclosure,       DatePicker, CommandPalette, TreeView, ReorderableList,
     } from '../dist/index.js';
 
     // ── Announcer ──────────────────────────────────────────────────────────
@@ -590,6 +607,29 @@
       tvOutput.textContent = 'Tree View: switched to multi-select mode';
     });
 
+    // ── Reorderable List ───────────────────────────────────────────────────
+    const reorderOutput = document.getElementById('reorderable-output');
+    const reorderList = document.getElementById('reorderable-demo');
+    let reorderInstance = new ReorderableList({
+      list: reorderList,
+      announce: (msg) => { reorderOutput.textContent = msg; },
+    });
+    document.getElementById('reorder-reset-btn').addEventListener('click', () => {
+      reorderInstance.destroy();
+      reorderList.innerHTML = `
+        <li><span class="label">🍎 Apples</span></li>
+        <li><span class="label">🍌 Bananas</span></li>
+        <li><span class="label">🍒 Cherries</span></li>
+        <li><span class="label">🍇 Grapes</span></li>
+        <li><span class="label">🍊 Oranges</span></li>
+      `;
+      reorderInstance = new ReorderableList({
+        list: reorderList,
+        announce: (msg) => { reorderOutput.textContent = msg; },
+      });
+      reorderOutput.textContent = 'Order reset';
+    });
+
     // ── Date Picker ────────────────────────────────────────────────────────
     const dpOutput = document.getElementById('datepicker-output');
     new DatePicker({
@@ -600,7 +640,7 @@
       prevMonthButton: document.getElementById('dp-prev'),
       nextMonthButton: document.getElementById('dp-next'),
       calendarGrid:    document.getElementById('dp-grid'),
-      dateFormat:      'YYYY-MM-DD',
+      dateFormat:      'MM/DD/YYYY',
       onOpen:          ()               => { dpOutput.textContent = 'Date Picker: calendar opened (Arrow keys navigate, PageUp/Down change month, Escape closes)'; },
       onClose:         ()               => { dpOutput.textContent = 'Date Picker: calendar closed'; },
       onSelect:        (date, formatted) => { dpOutput.textContent = `Date Picker: selected ${formatted}`; },

@@ -539,3 +539,32 @@ button {
   pointer-events: none;
 }
 
+/* Reorderable List */
+#reorderable-demo {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 1rem;
+}
+
+#reorderable-demo [role="listitem"] {
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+  border-radius: 4px;
+  border: 1px solid #e0e0e0;
+  margin-bottom: 0.25rem;
+  background: white;
+  user-select: none;
+}
+
+#reorderable-demo [role="listitem"]:focus,
+#reorderable-demo [role="listitem"]:focus-visible {
+  outline: 2px solid #1a7f37;
+  outline-offset: -2px;
+  background: #e8f5e9;
+  border-color: #1a7f37;
+}
+
+#reorderable-demo .label {
+  pointer-events: none;
+}
+

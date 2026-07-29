@@ -129,9 +129,10 @@ export class Combobox {
     const option = target.closest('[role="option"]') as HTMLElement;
     
     if (option) {
-      const index = parseInt(option.dataset.index || '-1', 10);
-      if (index >= 0) {
-        this.selectOption(index);
+      const visibleOptions = this.options.filter((opt) => !opt.hidden);
+      const visibleIndex = visibleOptions.indexOf(option);
+      if (visibleIndex >= 0) {
+        this.selectOption(visibleIndex);
       }
     }
   }

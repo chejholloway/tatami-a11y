@@ -39,6 +39,7 @@ export { Dialog } from './components/dialog.js';
 export { Disclosure } from './components/disclosure.js';
 export { DatePicker } from './components/datePicker.js';
 export { TreeView } from './components/treeView.js';
+export { ReorderableList } from './components/reorderableList.js';
 export { CommandPalette } from './components/commandPalette.js';
 export type { DatePickerOptions } from './components/datePicker.js';
 export type { CommandPaletteOptions, CommandItem } from './components/commandPalette.js';
