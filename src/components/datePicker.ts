@@ -33,6 +33,8 @@ import {
 } from '../shared/focusStack.js';
 import { announce } from '../shared/announcer.js';
 import { checkReducedMotion } from '../shared/reducedMotion.js';
+import { createRovingTabindex } from '../shared/rovingTabindex.js';
+import type { RovingTabindexController } from '../shared/rovingTabindex.js';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -122,6 +124,9 @@ export class DatePicker {
   private viewYear: number  = new Date().getFullYear();
   private viewMonth: number = new Date().getMonth(); // 0-based
 
+  // Roving tabindex controller — manages grid keyboard navigation
+  private roving!: RovingTabindexController;
+
   // Bound handlers — critical so removeEventListener works
   private toggleClickHandler    = () => this.toggle();
   private prevMonthClickHandler = () => this.shiftMonth(-1);
@@ -183,6 +188,55 @@ export class DatePicker {
     // Grid
     this.calendarGrid.setAttribute('role', 'grid');
     this.buildColumnHeaders();
+
+    // Roving tabindex — handles Arrow / Home / End grid navigation.
+    // DatePicker overrides via beforeKey for keys that need month-boundary
+    // awareness (PageUp/Down, Ctrl+Home/End) and for Enter/Escape.
+    this.roving = createRovingTabindex({
+      container: this.calendarGrid,
+      selector: '[role="gridcell"]:not([aria-disabled="true"]):not([aria-hidden="true"])',
+      orientation: 'both',
+      columns: 7,
+      wrap: false,
+      beforeKey: (e) => {
+        switch (e.key) {
+          case 'ArrowRight': e.preventDefault(); this.moveFocus(1); return true;
+          case 'ArrowLeft':  e.preventDefault(); this.moveFocus(-1); return true;
+          case 'ArrowDown':  e.preventDefault(); this.moveFocus(7); return true;
+          case 'ArrowUp':    e.preventDefault(); this.moveFocus(-7); return true;
+          case 'Home':
+            e.preventDefault();
+            e.ctrlKey ? this.moveToMonthBoundary(true) : this.moveToWeekBoundary(true);
+            return true;
+          case 'End':
+            e.preventDefault();
+            e.ctrlKey ? this.moveToMonthBoundary(false) : this.moveToWeekBoundary(false);
+            return true;
+          case 'PageUp':
+            e.preventDefault();
+            this.shiftMonth(e.shiftKey ? -12 : -1);
+            return true;
+          case 'PageDown':
+            e.preventDefault();
+            this.shiftMonth(e.shiftKey ? 12 : 1);
+            return true;
+          case 'Enter':
+          case ' ':
+            e.preventDefault();
+            this.commitDate(this.focusedDate);
+            return true;
+        }
+        return false;
+      },
+      onActiveChange: (_index, element) => {
+        const iso = element.getAttribute('data-date');
+        if (iso) {
+          const [y, m, d] = iso.split('-').map(Number);
+          this.focusedDate = new Date(y, m - 1, d);
+        }
+      },
+    });
+
     this.renderMonth();
 
     // Try to parse any existing input value
@@ -273,7 +327,6 @@ export class DatePicker {
         const isDisabled = this.isDateDisabled(date);
         const isSelected = this.selectedDate ? isSameDay(date, this.selectedDate) : false;
         const isToday    = isSameDay(date, today);
-        const isFocused  = isSameDay(date, this.focusedDate);
 
         cell.textContent = String(date.getDate());
         cell.setAttribute('aria-label', this.formatDateLong(date));
@@ -284,10 +337,8 @@ export class DatePicker {
         if (isDisabled) {
           cell.setAttribute('aria-disabled', 'true');
           cell.setAttribute('tabindex', '-1');
-        } else {
-          // Only the focused cell is in the tab sequence — roving tabindex pattern
-          cell.setAttribute('tabindex', isFocused ? '0' : '-1');
         }
+        // Tabindex for enabled cells is managed by the roving tabindex primitive
       }
 
       row!.appendChild(cell);
@@ -295,6 +346,20 @@ export class DatePicker {
 
     // Update prevMonth / nextMonth button disabled states
     this.updateNavButtonStates();
+
+    // Sync the roving tabindex with the new DOM
+    this.roving.refresh();
+    const cellIndex = this.findCellIndex(this.focusedDate);
+    if (cellIndex >= 0) {
+      this.roving.setActiveIndex(cellIndex, false);
+    }
+  }
+
+  private findCellIndex(date: Date): number {
+    const iso = this.formatISO(date);
+    return this.roving.getItems().findIndex(
+      el => el.getAttribute('data-date') === iso
+    );
   }
 
   private updateNavButtonStates(): void {
@@ -414,7 +479,10 @@ export class DatePicker {
     activateFocusTrap(this.dialog);
 
     // Focus the focused date cell (or the first available day)
-    requestAnimationFrame(() => this.focusCell(this.focusedDate));
+    requestAnimationFrame(() => {
+      const idx = this.findCellIndex(this.focusedDate);
+      if (idx >= 0) this.roving.setActiveIndex(idx, true);
+    });
 
     announce(
       `Calendar opened. ${MONTH_NAMES[this.viewMonth]} ${this.viewYear}. Use arrow keys to navigate.`,
@@ -491,7 +559,10 @@ export class DatePicker {
     announce(`${MONTH_NAMES[month]} ${year}`, { urgent: false });
 
     // Re-focus after render so keyboard users stay oriented
-    requestAnimationFrame(() => this.focusCell(this.focusedDate));
+    requestAnimationFrame(() => {
+      const idx = this.findCellIndex(this.focusedDate);
+      if (idx >= 0) this.roving.setActiveIndex(idx, true);
+    });
 
     this.onMonthChange?.(year, month);
   }
@@ -499,16 +570,9 @@ export class DatePicker {
   // ─── Focus management ───────────────────────────────────────────────────────
 
   private focusCell(date: Date): void {
-    const iso  = this.formatISO(date);
-    const cell = this.calendarGrid.querySelector<HTMLElement>(`[data-date="${iso}"]`);
-    if (cell) {
-      // Update roving tabindex before focusing
-      this.calendarGrid
-        .querySelectorAll<HTMLElement>('[role="gridcell"][tabindex="0"]')
-        .forEach(c => c.setAttribute('tabindex', '-1'));
-
-      cell.setAttribute('tabindex', '0');
-      cell.focus();
+    const idx = this.findCellIndex(date);
+    if (idx >= 0) {
+      this.roving.setActiveIndex(idx, true);
     }
   }
 
@@ -551,61 +615,11 @@ export class DatePicker {
       case 'Escape':
         e.preventDefault();
         this.close();
-        // Return focus to the toggle button — more ergonomic than the input
         this.toggleButton.focus();
         break;
 
-      case 'ArrowRight':
-        e.preventDefault();
-        this.moveFocus(1);
-        break;
-
-      case 'ArrowLeft':
-        e.preventDefault();
-        this.moveFocus(-1);
-        break;
-
-      case 'ArrowDown':
-        e.preventDefault();
-        this.moveFocus(7);
-        break;
-
-      case 'ArrowUp':
-        e.preventDefault();
-        this.moveFocus(-7);
-        break;
-
-      case 'Home':
-        e.preventDefault();
-        // Home = first day of the week (unless Ctrl, then first day of month)
-        e.ctrlKey ? this.moveToMonthBoundary(true) : this.moveToWeekBoundary(true);
-        break;
-
-      case 'End':
-        e.preventDefault();
-        e.ctrlKey ? this.moveToMonthBoundary(false) : this.moveToWeekBoundary(false);
-        break;
-
-      case 'PageUp':
-        e.preventDefault();
-        // Shift+PageUp = previous year, PageUp alone = previous month
-        e.shiftKey ? this.shiftMonth(-12) : this.shiftMonth(-1);
-        break;
-
-      case 'PageDown':
-        e.preventDefault();
-        e.shiftKey ? this.shiftMonth(12) : this.shiftMonth(1);
-        break;
-
-      case 'Enter':
-      case ' ':
-        e.preventDefault();
-        this.commitDate(this.focusedDate);
-        break;
-
       case 'Tab':
-        // Let Tab move naturally between the prev/next buttons and the grid
-        // but don't let it escape the dialog (focus trap handles that)
+        // Focus trap handles boundary — let Tab move naturally inside dialog
         break;
     }
   }
@@ -671,5 +685,6 @@ export class DatePicker {
     this.input.removeEventListener('change', this.inputChangeHandler);
 
     if (this.isOpen) this.close();
+    this.roving.destroy();
   }
 }

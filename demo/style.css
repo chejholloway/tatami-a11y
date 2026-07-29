@@ -491,3 +491,51 @@ button {
   border: 1px solid #e0e0e0;
 }
 
+/* Tree View */
+.treeview-demo {
+  list-style: none;
+  padding-left: 0;
+  margin-bottom: 1rem;
+}
+
+.treeview-demo [role="treeitem"] {
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
+  border-radius: 4px;
+  user-select: none;
+}
+
+.treeview-demo [role="treeitem"]:focus,
+.treeview-demo [role="treeitem"]:focus-visible {
+  outline: 2px solid #1a7f37;
+  outline-offset: -2px;
+  background: #e8f5e9;
+}
+
+.treeview-demo [role="treeitem"][aria-selected="true"] {
+  background: #1a7f37;
+  color: white;
+}
+
+.treeview-demo [role="group"] {
+  list-style: none;
+  padding-left: 1.5rem;
+  margin: 0;
+}
+
+.treeview-demo [role="treeitem"][aria-expanded="false"] > [role="group"] {
+  display: none;
+}
+
+.treeview-demo [role="treeitem"][aria-expanded="true"] > [role="group"] {
+  display: block;
+}
+
+.treeview-demo [role="treeitem"][aria-hidden="true"] {
+  display: none;
+}
+
+.treeview-demo .label {
+  pointer-events: none;
+}
+

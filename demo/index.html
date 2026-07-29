@@ -263,6 +263,53 @@
     <div class="output mt-1" id="disclosure-output">Disclosure operations will appear here</div>
   </div>
 
+  <!-- Tree View -->
+  <div class="section">
+    <h2>🌳 Tree View</h2>
+    <p class="description">Accessible tree view with expand/collapse, keyboard navigation (Arrow keys, Home, End, typeahead), and single/multi-select.</p>
+    <div class="controls">
+      <button class="btn-secondary" id="treeview-single-btn">Single Select</button>
+      <button class="btn-secondary" id="treeview-multi-btn">Multi Select</button>
+    </div>
+    <ul id="treeview-demo" class="treeview-demo">
+      <li data-label="Documents" data-children="true">
+        <span class="label">📄 Documents</span>
+        <ul>
+          <li data-label="Work" data-children="true">
+            <span class="label">💼 Work</span>
+            <ul>
+              <li data-label="report.pdf"><span class="label">report.pdf</span></li>
+              <li data-label="budget.xlsx"><span class="label">budget.xlsx</span></li>
+            </ul>
+          </li>
+          <li data-label="Personal" data-children="true">
+            <span class="label">🏠 Personal</span>
+            <ul>
+              <li data-label="resume.pdf"><span class="label">resume.pdf</span></li>
+              <li data-label="notes.txt"><span class="label">notes.txt</span></li>
+            </ul>
+          </li>
+          <li data-label="readme.md"><span class="label">readme.md</span></li>
+        </ul>
+      </li>
+      <li data-label="Pictures" data-children="true">
+        <span class="label">🖼️ Pictures</span>
+        <ul>
+          <li data-label="vacation" data-children="true">
+            <span class="label">🌴 Vacation</span>
+            <ul>
+              <li data-label="beach.jpg"><span class="label">beach.jpg</span></li>
+              <li data-label="sunset.jpg"><span class="label">sunset.jpg</span></li>
+            </ul>
+          </li>
+          <li data-label="screenshot.png"><span class="label">screenshot.png</span></li>
+        </ul>
+      </li>
+      <li data-label="Music"><span class="label">🎵 Music</span></li>
+    </ul>
+    <div class="output" id="treeview-output">Tree view operations will appear here</div>
+  </div>
+
   <!-- Date Picker -->
   <div class="section">
     <h2>📅 Date Picker</h2>
@@ -342,7 +389,7 @@
       createSingleton, registerCleanup,
       Dropdown, Tabs, Modal, Accordion, Toast,
       MenuButton, Combobox, Tooltip, Carousel,
-      Dialog, Disclosure, DatePicker, CommandPalette,
+      Dialog, Disclosure,       DatePicker, CommandPalette, TreeView,
     } from '../dist/index.js';
 
     // ── Announcer ──────────────────────────────────────────────────────────
@@ -526,6 +573,21 @@
       trigger:  document.getElementById('disclosure-trigger'),
       content:  document.getElementById('disclosure-content'),
       onToggle: exp => { disclosureOutput.textContent = `Disclosure: ${exp ? 'expanded' : 'collapsed'}`; },
+    });
+
+    // ── Tree View ──────────────────────────────────────────────────────────
+    const tvOutput = document.getElementById('treeview-output');
+    const tvDemo = document.getElementById('treeview-demo');
+    let tvInstance = new TreeView({ tree: tvDemo, onSelect: (node, idx) => { tvOutput.textContent = `Tree View: selected "${node.querySelector('.label')?.textContent || node.textContent}" at index ${idx}`; } });
+    document.getElementById('treeview-single-btn').addEventListener('click', () => {
+      tvInstance.destroy();
+      tvInstance = new TreeView({ tree: tvDemo, onSelect: (node, idx) => { tvOutput.textContent = `Tree View (single): selected "${node.querySelector('.label')?.textContent || node.textContent}" at index ${idx}`; } });
+      tvOutput.textContent = 'Tree View: switched to single-select mode';
+    });
+    document.getElementById('treeview-multi-btn').addEventListener('click', () => {
+      tvInstance.destroy();
+      tvInstance = new TreeView({ tree: tvDemo, multiselect: true, onSelect: (node, idx) => { tvOutput.textContent = `Tree View (multi): toggled "${node.querySelector('.label')?.textContent || node.textContent}" at index ${idx}`; } });
+      tvOutput.textContent = 'Tree View: switched to multi-select mode';
     });
 
     // ── Date Picker ────────────────────────────────────────────────────────

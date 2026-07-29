@@ -289,7 +289,7 @@ describe('DatePicker', () => {
       dp = new DatePicker({ ...els });
       dp.open();
       const before = els.monthYearLabel.textContent!;
-      els.dialog.dispatchEvent(new KeyboardEvent('keydown', { key: 'PageDown', bubbles: true }));
+      els.calendarGrid.dispatchEvent(new KeyboardEvent('keydown', { key: 'PageDown', bubbles: true }));
       expect(els.monthYearLabel.textContent).not.toBe(before);
     });
 
@@ -298,7 +298,7 @@ describe('DatePicker', () => {
       dp.open();
       els.nextMonthButton.click(); // move forward first
       const mid = els.monthYearLabel.textContent!;
-      els.dialog.dispatchEvent(new KeyboardEvent('keydown', { key: 'PageUp', bubbles: true }));
+      els.calendarGrid.dispatchEvent(new KeyboardEvent('keydown', { key: 'PageUp', bubbles: true }));
       expect(els.monthYearLabel.textContent).not.toBe(mid);
     });
 
@@ -306,7 +306,7 @@ describe('DatePicker', () => {
       dp = new DatePicker({ ...els });
       dp.setValue(new Date(2024, 0, 1)); // January 2024
       dp.open();
-      els.dialog.dispatchEvent(new KeyboardEvent('keydown', { key: 'PageDown', shiftKey: true, bubbles: true }));
+      els.calendarGrid.dispatchEvent(new KeyboardEvent('keydown', { key: 'PageDown', shiftKey: true, bubbles: true }));
       expect(els.monthYearLabel.textContent).toContain('2025');
     });
   });
@@ -356,7 +356,7 @@ describe('DatePicker', () => {
       const onSelect = vi.fn();
       dp = new DatePicker({ ...els, onSelect });
       dp.open();
-      els.dialog.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+      els.calendarGrid.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
       expect(onSelect).toHaveBeenCalledOnce();
     });
 
@@ -383,7 +383,7 @@ describe('DatePicker', () => {
       dp = new DatePicker({ ...els });
       dp.setValue(new Date(2025, 5, 10)); // June 10
       dp.open();
-      els.dialog.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+      els.calendarGrid.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
       const focused = els.calendarGrid.querySelector<HTMLElement>('[tabindex="0"]');
       expect(focused?.getAttribute('data-date')).toBe('2025-06-11');
     });
@@ -392,7 +392,7 @@ describe('DatePicker', () => {
       dp = new DatePicker({ ...els });
       dp.setValue(new Date(2025, 5, 10));
       dp.open();
-      els.dialog.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true }));
+      els.calendarGrid.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true }));
       const focused = els.calendarGrid.querySelector<HTMLElement>('[tabindex="0"]');
       expect(focused?.getAttribute('data-date')).toBe('2025-06-09');
     });
@@ -401,7 +401,7 @@ describe('DatePicker', () => {
       dp = new DatePicker({ ...els });
       dp.setValue(new Date(2025, 5, 10));
       dp.open();
-      els.dialog.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+      els.calendarGrid.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
       const focused = els.calendarGrid.querySelector<HTMLElement>('[tabindex="0"]');
       expect(focused?.getAttribute('data-date')).toBe('2025-06-17');
     });
@@ -410,7 +410,7 @@ describe('DatePicker', () => {
       dp = new DatePicker({ ...els });
       dp.setValue(new Date(2025, 5, 10));
       dp.open();
-      els.dialog.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true }));
+      els.calendarGrid.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true }));
       const focused = els.calendarGrid.querySelector<HTMLElement>('[tabindex="0"]');
       expect(focused?.getAttribute('data-date')).toBe('2025-06-03');
     });
@@ -419,7 +419,7 @@ describe('DatePicker', () => {
       dp = new DatePicker({ ...els });
       dp.setValue(new Date(2025, 5, 30)); // June 30
       dp.open();
-      els.dialog.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+      els.calendarGrid.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
       expect(els.monthYearLabel.textContent).toContain('July');
     });
 
@@ -427,7 +427,7 @@ describe('DatePicker', () => {
       dp = new DatePicker({ ...els });
       dp.setValue(new Date(2025, 5, 11)); // Wednesday
       dp.open();
-      els.dialog.dispatchEvent(new KeyboardEvent('keydown', { key: 'Home', bubbles: true }));
+      els.calendarGrid.dispatchEvent(new KeyboardEvent('keydown', { key: 'Home', bubbles: true }));
       // June 11 is a Wednesday (dow=3), so Home → June 8 (Sunday)
       const focused = els.calendarGrid.querySelector<HTMLElement>('[tabindex="0"]');
       expect(focused?.getAttribute('data-date')).toBe('2025-06-08');
@@ -437,7 +437,7 @@ describe('DatePicker', () => {
       dp = new DatePicker({ ...els });
       dp.setValue(new Date(2025, 5, 15));
       dp.open();
-      els.dialog.dispatchEvent(new KeyboardEvent('keydown', { key: 'Home', ctrlKey: true, bubbles: true }));
+      els.calendarGrid.dispatchEvent(new KeyboardEvent('keydown', { key: 'Home', ctrlKey: true, bubbles: true }));
       const focused = els.calendarGrid.querySelector<HTMLElement>('[tabindex="0"]');
       expect(focused?.getAttribute('data-date')).toBe('2025-06-01');
     });
@@ -446,7 +446,7 @@ describe('DatePicker', () => {
       dp = new DatePicker({ ...els });
       dp.setValue(new Date(2025, 5, 1));
       dp.open();
-      els.dialog.dispatchEvent(new KeyboardEvent('keydown', { key: 'End', ctrlKey: true, bubbles: true }));
+      els.calendarGrid.dispatchEvent(new KeyboardEvent('keydown', { key: 'End', ctrlKey: true, bubbles: true }));
       const focused = els.calendarGrid.querySelector<HTMLElement>('[tabindex="0"]');
       expect(focused?.getAttribute('data-date')).toBe('2025-06-30');
     });

@@ -22,6 +22,8 @@ export {
   activateFocusTrap,
   deactivateFocusTrap,
 } from './shared/focusTrap.js';
+export { createRovingTabindex } from './shared/rovingTabindex.js';
+export type { RovingTabindexController, RovingTabindexOptions } from './shared/rovingTabindex.js';
 
 // Components
 export { Dropdown } from './components/dropdown.js';
@@ -36,6 +38,7 @@ export { Carousel } from './components/carousel.js';
 export { Dialog } from './components/dialog.js';
 export { Disclosure } from './components/disclosure.js';
 export { DatePicker } from './components/datePicker.js';
+export { TreeView } from './components/treeView.js';
 export { CommandPalette } from './components/commandPalette.js';
 export type { DatePickerOptions } from './components/datePicker.js';
 export type { CommandPaletteOptions, CommandItem } from './components/commandPalette.js';

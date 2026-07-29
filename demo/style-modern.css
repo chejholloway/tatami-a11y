@@ -864,6 +864,54 @@
     }
   }
 
+  /* ── Tree View ─────────────────────────────────────────────────────────── */
+  .treeview-demo {
+    list-style: none;
+    padding-inline-start: 0;
+    margin-block-end: var(--spacing-md);
+  }
+
+  .treeview-demo [role="treeitem"] {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    user-select: none;
+  }
+
+  .treeview-demo [role="treeitem"]:focus,
+  .treeview-demo [role="treeitem"]:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: -2px;
+    background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+  }
+
+  .treeview-demo [role="treeitem"][aria-selected="true"] {
+    background: var(--color-primary);
+    color: white;
+  }
+
+  .treeview-demo [role="group"] {
+    list-style: none;
+    padding-inline-start: var(--spacing-lg);
+    margin: 0;
+  }
+
+  .treeview-demo [role="treeitem"][aria-expanded="false"] > [role="group"] {
+    display: none;
+  }
+
+  .treeview-demo [role="treeitem"][aria-expanded="true"] > [role="group"] {
+    display: block;
+  }
+
+  .treeview-demo [role="treeitem"][aria-hidden="true"] {
+    display: none;
+  }
+
+  .treeview-demo .label {
+    pointer-events: none;
+  }
+
   /* ── Date Picker ──────────────────────────────────────────────────────── */
   .datepicker-wrapper {
     position: relative;
