@@ -1,5 +1,9 @@
 # tatami-a11y
 
+[![CI](https://github.com/chejholloway/tatami-a11y/actions/workflows/ci.yml/badge.svg)](https://github.com/chejholloway/tatami-a11y/actions/workflows/ci.yml)
+[![npm version](https://img.shields.io/npm/v/tatami-a11y)](https://www.npmjs.com/package/tatami-a11y)
+[![license](https://img.shields.io/npm/l/tatami-a11y)](LICENSE)
+
 Framework-agnostic accessibility primitives for vanilla JavaScript. The shared foundation underneath [kanpai](https://www.npmjs.com/package/kanpai-toast) and every accessible component built after it.
 
 ## Why this exists

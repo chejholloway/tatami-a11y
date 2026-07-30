@@ -21,6 +21,7 @@ import {
 } from '../shared/focusStack.js';
 import { announce } from '../shared/announcer.js';
 import { checkReducedMotion } from '../shared/reducedMotion.js';
+import { createRovingTabindex, type RovingTabindexController } from '../shared/rovingTabindex.js';
 
 /**
  * Options for configuring the {@link MenuButton} component.
@@ -62,10 +63,9 @@ export class MenuButton {
   private onOpen?: () => void;
   private onClose?: () => void;
   private menuItems: HTMLElement[] = [];
-  private currentIndex: number = -1;
+  private roving?: RovingTabindexController;
   private triggerClickHandler: () => void = () => this.toggle();
   private triggerKeydownHandler: (e: KeyboardEvent) => void = (e) => this.handleTriggerKeyDown(e);
-  private menuKeydownHandler: (e: KeyboardEvent) => void = (e) => this.handleMenuKeyDown(e);
   private documentClickHandler: (e: MouseEvent) => void = (e) => this.handleDocumentClick(e);
 
   /**
@@ -90,9 +90,16 @@ export class MenuButton {
       this.menu.querySelectorAll('[role="menuitem"]')
     );
 
+    // Set up roving tabindex for menu navigation
+    this.roving = createRovingTabindex({
+      container: this.menu,
+      selector: '[role="menuitem"]',
+      orientation: 'vertical',
+      beforeKey: (e, activeIndex) => this.handleMenuBeforeKey(e, activeIndex),
+    });
+
     this.trigger.addEventListener('click', this.triggerClickHandler);
     this.trigger.addEventListener('keydown', this.triggerKeydownHandler);
-    this.menu.addEventListener('keydown', this.menuKeydownHandler);
     document.addEventListener('click', this.documentClickHandler);
 
     this.hideMenu();
@@ -126,8 +133,7 @@ export class MenuButton {
     activateFocusTrap(this.menu);
 
     if (this.menuItems.length > 0) {
-      this.currentIndex = 0;
-      this.menuItems[0].focus();
+      this.roving?.setActiveIndex(0, true);
     }
 
     announce('Menu opened', { urgent: false });
@@ -148,8 +154,6 @@ export class MenuButton {
 
     deactivateFocusTrap();
     popFocusStack();
-
-    this.currentIndex = -1;
 
     announce('Menu closed', { urgent: false });
 
@@ -203,62 +207,36 @@ export class MenuButton {
         if (!this.isOpen) {
           this.open();
           if (this.menuItems.length > 0) {
-            this.currentIndex = this.menuItems.length - 1;
-            this.menuItems[this.currentIndex].focus();
+            this.roving?.setActiveIndex(this.menuItems.length - 1, true);
           }
         }
         break;
     }
   }
 
-  private handleMenuKeyDown(e: KeyboardEvent): void {
+  private handleMenuBeforeKey(e: KeyboardEvent, activeIndex: number): boolean {
     switch (e.key) {
       case 'Escape':
         e.preventDefault();
         this.close();
         this.trigger.focus();
-        break;
-      case 'ArrowDown':
-        e.preventDefault();
-        this.moveFocus(1);
-        break;
-      case 'ArrowUp':
-        e.preventDefault();
-        this.moveFocus(-1);
-        break;
-      case 'Home':
-        e.preventDefault();
-        this.currentIndex = 0;
-        this.menuItems[0]?.focus();
-        break;
-      case 'End':
-        e.preventDefault();
-        this.currentIndex = this.menuItems.length - 1;
-        this.menuItems[this.currentIndex]?.focus();
-        break;
+        return true;
       case 'Enter':
       case ' ': {
         e.preventDefault();
-        const currentItem = this.menuItems[this.currentIndex];
+        const items = this.roving?.getItems() ?? [];
+        const currentItem = items[activeIndex];
         if (currentItem) {
           currentItem.click();
           this.close();
         }
-        break;
+        return true;
       }
+      default:
+        return false;
     }
   }
 
-  private moveFocus(direction: number): void {
-    if (this.menuItems.length === 0) return;
-
-    const currentIndex = this.menuItems.findIndex((item) => item === document.activeElement);
-    const newIndex = currentIndex === -1 ? 0 : currentIndex + direction;
-
-    this.currentIndex = newIndex < 0 ? this.menuItems.length - 1 : newIndex >= this.menuItems.length ? 0 : newIndex;
-
-    this.menuItems[this.currentIndex].focus();
-  }
 
   private handleDocumentClick(e: MouseEvent): void {
     const target = e.target as HTMLElement;
@@ -273,8 +251,8 @@ export class MenuButton {
   public destroy(): void {
     this.trigger.removeEventListener('click', this.triggerClickHandler);
     this.trigger.removeEventListener('keydown', this.triggerKeydownHandler);
-    this.menu.removeEventListener('keydown', this.menuKeydownHandler);
     document.removeEventListener('click', this.documentClickHandler);
+    this.roving?.destroy();
 
     if (this.isOpen) {
       this.close();

@@ -9,17 +9,10 @@ const rootDir = path.join(__dirname, '..');
 const surgeDir = path.join(rootDir, 'surge');
 const distDir = path.join(rootDir, 'dist');
 const demoDir = path.join(rootDir, 'demo');
-const retroDir = path.join(rootDir, 'styles', 'retro');
 
 // Create surge directory if it doesn't exist
 if (!fs.existsSync(surgeDir)) {
   fs.mkdirSync(surgeDir, { recursive: true });
-}
-
-// Create surge/retro directory
-const surgeRetroDir = path.join(surgeDir, 'retro');
-if (!fs.existsSync(surgeRetroDir)) {
-  fs.mkdirSync(surgeRetroDir, { recursive: true });
 }
 
 // Copy dist/index.js to surge/index.js
@@ -52,16 +45,6 @@ if (fs.existsSync(cssPath)) {
   console.warn('⚠ demo/style-modern.css not found, skipping');
 }
 
-// Copy retro stylesheets to surge/retro/
-if (fs.existsSync(retroDir)) {
-  const retroFiles = fs.readdirSync(retroDir).filter(f => f.endsWith('.css'));
-  for (const file of retroFiles) {
-    fs.copyFileSync(path.join(retroDir, file), path.join(surgeRetroDir, file));
-    console.log(`✓ Copied styles/retro/${file} to surge/retro/${file}`);
-  }
-} else {
-  console.warn('⚠ styles/retro/ not found, skipping');
-}
 
 // Copy demo/index.html to surge/index.html and fix paths
 const demoHtmlPath = path.join(demoDir, 'index.html');
@@ -69,7 +52,6 @@ const surgeHtmlPath = path.join(surgeDir, 'index.html');
 if (fs.existsSync(demoHtmlPath)) {
   let htmlContent = fs.readFileSync(demoHtmlPath, 'utf-8');
   htmlContent = htmlContent.replace(/'\.\.\/dist\/index\.js'/g, "'./index.js'");
-  htmlContent = htmlContent.replace(/\.\.\/styles\/retro\//g, './retro/');
   fs.writeFileSync(surgeHtmlPath, htmlContent);
   console.log('✓ Copied demo/index.html to surge/index.html (fixed paths)');
 } else {

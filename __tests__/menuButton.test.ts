@@ -217,10 +217,15 @@ describe('MenuButton', () => {
       menuButtonInstance.open();
       
       const items = menu.querySelectorAll('[role="menuitem"]');
-      const secondItem = items[1] as HTMLElement;
       const firstItem = items[0] as HTMLElement;
+      const secondItem = items[1] as HTMLElement;
       
-      secondItem.focus();
+      // First move down to second item
+      const arrowDownEvent = new KeyboardEvent('keydown', { key: 'ArrowDown' });
+      menu.dispatchEvent(arrowDownEvent);
+      expect(document.activeElement).toBe(secondItem);
+      
+      // Then move up
       const arrowUpEvent = new KeyboardEvent('keydown', { key: 'ArrowUp' });
       menu.dispatchEvent(arrowUpEvent);
 
@@ -232,10 +237,15 @@ describe('MenuButton', () => {
       menuButtonInstance.open();
       
       const items = menu.querySelectorAll('[role="menuitem"]');
-      const lastItem = items[items.length - 1] as HTMLElement;
       const firstItem = items[0] as HTMLElement;
+      const lastItem = items[items.length - 1] as HTMLElement;
       
-      lastItem.focus();
+      // Move to last item first
+      const endEvent = new KeyboardEvent('keydown', { key: 'End' });
+      menu.dispatchEvent(endEvent);
+      expect(document.activeElement).toBe(lastItem);
+      
+      // Then Home to go to first
       const homeEvent = new KeyboardEvent('keydown', { key: 'Home' });
       menu.dispatchEvent(homeEvent);
 
@@ -405,13 +415,19 @@ describe('MenuButton', () => {
       menuButtonInstance.open();
       
       const items = menu.querySelectorAll('[role="menuitem"]');
+      const firstItem = items[0] as HTMLElement;
       const lastItem = items[items.length - 1] as HTMLElement;
-      lastItem.focus();
       
+      // Move to last item first
+      const endEvent = new KeyboardEvent('keydown', { key: 'End' });
+      menu.dispatchEvent(endEvent);
+      expect(document.activeElement).toBe(lastItem);
+      
+      // Then ArrowDown to wrap to first
       const arrowDownEvent = new KeyboardEvent('keydown', { key: 'ArrowDown' });
       menu.dispatchEvent(arrowDownEvent);
 
-      expect(document.activeElement).toBe(items[0]);
+      expect(document.activeElement).toBe(firstItem);
     });
 
     it('should handle rapid open/close', () => {
