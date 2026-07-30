@@ -2,6 +2,18 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { JSDOM } from 'jsdom';
 import axe from 'axe-core';
 
+type AxeViolation = { id: string };
+type AxeResultsLike = { violations: Array<unknown> };
+
+function isAxeViolation(v: unknown): v is AxeViolation {
+  return (
+    typeof v === 'object' &&
+    v !== null &&
+    'id' in v &&
+    typeof (v as { id?: unknown }).id === 'string'
+  );
+}
+
 describe('Accessibility (axe-core)', () => {
   let dom: JSDOM;
   let document: Document;
@@ -20,15 +32,24 @@ describe('Accessibility (axe-core)', () => {
       </body>
       </html>
     `);
+
     document = dom.window.document;
+
     // Make axe-core work with JSDOM
-    (global as any).window = dom.window;
-    (global as any).document = document;
+    // (global is typed as unknown / NodeJS.Global in many setups, so cast carefully)
+    (global as unknown as { document: Document }).document = document;
+    (global as unknown as { window?: { document: Document } }).window = { document };
   });
 
   afterEach(() => {
     dom.window.close();
   });
+
+  const filterRelevantViolations = (results: AxeResultsLike) => {
+    return results.violations
+      .filter(isAxeViolation)
+      .filter((v) => v.id !== 'document-title' && v.id !== 'html-has-lang');
+  };
 
   describe('Dropdown component', () => {
     it('should have no axe violations when properly configured', async () => {
@@ -42,11 +63,9 @@ describe('Accessibility (axe-core)', () => {
         </div>
       `;
 
-      const results = await axe.run(root);
-      // Filter out document-level checks that aren't relevant for component testing
-      const relevantViolations = results.violations.filter(
-        (v: any) => v.id !== 'document-title' && v.id !== 'html-has-lang'
-      );
+      const results = (await axe.run(root)) as unknown as AxeResultsLike;
+      const relevantViolations = filterRelevantViolations(results);
+
       expect(relevantViolations).toEqual([]);
     });
   });
@@ -63,11 +82,9 @@ describe('Accessibility (axe-core)', () => {
         <div id="panel2" role="tabpanel" aria-labelledby="tab2" hidden>Panel 2 content</div>
       `;
 
-      const results = await axe.run(root);
-      // Filter out document-level checks that aren't relevant for component testing
-      const relevantViolations = results.violations.filter(
-        (v: any) => v.id !== 'document-title' && v.id !== 'html-has-lang'
-      );
+      const results = (await axe.run(root)) as unknown as AxeResultsLike;
+      const relevantViolations = filterRelevantViolations(results);
+
       expect(relevantViolations).toEqual([]);
     });
   });
@@ -84,11 +101,9 @@ describe('Accessibility (axe-core)', () => {
         </div>
       `;
 
-      const results = await axe.run(root);
-      // Filter out document-level checks that aren't relevant for component testing
-      const relevantViolations = results.violations.filter(
-        (v: any) => v.id !== 'document-title' && v.id !== 'html-has-lang'
-      );
+      const results = (await axe.run(root)) as unknown as AxeResultsLike;
+      const relevantViolations = filterRelevantViolations(results);
+
       expect(relevantViolations).toEqual([]);
     });
   });
@@ -105,11 +120,9 @@ describe('Accessibility (axe-core)', () => {
         </div>
       `;
 
-      const results = await axe.run(root);
-      // Filter out document-level checks that aren't relevant for component testing
-      const relevantViolations = results.violations.filter(
-        (v: any) => v.id !== 'document-title' && v.id !== 'html-has-lang'
-      );
+      const results = (await axe.run(root)) as unknown as AxeResultsLike;
+      const relevantViolations = filterRelevantViolations(results);
+
       expect(relevantViolations).toEqual([]);
     });
   });
@@ -128,11 +141,9 @@ describe('Accessibility (axe-core)', () => {
         </div>
       `;
 
-      const results = await axe.run(root);
-      // Filter out document-level checks that aren't relevant for component testing
-      const relevantViolations = results.violations.filter(
-        (v: any) => v.id !== 'document-title' && v.id !== 'html-has-lang'
-      );
+      const results = (await axe.run(root)) as unknown as AxeResultsLike;
+      const relevantViolations = filterRelevantViolations(results);
+
       expect(relevantViolations).toEqual([]);
     });
   });
@@ -148,11 +159,9 @@ describe('Accessibility (axe-core)', () => {
         </div>
       `;
 
-      const results = await axe.run(root);
-      // Filter out document-level checks that aren't relevant for component testing
-      const relevantViolations = results.violations.filter(
-        (v: any) => v.id !== 'document-title' && v.id !== 'html-has-lang'
-      );
+      const results = (await axe.run(root)) as unknown as AxeResultsLike;
+      const relevantViolations = filterRelevantViolations(results);
+
       expect(relevantViolations).toEqual([]);
     });
   });
@@ -168,11 +177,9 @@ describe('Accessibility (axe-core)', () => {
         </ul>
       `;
 
-      const results = await axe.run(root);
-      // Filter out document-level checks that aren't relevant for component testing
-      const relevantViolations = results.violations.filter(
-        (v: any) => v.id !== 'document-title' && v.id !== 'html-has-lang'
-      );
+      const results = (await axe.run(root)) as unknown as AxeResultsLike;
+      const relevantViolations = filterRelevantViolations(results);
+
       expect(relevantViolations).toEqual([]);
     });
   });
@@ -190,11 +197,9 @@ describe('Accessibility (axe-core)', () => {
         </div>
       `;
 
-      const results = await axe.run(root);
-      // Filter out document-level checks that aren't relevant for component testing
-      const relevantViolations = results.violations.filter(
-        (v: any) => v.id !== 'document-title' && v.id !== 'html-has-lang'
-      );
+      const results = (await axe.run(root)) as unknown as AxeResultsLike;
+      const relevantViolations = filterRelevantViolations(results);
+
       expect(relevantViolations).toEqual([]);
     });
   });
@@ -211,11 +216,9 @@ describe('Accessibility (axe-core)', () => {
         </div>
       `;
 
-      const results = await axe.run(root);
-      // Filter out document-level checks that aren't relevant for component testing
-      const relevantViolations = results.violations.filter(
-        (v: any) => v.id !== 'document-title' && v.id !== 'html-has-lang'
-      );
+      const results = (await axe.run(root)) as unknown as AxeResultsLike;
+      const relevantViolations = filterRelevantViolations(results);
+
       expect(relevantViolations).toEqual([]);
     });
   });
@@ -230,11 +233,9 @@ describe('Accessibility (axe-core)', () => {
         </div>
       `;
 
-      const results = await axe.run(root);
-      // Filter out document-level checks that aren't relevant for component testing
-      const relevantViolations = results.violations.filter(
-        (v: any) => v.id !== 'document-title' && v.id !== 'html-has-lang'
-      );
+      const results = (await axe.run(root)) as unknown as AxeResultsLike;
+      const relevantViolations = filterRelevantViolations(results);
+
       expect(relevantViolations).toEqual([]);
     });
   });
@@ -247,11 +248,9 @@ describe('Accessibility (axe-core)', () => {
         <div id="tooltip-desc" role="tooltip">Tooltip content</div>
       `;
 
-      const results = await axe.run(root);
-      // Filter out document-level checks that aren't relevant for component testing
-      const relevantViolations = results.violations.filter(
-        (v: any) => v.id !== 'document-title' && v.id !== 'html-has-lang'
-      );
+      const results = (await axe.run(root)) as unknown as AxeResultsLike;
+      const relevantViolations = filterRelevantViolations(results);
+
       expect(relevantViolations).toEqual([]);
     });
   });
