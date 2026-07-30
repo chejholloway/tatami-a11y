@@ -24,7 +24,7 @@ module.exports = {
           routeBasePath: '/',
           exclude: ['**/superpowers/**'],
         },
-        theme: { customCss: require.resolve('./website/src/css/custom.css') },
+        theme: { customCss: require.resolve('./docs/custom.css') },
       },
     ],
   ],

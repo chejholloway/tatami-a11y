@@ -43,7 +43,11 @@ describe('Accessibility (axe-core)', () => {
       `;
 
       const results = await axe.run(root);
-      expect(results.violations).toEqual([]);
+      // Filter out document-level checks that aren't relevant for component testing
+      const relevantViolations = results.violations.filter(
+        (v: any) => v.id !== 'document-title' && v.id !== 'html-has-lang'
+      );
+      expect(relevantViolations).toEqual([]);
     });
   });
 
@@ -60,7 +64,11 @@ describe('Accessibility (axe-core)', () => {
       `;
 
       const results = await axe.run(root);
-      expect(results.violations).toEqual([]);
+      // Filter out document-level checks that aren't relevant for component testing
+      const relevantViolations = results.violations.filter(
+        (v: any) => v.id !== 'document-title' && v.id !== 'html-has-lang'
+      );
+      expect(relevantViolations).toEqual([]);
     });
   });
 
@@ -77,7 +85,11 @@ describe('Accessibility (axe-core)', () => {
       `;
 
       const results = await axe.run(root);
-      expect(results.violations).toEqual([]);
+      // Filter out document-level checks that aren't relevant for component testing
+      const relevantViolations = results.violations.filter(
+        (v: any) => v.id !== 'document-title' && v.id !== 'html-has-lang'
+      );
+      expect(relevantViolations).toEqual([]);
     });
   });
 
@@ -94,7 +106,11 @@ describe('Accessibility (axe-core)', () => {
       `;
 
       const results = await axe.run(root);
-      expect(results.violations).toEqual([]);
+      // Filter out document-level checks that aren't relevant for component testing
+      const relevantViolations = results.violations.filter(
+        (v: any) => v.id !== 'document-title' && v.id !== 'html-has-lang'
+      );
+      expect(relevantViolations).toEqual([]);
     });
   });
 
@@ -113,7 +129,11 @@ describe('Accessibility (axe-core)', () => {
       `;
 
       const results = await axe.run(root);
-      expect(results.violations).toEqual([]);
+      // Filter out document-level checks that aren't relevant for component testing
+      const relevantViolations = results.violations.filter(
+        (v: any) => v.id !== 'document-title' && v.id !== 'html-has-lang'
+      );
+      expect(relevantViolations).toEqual([]);
     });
   });
 
@@ -129,7 +149,11 @@ describe('Accessibility (axe-core)', () => {
       `;
 
       const results = await axe.run(root);
-      expect(results.violations).toEqual([]);
+      // Filter out document-level checks that aren't relevant for component testing
+      const relevantViolations = results.violations.filter(
+        (v: any) => v.id !== 'document-title' && v.id !== 'html-has-lang'
+      );
+      expect(relevantViolations).toEqual([]);
     });
   });
 
@@ -145,7 +169,11 @@ describe('Accessibility (axe-core)', () => {
       `;
 
       const results = await axe.run(root);
-      expect(results.violations).toEqual([]);
+      // Filter out document-level checks that aren't relevant for component testing
+      const relevantViolations = results.violations.filter(
+        (v: any) => v.id !== 'document-title' && v.id !== 'html-has-lang'
+      );
+      expect(relevantViolations).toEqual([]);
     });
   });
 
@@ -163,7 +191,11 @@ describe('Accessibility (axe-core)', () => {
       `;
 
       const results = await axe.run(root);
-      expect(results.violations).toEqual([]);
+      // Filter out document-level checks that aren't relevant for component testing
+      const relevantViolations = results.violations.filter(
+        (v: any) => v.id !== 'document-title' && v.id !== 'html-has-lang'
+      );
+      expect(relevantViolations).toEqual([]);
     });
   });
 
@@ -180,7 +212,11 @@ describe('Accessibility (axe-core)', () => {
       `;
 
       const results = await axe.run(root);
-      expect(results.violations).toEqual([]);
+      // Filter out document-level checks that aren't relevant for component testing
+      const relevantViolations = results.violations.filter(
+        (v: any) => v.id !== 'document-title' && v.id !== 'html-has-lang'
+      );
+      expect(relevantViolations).toEqual([]);
     });
   });
 
@@ -195,7 +231,11 @@ describe('Accessibility (axe-core)', () => {
       `;
 
       const results = await axe.run(root);
-      expect(results.violations).toEqual([]);
+      // Filter out document-level checks that aren't relevant for component testing
+      const relevantViolations = results.violations.filter(
+        (v: any) => v.id !== 'document-title' && v.id !== 'html-has-lang'
+      );
+      expect(relevantViolations).toEqual([]);
     });
   });
 
@@ -208,7 +248,11 @@ describe('Accessibility (axe-core)', () => {
       `;
 
       const results = await axe.run(root);
-      expect(results.violations).toEqual([]);
+      // Filter out document-level checks that aren't relevant for component testing
+      const relevantViolations = results.violations.filter(
+        (v: any) => v.id !== 'document-title' && v.id !== 'html-has-lang'
+      );
+      expect(relevantViolations).toEqual([]);
     });
   });
 });

@@ -62,6 +62,9 @@ kanpai-toast.js
 /.gemini
 /.kiro
 /.opencode
+/.windsurf
+/.devin
 
 docs/superpowers/
 TXTs
+failing-tests.md
