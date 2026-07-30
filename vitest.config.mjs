@@ -8,12 +8,17 @@ const dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
   test: {
-    environment: 'jsdom',
-    globals: true,
-    tsconfig: './tsconfig.test.json',
     projects: [
       {
-        extends: true,
+        test: {
+          name: 'unit',
+          environment: 'jsdom',
+          globals: true,
+          tsconfig: './tsconfig.test.json',
+          include: ['__tests__/**/*.test.ts'],
+        },
+      },
+      {
         plugins: [
           storybookTest({ configDir: path.join(dirname, '.storybook') }),
         ],

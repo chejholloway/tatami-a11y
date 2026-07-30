@@ -55,11 +55,11 @@
     "storybook": "storybook dev -p 6006",
     "test:verbose": "node scripts/test-verbose.mjs",
     "test:watch": "vitest",
-    "test": "vitest run",
+    "test": "vitest run --project=unit",
     "test:storybook": "node scripts/test-storybook.mjs",
     "test:storybook-verbose": "node scripts/test-storybook.mjs --verbose",
-    "test-storybook:run": "vitest --project=storybook",
-    "test-storybook:run-verbose": "vitest --project=storybook --reporter=verbose",
+    "test-storybook:run": "vitest run --project=storybook",
+    "test-storybook:run-verbose": "vitest run --project=storybook --reporter=verbose",
     "typecheck": "tsc --noEmit"
   },
   "keywords": [
@@ -117,7 +117,9 @@
     "@vitest/runner": "^4.1.5",
     "wait-on": "^9.1.0",
     "eslint-plugin-storybook": "10.5.5",
-    "@storybook/addon-docs": "^10.5.5"
+    "@storybook/addon-docs": "^10.5.5",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
   },
   "lint-staged": {
     "src/**/*.ts": [
