@@ -43,4 +43,17 @@ const meta: Meta = {
 
 export default meta;
 
-export const Default: StoryObj = {};
+export const Default: StoryObj = {
+  play: async ({ canvasElement }) => {
+    const module = await import('../dist/index.js');
+    const Carousel = module.Carousel;
+    
+    const carouselDemo = canvasElement.querySelector('#carousel-demo') as HTMLElement;
+    if (carouselDemo && Carousel) {
+      new Carousel({
+        container: carouselDemo,
+        autoPlay: true,
+      });
+    }
+  },
+};

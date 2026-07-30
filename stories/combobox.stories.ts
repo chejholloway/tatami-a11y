@@ -17,4 +17,18 @@ const meta: Meta = {
 
 export default meta;
 
-export const Default: StoryObj = {};
+export const Default: StoryObj = {
+  play: async ({ canvasElement }) => {
+    const module = await import('../dist/index.js');
+    const Combobox = module.Combobox;
+    
+    const input = canvasElement.querySelector('#combobox-input') as HTMLInputElement;
+    const listbox = canvasElement.querySelector('#combobox-listbox') as HTMLElement;
+    if (input && listbox && Combobox) {
+      new Combobox({
+        input,
+        listbox,
+      });
+    }
+  },
+};

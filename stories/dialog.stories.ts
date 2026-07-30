@@ -14,4 +14,19 @@ const meta: Meta = {
 
 export default meta;
 
-export const Default: StoryObj = {};
+export const Default: StoryObj = {
+  play: async ({ canvasElement }) => {
+    const module = await import('../dist/index.js');
+    const Dialog = module.Dialog;
+    
+    const trigger = canvasElement.querySelector('#dialog-trigger') as HTMLButtonElement;
+    const content = canvasElement.querySelector('#dialog-content') as HTMLElement;
+    const closeBtn = canvasElement.querySelector('#dialog-close-btn') as HTMLButtonElement;
+    if (trigger && content && closeBtn && Dialog) {
+      new Dialog({
+        trigger,
+        dialog: content,
+      });
+    }
+  },
+};

@@ -20,4 +20,29 @@ const meta: Meta = {
 
 export default meta;
 
-export const Default: StoryObj = {};
+export const Default: StoryObj = {
+  play: async ({ canvasElement }) => {
+    const module = await import('../dist/index.js');
+    const DatePicker = module.DatePicker;
+    
+    const input = canvasElement.querySelector('#dp-input') as HTMLInputElement;
+    const toggle = canvasElement.querySelector('#dp-toggle') as HTMLButtonElement;
+    const dialog = canvasElement.querySelector('#dp-dialog') as HTMLElement;
+    const prevBtn = canvasElement.querySelector('#dp-prev') as HTMLButtonElement;
+    const nextBtn = canvasElement.querySelector('#dp-next') as HTMLButtonElement;
+    const monthLabel = canvasElement.querySelector('#dp-month-label') as HTMLElement;
+    const grid = canvasElement.querySelector('#dp-grid') as HTMLElement;
+    
+    if (input && toggle && dialog && prevBtn && nextBtn && monthLabel && grid && DatePicker) {
+      new DatePicker({
+        input,
+        toggleButton: toggle,
+        dialog,
+        monthYearLabel: monthLabel,
+        prevMonthButton: prevBtn,
+        nextMonthButton: nextBtn,
+        calendarGrid: grid,
+      });
+    }
+  },
+};

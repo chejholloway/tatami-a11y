@@ -29,4 +29,39 @@ const meta: Meta = {
 
 export default meta;
 
-export const Default: StoryObj = {};
+export const Default: StoryObj = {
+  play: async ({ canvasElement }) => {
+    const module = await import('../dist/index.js');
+    const CommandPalette = module.CommandPalette;
+    
+    const openBtn = canvasElement.querySelector('#cmd-open-btn') as HTMLButtonElement;
+    const overlay = canvasElement.querySelector('#cmd-overlay') as HTMLElement;
+    const dialog = canvasElement.querySelector('#cmd-dialog') as HTMLElement;
+    const input = canvasElement.querySelector('#cmd-input') as HTMLInputElement;
+    const listbox = canvasElement.querySelector('#cmd-listbox') as HTMLElement;
+    const status = canvasElement.querySelector('#cmd-status') as HTMLElement;
+    const backdrop = canvasElement.querySelector('#cmd-backdrop') as HTMLElement;
+    
+    if (overlay && dialog && input && listbox && status && backdrop && CommandPalette) {
+      const palette = new CommandPalette({
+        overlay,
+        dialog,
+        input,
+        listbox,
+        statusRegion: status,
+        backdrop,
+        commands: [
+          { id: '1', label: 'New File', action: () => console.log('New File') },
+          { id: '2', label: 'Open File', action: () => console.log('Open File') },
+          { id: '3', label: 'Save', action: () => console.log('Save') },
+          { id: '4', label: 'Settings', action: () => console.log('Settings') },
+        ],
+      });
+      
+      // Add click handler to open button
+      if (openBtn) {
+        openBtn.addEventListener('click', () => palette.open());
+      }
+    }
+  },
+};

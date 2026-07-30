@@ -17,4 +17,18 @@ const meta: Meta = {
 
 export default meta;
 
-export const Default: StoryObj = {};
+export const Default: StoryObj = {
+  play: async ({ canvasElement }) => {
+    const module = await import('../dist/index.js');
+    const Dropdown = module.Dropdown;
+    
+    const trigger = canvasElement.querySelector('#dropdown-trigger') as HTMLButtonElement;
+    const menu = canvasElement.querySelector('#dropdown-menu') as HTMLElement;
+    if (trigger && menu && Dropdown) {
+      new Dropdown({
+        trigger,
+        menu,
+      });
+    }
+  },
+};

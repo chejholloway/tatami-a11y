@@ -48,4 +48,17 @@ const meta: Meta = {
 
 export default meta;
 
-export const Default: StoryObj = {};
+export const Default: StoryObj = {
+  play: async ({ canvasElement }) => {
+    const module = await import('../dist/index.js');
+    const TreeView = module.TreeView;
+    
+    const tree = canvasElement.querySelector('#treeview-demo') as HTMLElement;
+    if (tree && TreeView) {
+      new TreeView({
+        tree,
+        multiselect: true,
+      });
+    }
+  },
+};

@@ -25,4 +25,22 @@ const meta: Meta = {
 
 export default meta;
 
-export const Default: StoryObj = {};
+export const Default: StoryObj = {
+  play: async ({ canvasElement }) => {
+    // Load the library dynamically
+    const module = await import('../dist/index.js');
+    const Accordion = module.Accordion;
+    
+    const accordionDemo = canvasElement.querySelector('#accordion-demo') as HTMLElement;
+    if (accordionDemo && Accordion) {
+      console.log('Initializing Accordion component');
+      new Accordion({
+        container: accordionDemo,
+        allowMultiple: false,
+      });
+      console.log('Accordion initialized');
+    } else {
+      console.error('Failed to initialize Accordion:', { accordionDemo, Accordion });
+    }
+  },
+};

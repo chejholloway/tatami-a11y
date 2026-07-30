@@ -13,8 +13,7 @@
     "declaration": true,
     "declarationMap": true,
     "outDir": "./dist",
-    "rootDir": "./src"
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", ".storybook/**/*", "stories/**/*"],
   "exclude": ["node_modules", "dist"]
 }

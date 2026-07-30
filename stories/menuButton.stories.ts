@@ -17,4 +17,18 @@ const meta: Meta = {
 
 export default meta;
 
-export const Default: StoryObj = {};
+export const Default: StoryObj = {
+  play: async ({ canvasElement }) => {
+    const module = await import('../dist/index.js');
+    const MenuButton = module.MenuButton;
+    
+    const trigger = canvasElement.querySelector('#menu-button-trigger') as HTMLButtonElement;
+    const menu = canvasElement.querySelector('#menu-button-menu') as HTMLElement;
+    if (trigger && menu && MenuButton) {
+      new MenuButton({
+        trigger,
+        menu,
+      });
+    }
+  },
+};

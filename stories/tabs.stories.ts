@@ -22,4 +22,16 @@ const meta: Meta = {
 
 export default meta;
 
-export const Default: StoryObj = {};
+export const Default: StoryObj = {
+  play: async ({ canvasElement }) => {
+    const module = await import('../dist/index.js');
+    const Tabs = module.Tabs;
+    
+    const tabList = canvasElement.querySelector('#tabs-demo') as HTMLElement;
+    if (tabList && Tabs) {
+      new Tabs({
+        tabList,
+      });
+    }
+  },
+};

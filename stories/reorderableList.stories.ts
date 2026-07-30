@@ -19,4 +19,36 @@ const meta: Meta = {
 
 export default meta;
 
-export const Default: StoryObj = {};
+export const Default: StoryObj = {
+  play: async ({ canvasElement }) => {
+    const module = await import('../dist/index.js');
+    const ReorderableList = module.ReorderableList;
+    
+    const list = canvasElement.querySelector('#reorderable-demo') as HTMLElement;
+    const resetBtn = canvasElement.querySelector('#reorder-reset-btn') as HTMLButtonElement;
+    
+    if (list && ReorderableList) {
+      new ReorderableList({
+        list,
+        orientation: 'vertical',
+        dragAndDrop: true,
+      });
+      
+      // Add reset button handler
+      if (resetBtn) {
+        resetBtn.addEventListener('click', () => {
+          const items = [
+            '<li><span class="label">🍎 Apples</span></li>',
+            '<li><span class="label">🍌 Bananas</span></li>',
+            '<li><span class="label">🍒 Cherries</span></li>',
+            '<li><span class="label">🍇 Grapes</span></li>',
+            '<li><span class="label">🍊 Oranges</span></li>',
+          ];
+          list.innerHTML = items.join('');
+          // Re-initialize after reset
+          new ReorderableList({ list, orientation: 'vertical', dragAndDrop: true });
+        });
+      }
+    }
+  },
+};

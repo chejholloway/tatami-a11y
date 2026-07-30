@@ -22,4 +22,22 @@ const meta: Meta = {
 
 export default meta;
 
-export const Default: StoryObj = {};
+export const Default: StoryObj = {
+  play: async ({ canvasElement }) => {
+    const module = await import('../dist/index.js');
+    const Modal = module.Modal;
+    
+    const trigger = canvasElement.querySelector('#modal-component-trigger') as HTMLButtonElement;
+    const modal = canvasElement.querySelector('#modal-component') as HTMLElement;
+    const backdrop = canvasElement.querySelector('#modal-component-backdrop') as HTMLElement;
+    const closeBtn = canvasElement.querySelector('#modal-component-close-btn') as HTMLButtonElement;
+    
+    if (trigger && modal && backdrop && closeBtn && Modal) {
+      new Modal({
+        trigger,
+        modal,
+        backdrop,
+      });
+    }
+  },
+};

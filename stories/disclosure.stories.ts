@@ -13,4 +13,18 @@ const meta: Meta = {
 
 export default meta;
 
-export const Default: StoryObj = {};
+export const Default: StoryObj = {
+  play: async ({ canvasElement }) => {
+    const module = await import('../dist/index.js');
+    const Disclosure = module.Disclosure;
+    
+    const trigger = canvasElement.querySelector('#disclosure-trigger') as HTMLButtonElement;
+    const content = canvasElement.querySelector('#disclosure-content') as HTMLElement;
+    if (trigger && content && Disclosure) {
+      new Disclosure({
+        trigger,
+        content,
+      });
+    }
+  },
+};

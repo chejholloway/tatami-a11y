@@ -16,4 +16,41 @@ const meta: Meta = {
 
 export default meta;
 
-export const Default: StoryObj = {};
+export const Default: StoryObj = {
+  play: async ({ canvasElement }) => {
+    const module = await import('../dist/index.js');
+    const Toast = module.Toast;
+    
+    const infoBtn = canvasElement.querySelector('#toast-info-btn') as HTMLButtonElement;
+    const successBtn = canvasElement.querySelector('#toast-success-btn') as HTMLButtonElement;
+    const errorBtn = canvasElement.querySelector('#toast-error-btn') as HTMLButtonElement;
+    const warningBtn = canvasElement.querySelector('#toast-warning-btn') as HTMLButtonElement;
+    const dismissAllBtn = canvasElement.querySelector('#toast-dismiss-all-btn') as HTMLButtonElement;
+    
+    if (infoBtn && Toast) {
+      infoBtn.addEventListener('click', () => {
+        Toast.info('Info message');
+      });
+    }
+    if (successBtn && Toast) {
+      successBtn.addEventListener('click', () => {
+        Toast.success('Success message');
+      });
+    }
+    if (errorBtn && Toast) {
+      errorBtn.addEventListener('click', () => {
+        Toast.error('Error message');
+      });
+    }
+    if (warningBtn && Toast) {
+      warningBtn.addEventListener('click', () => {
+        Toast.warning('Warning message');
+      });
+    }
+    if (dismissAllBtn && Toast) {
+      dismissAllBtn.addEventListener('click', () => {
+        Toast.dismissAll();
+      });
+    }
+  },
+};

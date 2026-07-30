@@ -14,4 +14,18 @@ const meta: Meta = {
 
 export default meta;
 
-export const Default: StoryObj = {};
+export const Default: StoryObj = {
+  play: async ({ canvasElement }) => {
+    const module = await import('../dist/index.js');
+    const Tooltip = module.Tooltip;
+    
+    const trigger = canvasElement.querySelector('#tooltip-trigger') as HTMLButtonElement;
+    const content = canvasElement.querySelector('#tooltip-content') as HTMLElement;
+    if (trigger && content && Tooltip) {
+      new Tooltip({
+        trigger,
+        tooltip: content,
+      });
+    }
+  },
+};
