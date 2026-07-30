@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.0.0](https://github.com/chejholloway/tatani-a11y/compare/v0.2.1...v1.0.0) (2026-07-30)
+
+
+### Features
+
+* **components:** ✨ add MultiselectListbox component with tests and demo, 🔀 add drag-and-drop to ReorderableList, 📝 document MultiselectListbox in README, 🎨 add MSL + DnD demo styles, 🐛 fix missing Reorderable List demo section, 🐛 fix draggable attribute reset ([35c11ee](https://github.com/chejholloway/tatani-a11y/commit/35c11ee5a58634654b56cbb61f9d31b4821d2443))
+* **components:** ✨ add MultiselectListbox with tests, Storybook stories, and demo, 🔀 add drag-and-drop to ReorderableList, 📝 set up Docusaurus docs site, 🎨 add retro themes (Win2K/98/7) and demo styles, 🐛 fix missing ReorderableList import in demo index.html, 🔧 add CI, ESLint, Prettier, Husky, and pnpm workspace config ([f23308c](https://github.com/chejholloway/tatani-a11y/commit/f23308c17b8a5974a685480a5b3122688b32047b))
+* **components:** 🔀 add ReorderableList with tests and demo, 📝 add TreeView + ReorderableList docs to README, 🐛 fix ComboBox click selection with filtered list, 📅 update DatePicker demo to MM/DD/YYYY, 🎨 add reorderable list styles ([ff4f3ed](https://github.com/chejholloway/tatani-a11y/commit/ff4f3edfdee1331ac12cba207d566abbeb288984))
+* **components:** 🔀 add ReorderableList with tests and demo, 📝 add TreeView + ReorderableList docs to README, 🐛 fix ComboBox click selection with filtered list, 📅 update DatePicker demo to MM/DD/YYYY, 🎨 add reorderable list styles ([3764b25](https://github.com/chejholloway/tatani-a11y/commit/3764b25dbd85585b9d937b995746d14224b96748))
+* **docs:** 📝 add Storybook, Docusaurus, CI, and retro theme documentation to README, 🐛 fix drag-and-drop not working in demo by enabling dragAndDrop option, 🔥 comment out theme switcher in demo until font assets are ready, 🔀 document ReorderableList drag-and-drop usage in README, 📋 add code quality and CI pipeline sections to README, 🎨 expand development section with all project commands and tooling ([976b564](https://github.com/chejholloway/tatani-a11y/commit/976b564c55e99169f02485739f8b312c09b6ffc4))
+
+
+### Bug Fixes
+
+* **tree-view:** 🐛 fix ctrl+click test for post-expansion indices, 🌳 add demo section with single/multi-select, 🎨 add tree view styles ([30ba5c4](https://github.com/chejholloway/tatani-a11y/commit/30ba5c43094a28576a7ea58f860cc1db06575c60))
+
 ### 0.2.1 (2026-07-29)
 
 
