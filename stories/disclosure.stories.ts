@@ -15,7 +15,7 @@ export default meta;
 
 export const Default: StoryObj = {
   play: async ({ canvasElement }) => {
-    const module = await import('../dist/index.js');
+    const module = await import('../dist/index.mjs');
     const Disclosure = module.Disclosure;
     
     const trigger = canvasElement.querySelector('#disclosure-trigger') as HTMLButtonElement;

@@ -10,7 +10,7 @@ const meta: Meta = {
       <button class="btn-secondary" id="msl-select-all-btn">Select All</button>
       <button class="btn-secondary" id="msl-clear-btn">Clear</button>
     </div>
-    <div id="msl-listbox" class="msl-listbox">
+    <div id="msl-listbox" class="msl-listbox" role="listbox" aria-label="Select fruits">
       <div>🍎 Apples</div>
       <div>🍌 Bananas</div>
       <div>🍒 Cherries</div>
@@ -24,7 +24,7 @@ export default meta;
 
 export const Default: StoryObj = {
   play: async ({ canvasElement }) => {
-    const module = await import('../dist/index.js');
+    const module = await import('../dist/index.mjs');
     const MultiselectListbox = module.MultiselectListbox;
     
     const listbox = canvasElement.querySelector('#msl-listbox') as HTMLElement;

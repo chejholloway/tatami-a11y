@@ -69,7 +69,7 @@
       --color-border: #404040;
     }
   }
-  
+
   /* Reduced motion support */
   @media (prefers-reduced-motion: reduce) {
     *,
@@ -185,24 +185,24 @@
   }
   
   .btn-info {
-    background: #2196f3;
+    background: #0d47a1;
     color: white;
     
-    &:hover { background: #1976d2; }
+    &:hover { background: #1565c0; }
   }
-
+  
   .btn-success {
-    background: #4caf50;
+    background: #1b5e20;
     color: white;
     
-    &:hover { background: #388e3c; }
+    &:hover { background: #2e7d32; }
   }
 
   .btn-warning {
-    background: #ff9800;
+    background: #bf360c;
     color: white;
     
-    &:hover { background: #f57c00; }
+    &:hover { background: #e65100; }
   }
 
   .btn-danger {
@@ -478,7 +478,7 @@
     border: none;
     background: none;
     cursor: pointer;
-    color: var(--color-text-muted);
+    color: var(--color-text);
   }
   
   .tab-demo[aria-selected="true"] {
@@ -772,17 +772,20 @@
     font-size: var(--font-size-lg);
     font-weight: 600;
     transition: opacity 0.3s ease;
+    z-index: 1;
   }
-
-  /* Slide colours */
-  .carousel-slide-demo:nth-child(1) { background: color-mix(in srgb, #e8f4fd 100%, white); color: #1565c0; }
-  .carousel-slide-demo:nth-child(2) { background: color-mix(in srgb, #fce4ec 100%, white); color: #880e4f; }
-  .carousel-slide-demo:nth-child(3) { background: color-mix(in srgb, #e8f5e9 100%, white); color: #1b5e20; }
 
   .carousel-slide-demo svg {
     width: clamp(48px, 8vw, 80px);
     height: clamp(48px, 8vw, 80px);
     opacity: 0.6;
+    z-index: 0;
+  }
+
+  .carousel-slide-caption,
+  .carousel-slide-sub {
+    position: relative;
+    z-index: 2;
   }
 
   .carousel-slide-caption {
@@ -793,8 +796,14 @@
   .carousel-slide-sub {
     font-size: var(--font-size-sm);
     font-weight: 400;
-    opacity: 0.75;
+    opacity: 1;
+    color: inherit;
   }
+
+  /* Slide colours */
+  .carousel-slide-demo:nth-child(1) { background: color-mix(in srgb, #e8f4fd 100%, white); color: #0d47a1; }
+  .carousel-slide-demo:nth-child(2) { background: color-mix(in srgb, #fce4ec 100%, white); color: #880e4f; }
+  .carousel-slide-demo:nth-child(3) { background: color-mix(in srgb, #e8f5e9 100%, white); color: #1b5e20; }
 
   .carousel-controls-demo {
     display: flex;
@@ -1155,6 +1164,7 @@
     &[aria-selected="true"],
     &:hover {
       background: var(--color-hover);
+      color: black;
     }
     &[aria-disabled="true"] {
       color: var(--color-text-muted);
@@ -1224,5 +1234,17 @@
 
   .theme-btn {
     font-size: 0.8rem;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  [role="tab"][aria-selected="true"] {
+    color: #2ea84a;
+    border-bottom-color: #2ea84a;
+  }
+
+  .tab-demo[aria-selected="true"] {
+    color: #2ea84a;
+    border-bottom-color: #2ea84a;
   }
 }

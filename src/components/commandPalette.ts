@@ -201,8 +201,8 @@ export class CommandPalette {
       this.listbox.id = `${this.dialog.id}-listbox`;
     }
     this.input.setAttribute('role', 'combobox');
-    this.input.setAttribute('aria-autocomplete', 'list');
     this.input.setAttribute('aria-expanded', 'false');
+    this.input.setAttribute('aria-autocomplete', 'list');
     this.input.setAttribute('aria-controls', this.listbox.id);
     this.input.setAttribute('aria-haspopup', 'listbox');
     this.input.setAttribute('autocomplete', 'off');

@@ -21,7 +21,7 @@ export default meta;
 
 export const Default: StoryObj = {
   play: async ({ canvasElement }) => {
-    const module = await import('../dist/index.js');
+    const module = await import('../dist/index.mjs');
     const ReorderableList = module.ReorderableList;
     
     const list = canvasElement.querySelector('#reorderable-demo') as HTMLElement;

@@ -38,7 +38,7 @@
     "release": "standard-version",
     "serve": "http-server . -p 8080 -o /demo/index.html",
     "storybook": "storybook dev -p 6006",
-    "test:verbose": "node scripts/test-verbose.js",
+    "test:verbose": "node scripts/test-verbose.mjs",
     "test:watch": "vitest",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"

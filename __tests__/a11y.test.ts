@@ -161,7 +161,7 @@ describe('Accessibility (axe-core)', () => {
     it('should have no axe violations when properly configured', async () => {
       const root = document.getElementById('test-root')!;
       root.innerHTML = `
-        <input type="text" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="listbox" aria-activedescendant="option1" />
+        <input type="text" role="combobox" aria-autocomplete="list" aria-controls="listbox" aria-activedescendant="option1" />
         <ul role="listbox" id="listbox">
           <li role="option" id="option1" aria-selected="true">Option 1</li>
           <li role="option" id="option2" aria-selected="false">Option 2</li>

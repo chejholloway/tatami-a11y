@@ -16,7 +16,7 @@ export default meta;
 
 export const Default: StoryObj = {
   play: async ({ canvasElement }) => {
-    const module = await import('../dist/index.js');
+    const module = await import('../dist/index.mjs');
     const Dialog = module.Dialog;
     
     const trigger = canvasElement.querySelector('#dialog-trigger') as HTMLButtonElement;

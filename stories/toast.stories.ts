@@ -18,7 +18,7 @@ export default meta;
 
 export const Default: StoryObj = {
   play: async ({ canvasElement }) => {
-    const module = await import('../dist/index.js');
+    const module = await import('../dist/index.mjs');
     const Toast = module.Toast;
     
     const infoBtn = canvasElement.querySelector('#toast-info-btn') as HTMLButtonElement;

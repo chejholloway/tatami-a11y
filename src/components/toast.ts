@@ -132,6 +132,7 @@ export class Toast {
   private static createLiveRegion(liveType: 'polite' | 'assertive'): HTMLElement {
     const region = document.createElement('div');
     region.className = `toast-region toast-region--${liveType}`;
+    region.setAttribute('role', liveType === 'assertive' ? 'alert' : 'status');
     region.setAttribute('aria-live', liveType);
     region.setAttribute('aria-atomic', 'false');
     region.setAttribute('aria-label', 'Notifications');

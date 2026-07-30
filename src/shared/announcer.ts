@@ -30,6 +30,7 @@ type AnnounceOptions = {
  */
 const createLiveRegion = (liveType: 'polite' | 'assertive'): HTMLElement => {
   const region = document.createElement('div');
+  region.setAttribute('role', liveType === 'assertive' ? 'alert' : 'status');
   region.setAttribute('aria-live', liveType);
   region.setAttribute('aria-atomic', 'false');
   region.setAttribute('aria-label', 'Notifications');

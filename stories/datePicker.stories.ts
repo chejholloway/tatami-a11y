@@ -22,7 +22,7 @@ export default meta;
 
 export const Default: StoryObj = {
   play: async ({ canvasElement }) => {
-    const module = await import('../dist/index.js');
+    const module = await import('../dist/index.mjs');
     const DatePicker = module.DatePicker;
     
     const input = canvasElement.querySelector('#dp-input') as HTMLInputElement;

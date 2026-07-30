@@ -69,7 +69,7 @@
       --color-border: #404040;
     }
   }
-  
+
   /* Reduced motion support */
   @media (prefers-reduced-motion: reduce) {
     *,
@@ -185,24 +185,24 @@
   }
   
   .btn-info {
-    background: #2196f3;
+    background: #0d47a1;
     color: white;
     
-    &:hover { background: #1976d2; }
+    &:hover { background: #1565c0; }
   }
 
   .btn-success {
-    background: #4caf50;
+    background: #1b5e20;
     color: white;
     
-    &:hover { background: #388e3c; }
+    &:hover { background: #2e7d32; }
   }
 
   .btn-warning {
-    background: #ff9800;
+    background: #bf360c;
     color: white;
     
-    &:hover { background: #f57c00; }
+    &:hover { background: #e65100; }
   }
 
   .btn-danger {
@@ -793,7 +793,8 @@
   .carousel-slide-sub {
     font-size: var(--font-size-sm);
     font-weight: 400;
-    opacity: 0.75;
+    opacity: 1;
+    color: inherit;
   }
 
   .carousel-controls-demo {
@@ -1199,6 +1200,7 @@
     &[aria-selected="true"],
     &:hover {
       background: var(--color-hover);
+      color: black;
     }
     &[aria-disabled="true"] {
       color: var(--color-text-muted);
@@ -1268,5 +1270,17 @@
 
   .theme-btn {
     font-size: 0.8rem;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  [role="tab"][aria-selected="true"] {
+    color: #2ea84a;
+    border-bottom-color: #2ea84a;
+  }
+
+  .tab-demo[aria-selected="true"] {
+    color: #2ea84a;
+    border-bottom-color: #2ea84a;
   }
 }

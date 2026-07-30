@@ -50,7 +50,7 @@ export default meta;
 
 export const Default: StoryObj = {
   play: async ({ canvasElement }) => {
-    const module = await import('../dist/index.js');
+    const module = await import('../dist/index.mjs');
     const TreeView = module.TreeView;
     
     const tree = canvasElement.querySelector('#treeview-demo') as HTMLElement;

@@ -218,6 +218,7 @@ export class DatePicker {
     this.dialog.setAttribute('aria-modal', 'true');
 
     // Month/year heading is a live region so navigating months announces
+    this.monthYearLabel.setAttribute('role', 'status');
     this.monthYearLabel.setAttribute('aria-live', 'polite');
     this.monthYearLabel.setAttribute('aria-atomic', 'true');
 
@@ -568,6 +569,7 @@ export class DatePicker {
   }
 
   private showDialog(): void {
+    this.dialog.setAttribute('aria-hidden', 'false');
     const reduced = checkReducedMotion();
     this.dialog.style.display = 'block';
 
@@ -579,6 +581,7 @@ export class DatePicker {
   }
 
   private closeDialog(): void {
+    this.dialog.setAttribute('aria-hidden', 'true');
     const reduced = checkReducedMotion();
 
     if (!reduced) {

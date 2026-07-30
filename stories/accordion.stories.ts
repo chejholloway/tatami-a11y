@@ -28,7 +28,7 @@ export default meta;
 export const Default: StoryObj = {
   play: async ({ canvasElement }) => {
     // Load the library dynamically
-    const module = await import('../dist/index.js');
+    const module = await import('../dist/index.mjs');
     const Accordion = module.Accordion;
     
     const accordionDemo = canvasElement.querySelector('#accordion-demo') as HTMLElement;

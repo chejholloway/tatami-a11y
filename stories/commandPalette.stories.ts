@@ -6,7 +6,7 @@ const meta: Meta = {
     <p>Press <kbd>Ctrl+K</kbd> (or <kbd>Cmd+K</kbd>) to open the command palette, or click the button below.</p>
     <div class="controls" style="margin-top: 0.5rem;">
       <button class="btn-primary" id="cmd-open-btn">Open Palette <kbd
-          style="opacity:.7;font-size:.8em">Ctrl+K</kbd></button>
+          style="opacity:1;font-size:.8em;color:#ffffff;background:rgba(0,0,0,0.2);padding:2px 6px;border-radius:3px;">Ctrl+K</kbd></button>
     </div>
     <div id="cmd-overlay" class="cmd-palette-overlay" role="presentation">
       <div id="cmd-dialog" class="cmd-palette-dialog">
@@ -31,7 +31,7 @@ export default meta;
 
 export const Default: StoryObj = {
   play: async ({ canvasElement }) => {
-    const module = await import('../dist/index.js');
+    const module = await import('../dist/index.mjs');
     const CommandPalette = module.CommandPalette;
     
     const openBtn = canvasElement.querySelector('#cmd-open-btn') as HTMLButtonElement;

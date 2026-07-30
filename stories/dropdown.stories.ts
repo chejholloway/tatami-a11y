@@ -19,7 +19,7 @@ export default meta;
 
 export const Default: StoryObj = {
   play: async ({ canvasElement }) => {
-    const module = await import('../dist/index.js');
+    const module = await import('../dist/index.mjs');
     const Dropdown = module.Dropdown;
     
     const trigger = canvasElement.querySelector('#dropdown-trigger') as HTMLButtonElement;
