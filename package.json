@@ -2,14 +2,14 @@
   "name": "tatami-a11y",
   "version": "1.0.0",
   "description": "Framework-agnostic, accessibility-first UI primitives for vanilla JavaScript",
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
     }
   },
   "files": [
@@ -17,6 +17,22 @@
     "README.md",
     "shared_a11y_primitives_problem.png"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chejholloway/tatami-a11y.git"
+  },
+  "homepage": "https://tatami-a11y-docs.surge.sh",
+  "bugs": {
+    "url": "https://github.com/chejholloway/tatami-a11y/issues"
+  },
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/chejholloway"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "sideEffects": false,
   "scripts": {
     "build:surge": "node scripts/build-surge.js",
     "build": "tsup src/index.ts --format esm,cjs --dts --clean && pnpm run build:surge",
@@ -31,7 +47,7 @@
     "format": "prettier --write \"src/**/*.ts\" \"demo/**/*.html\" \"demo/**/*.css\" \"scripts/**/*.js\" \"*.md\"",
     "lint": "oxlint --fix",
     "prepublishOnly": "pnpm run test && pnpm run build",
-    "publish": "npm publish",
+    "publish": "pnpm publish",
     "release:major": "standard-version --release-as major",
     "release:minor": "standard-version --release-as minor",
     "release:patch": "standard-version --release-as patch",

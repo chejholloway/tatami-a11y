@@ -3,31 +3,35 @@
 [![CI](https://github.com/chejholloway/tatami-a11y/actions/workflows/ci.yml/badge.svg)](https://github.com/chejholloway/tatami-a11y/actions/workflows/ci.yml)
 [![npm version](https://img.shields.io/npm/v/tatami-a11y)](https://www.npmjs.com/package/tatami-a11y)
 [![license](https://img.shields.io/npm/l/tatami-a11y)](LICENSE)
+[![tested with axe-core](https://img.shields.io/badge/tested%20with-axe--core-%231a1a1a)](https://www.deque.com/axe/)
+[![WCAG AA](https://img.shields.io/badge/WCAG%202.2-AA-%231a7f37)](https://www.w3.org/TR/WCAG22/)
 
-Framework-agnostic accessibility primitives for vanilla JavaScript. The shared foundation underneath accessible components.
+Framework-agnostic, accessibility-first UI primitives and components for vanilla JavaScript.
 
-## Why This Exists
+**16 components**, **6 shared primitives**, **700+ tests**, **zero runtime dependencies** — all implementing WAI-ARIA authoring practices with verified WCAG 2.2 AA compliance.
 
-Building accessible components repeatedly surfaces the same hard problems:
+## The Problem
 
-- **Announcing something to a screen reader without stealing focus.** Getting `aria-live` regions right (polite vs. assertive, `aria-atomic`, avoiding re-announcement) is fiddly enough that most components either skip it or get it subtly wrong.
-- **Handing focus back to the right place when transient UI closes.** Not just "focus something," but skipping stale references when the original element has since been removed from the DOM, and falling through a real chain of fallbacks instead of silently failing.
-- **Trapping focus inside a container that only exists sometimes.** A different problem from the one above, and one that most homegrown modal implementations get wrong in a way that only shows up when you actually try to tab through one with a keyboard.
-- **Surviving hot module reloads without leaking listeners or duplicating DOM nodes.** Not an accessibility concern on its own, but every one of the components above needs it, and getting it wrong quietly breaks the actual accessibility guarantees during development.
+Every accessible interactive component needs the same hard, easy-to-get-wrong infrastructure:
 
-Every one of these was a real bug I hit and fixed while building kanpai, not a hypothetical. Rebuilding each of them from scratch for every new component is how accessibility bugs multiply: the tenth reimplementation of "restore focus on close" is exactly where someone forgets the stale-reference case and ships a dropdown that silently strands keyboard focus on `<body>`.
+- **Live regions** — announcing to screen readers without stealing focus
+- **Focus restoration** — returning focus when transient UI closes, even when the trigger element is gone
+- **Focus trapping** — keeping keyboard navigation inside modals and dialogs
+- **Reduced motion** — respecting system preferences without manual checks everywhere
+- **Roving tabindex** — arrow-key navigation for lists, grids, trees, and tablists
+- **HMR-safe singletons** — surviving hot module reloads without duplicating DOM nodes or leaking listeners
 
-![Shared primitives problem](https://raw.githubusercontent.com/chejholloway/tatani-a11y/main/shared_a11y_primitives_problem.png)
+Most projects rebuild these from scratch for each component. The tenth reimplementation of "restore focus on close" is exactly where someone forgets the stale-reference case and ships a dropdown that silently strands keyboard focus on `<body>`.
 
-The top panel is the state before tatami-a11y: three components, each with its own from-scratch implementation of focus handling and live-region announcing. Nothing enforces consistency between them, which is exactly how kanpai's bugs happened, and how the same class of bug would've quietly reappeared in a modal or dropdown built the same way.
+tatami-a11y extracts these shared primitives into a single, tested foundation, then builds fully accessible components on top of them. Every component in the library relies on the same battle-tested primitives, so a bug fixed in one is fixed in all.
 
-The bottom panel is the state after: one shared, tested foundation, and each component just composes it instead of reinventing it. The arrows aren't decorative, they're the actual dependency: Toast, Modal, and Dropdown don't know or care how focus restoration works internally, they just call into the same primitive that's already been through the stale-reference and blur-fallback bugs once.
+## Why "tatami"?
 
-This library pulls out the pieces that are genuinely shared, and only those. It's deliberately not a component library and not a framework. There's no `<Toast>` or `<Modal>` here, those still get built per-component, on top of this. What's shared is the underlying mechanics that every accessible interactive component needs, regardless of what it looks like or which framework (if any) renders it.
+A tatami is a traditional Japanese floor mat — a standardized, interchangeable module that serves as the foundation for an entire room. You don't notice the tatami, but everything stable is built on top of it. Same idea here: these primitives are the foundation; the components are the room you actually live in.
 
 ## Why Framework-Agnostic
 
-Radix UI and React Aria solved this problem well, for React. Headless UI covers Vue and React. If you're not in one of those ecosystems, or you're maintaining a vanilla-JS codebase, there isn't a serious, actively-maintained equivalent. This is built to be that: no virtual DOM, no framework runtime assumption, works the same whether you're calling it from a hand-rolled component, a Vue composable, or a plain script tag.
+Radix UI and React Aria solve this well, for React. Headless UI covers Vue and React. If you're not in one of those ecosystems, or you're maintaining a vanilla-JS codebase, there isn't a serious, actively-maintained equivalent. tatami-a11y is built to be that: no virtual DOM, no framework runtime, works identically whether you call it from a hand-rolled component, a Vue composable, a Svelte `use:action`, or a plain `<script>` tag.
 
 ## Quick Start
 
@@ -38,55 +42,87 @@ pnpm install tatami-a11y
 ```js
 import { announce, pushFocusStack, popFocusStack } from 'tatami-a11y';
 
-// Screen reader announcements
+// Screen reader announcements — polite by default, assertive when urgent
 announce('Changes saved');
+announce('Error: something went wrong', { urgent: true });
 
-// Focus restoration for transient UI
+// Focus restoration for transient UI (modals, dropdowns, dialogs)
 pushFocusStack(triggerElement);
-// ... component logic ...
-popFocusStack();
+// ... open your modal/dropdown ...
+popFocusStack(); // focus returns to triggerElement — or the nearest valid fallback
 ```
 
 ## Deployed Sites
 
-- **Storybook**: https://tatami-a11y-storybook.surge.sh - Interactive component examples
-- **Documentation**: https://tatami-a11y-docs.surge.sh - Full API documentation
-- **Demo**: https://tatami-a11y-demo.surge.sh - Live demo
+- **Storybook** — https://tatami-a11y-storybook.surge.sh (interactive component examples with a11y addon)
+- **Documentation** — https://tatami-a11y-docs.surge.sh (full API docs generated by TypeDoc)
+- **Demo** — https://tatami-a11y-demo.surge.sh (live demo with all components)
 
 ## What's Included
 
-**Shared Utilities:**
-- `announce()` - Screen reader announcements with polite/assertive routing
-- `checkReducedMotion()` / `onReducedMotionChange()` - Reduced motion detection
-- `pushFocusStack()` / `popFocusStack()` - Focus restoration for transient UI
-- `activateFocusTrap()` / `deactivateFocusTrap()` - Focus trapping for modals
-- `createSingleton()` / `registerCleanup()` - HMR-safe singleton factory
+### Shared Primitives
 
-**Components:**
-- Dropdown, Tabs, Modal, Accordion, Toast, MenuButton, Combobox, Tooltip
-- Carousel, Dialog, Disclosure, DatePicker, CommandPalette, TreeView
-- ReorderableList, MultiselectListbox
+| Primitive | Description |
+|-----------|-------------|
+| `announce()` | Screen reader announcements via ARIA live regions. Supports polite/assertive routing, deduplication, and proper `aria-atomic` semantics. |
+| `checkReducedMotion()` / `onReducedMotionChange()` | System-level reduced motion detection with change listeners. Every component respects this automatically. |
+| `pushFocusStack()` / `popFocusStack()` | Focus restoration with stale-reference fallback chain — if the trigger element is gone, it walks up to the nearest focusable ancestor. |
+| `activateFocusTrap()` / `deactivateFocusTrap()` | Modal focus trapping with first/last-element boundary detection and proper Tab/Shift+Tab cycling. |
+| `createRovingTabindex()` | Arrow-key navigation for lists, grids, trees, and tablists. Supports orientation, column-count, wrapping, and custom key handlers. |
+| `createSingleton()` / `registerCleanup()` | HMR-safe singleton factory — components survive hot reloads without leaking listeners or duplicating DOM nodes. |
 
-See the [Storybook](https://tatami-a11y-storybook.surge.sh) for interactive examples and the [API documentation](https://tatami-a11y-docs.surge.sh) for detailed usage.
+### Components
+
+| Component | ARIA Pattern | Key features |
+|-----------|-------------|--------------|
+| Accordion | `aria-expanded` / `aria-controls` | Arrow-key navigation, Home/End, live-region announcements |
+| Carousel | `region` / `group` / `aria-roledescription` | Auto-play, reduced-motion respect, slide announcements |
+| Combobox | combobox + listbox | Type-to-filter, Arrow-key navigation, active-descendant management |
+| CommandPalette | combobox + dialog-modal | Ctrl+K global hotkey, grouping, focus trap, live-region count |
+| DatePicker | dialog + grid | Full keyboard navigation, focus trap, month navigation |
+| Dialog | non-modal dialog | Focus management *without* trapping — users can tab out |
+| Disclosure | `aria-expanded` / `aria-controls` | Simple show/hide with proper semantics |
+| Dropdown | menu + menuitem | Focus trap, Arrow-key navigation, Escape-to-close |
+| MenuButton | `aria-haspopup="menu"` | Menu-button pattern, focus management |
+| Modal | dialog-modal | Focus trap, backdrop, Escape-to-close, focus restoration |
+| MultiselectListbox | listbox (multi-select) | Shift+Click range, Ctrl+Click toggle, typeahead |
+| ReorderableList | list + `aria-grabbed` | Ctrl+Arrow reorder, drag-and-drop, live announcements |
+| Tabs | tablist + tab + tabpanel | Arrow-key navigation, Home/End, automatic tabpanel visibility |
+| Toast | live region + `role="alert"` | Auto-dismiss, Alt+T jump shortcut, stack management |
+| Tooltip | `aria-describedby` | Hover/focus trigger, Escape dismiss, reduced-motion respect |
+| TreeView | tree + treeitem | Expand/collapse, Arrow-key navigation, typeahead, single/multi-select |
+
+## Compliance
+
+- **716 tests** across **23 test files**, all passing
+- **WCAG 2.2 AA** — verified with axe-core (zero violations, zero incompletes)
+- **WAI-ARIA** — every component follows the relevant APG authoring practice
+- **Reduced motion** — every animation respects `prefers-reduced-motion`
+- **Keyboard navigation** — every interactive element is fully operable by keyboard
+- **Screen reader** — every state change is announced via live regions
 
 ## Development
 
 ```bash
 pnpm install
-pnpm run build        # Build to dist/ (ESM + CJS + types)
-pnpm run dev          # Watch mode
-pnpm run test         # Run tests
-pnpm run storybook    # Start Storybook on port 6006
-pnpm run doc          # Build documentation
+pnpm run build          # Build to dist/ (ESM + CJS + type declarations)
+pnpm run dev            # Watch mode
+pnpm run test           # Run 700+ tests
+pnpm run storybook      # Start Storybook on port 6006
+pnpm run doc            # Build API documentation
 ```
 
 ## Deployment
 
 ```bash
-pnpm run deploy:storybook  # Build and deploy Storybook
-pnpm run deploy:docs       # Build and deploy documentation
+pnpm run deploy:storybook   # Build and deploy Storybook to Surge
+pnpm run deploy:docs        # Build and deploy API docs to Surge
 ```
+
+## Browser Support
+
+Targets modern browsers (ES2020): Chrome 80+, Firefox 80+, Safari 14.1+, Edge 80+. Requires DOM APIs — not designed for server-side rendering.
 
 ## License
 
-MIT
+MIT &mdash; see [LICENSE](LICENSE).
