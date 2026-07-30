@@ -56,6 +56,10 @@
     "test:verbose": "node scripts/test-verbose.mjs",
     "test:watch": "vitest",
     "test": "vitest run",
+    "test:storybook": "node scripts/test-storybook.mjs",
+    "test:storybook-verbose": "node scripts/test-storybook.mjs --verbose",
+    "test-storybook:run": "test-storybook",
+    "test-storybook:run-verbose": "test-storybook --verbose",
     "typecheck": "tsc --noEmit"
   },
   "keywords": [
@@ -75,17 +79,20 @@
     "@docusaurus/core": "^3.0.0",
     "@docusaurus/preset-classic": "^3.0.0",
     "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.62.0",
     "@storybook/addon-a11y": "^8.6.18",
     "@storybook/addon-essentials": "^8.6.18",
     "@storybook/addon-interactions": "^8.6.18",
     "@storybook/addon-viewport": "^8.6.18",
     "@storybook/html": "^8.6.18",
     "@storybook/html-vite": "^8.6.18",
+    "@storybook/test-runner": "^0.24.4",
     "@types/jsdom": "^21.1.7",
     "@typescript-eslint/eslint-plugin": "^8.65.0",
     "@typescript-eslint/parser": "^8.65.0",
     "@vitest/eslint-plugin": "^1.6.24",
     "axe-core": "^4.12.1",
+    "concurrently": "^10.0.4",
     "eslint": "^10.8.0",
     "eslint-config-prettier": "^9.1.2",
     "eslint-formatter-compact": "^9.0.1",
@@ -107,7 +114,8 @@
     "typedoc-plugin-markdown": "^3.17.1",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.65.0",
-    "vitest": "^1.6.1"
+    "vitest": "^1.6.1",
+    "wait-on": "^9.1.0"
   },
   "lint-staged": {
     "src/**/*.ts": [
