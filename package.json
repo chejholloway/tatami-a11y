@@ -47,7 +47,6 @@
     "format": "prettier --write \"src/**/*.ts\" \"demo/**/*.html\" \"demo/**/*.css\" \"scripts/**/*.js\" \"*.md\"",
     "lint": "oxlint --fix",
     "prepublishOnly": "pnpm run test && pnpm run build",
-    "publish": "pnpm publish",
     "release:major": "standard-version --release-as major",
     "release:minor": "standard-version --release-as minor",
     "release:patch": "standard-version --release-as patch",
