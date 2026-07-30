@@ -393,7 +393,7 @@ export class TreeView {
   /**
    * Remove all event listeners and clean up the tree view.
    */
-  destroy(): void {
+  public destroy(): void {
     if (!this.roving) return;
     this.tree.removeEventListener('keydown', this.treeKeydownHandler);
     this.tree.removeEventListener('click', this.treeClickHandler);

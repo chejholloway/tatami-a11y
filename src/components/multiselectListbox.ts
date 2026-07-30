@@ -324,7 +324,7 @@ export class MultiselectListbox {
   /**
    * Remove all event listeners and clean up the listbox.
    */
-  destroy(): void {
+  public destroy(): void {
     if (!this.roving) return;
     this.listbox.removeEventListener('click', this.clickHandler);
     this.listbox.removeEventListener('keydown', this.keydownHandler);

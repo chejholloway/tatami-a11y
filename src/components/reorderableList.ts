@@ -359,7 +359,7 @@ export class ReorderableList {
   /**
    * Remove all event listeners and clean up the reorderable list.
    */
-  destroy(): void {
+  public destroy(): void {
     if (!this.roving) return;
     if (this.dragAndDrop) {
       this.list.removeEventListener('dragstart', this.dragStartHandler);

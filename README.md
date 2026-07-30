@@ -727,7 +727,7 @@ start demo/index.html # Windows
 xdg-open demo/index.html # Linux
 ```
 
-The demo includes interactive examples of all shared utilities and components, plus a **theme switcher** that lets you toggle between the Modern theme and retro OS-inspired styles (Windows 98, Windows 2000, Windows 7). The retro themes include authentic pixel fonts (`MS Sans Serif`) and period-accurate color palettes.
+The demo includes interactive examples of all shared utilities and components.
 
 ## Storybook
 
@@ -798,6 +798,7 @@ pnpm run doc          # Build Docusaurus docs
 | [lint-staged](https://github.com/lint-staged/lint-staged) | Run linters only on staged files |
 | [TypeScript](https://www.typescriptlang.org/) | Type checking with `tsc --noEmit` |
 | [Vitest](https://vitest.dev/) | Unit tests with jsdom |
+| [axe-core](https://www.deque.com/axe/) | Automated accessibility testing |
 | [tsup](https://tsup.egoist.dev/) | ESM + CJS + DTS bundler |
 
 ### CI Pipeline

@@ -76,6 +76,7 @@
     "http-server": "^14.1.1",
     "husky": "^9.0.0",
     "jsdom": "^30.0.0",
+    "@types/jsdom": "^21.1.7",
     "lint-staged": "^15.0.0",
     "oxlint": "^1.76.0",
     "prettier": "^3.0.0",
