@@ -3,3 +3,22 @@ allowBuilds:
   core-js: false
   esbuild: false
   unrs-resolver: false
+
+overrides:
+  uuid: ^11.0.0
+
+allowedDeprecatedVersions:
+  '@testing-library/jest-dom': '*'
+  conventional-changelog-atom: '*'
+  conventional-changelog-codemirror: '*'
+  conventional-changelog-core: '*'
+  conventional-changelog-ember: '*'
+  conventional-changelog-eslint: '*'
+  conventional-changelog-express: '*'
+  conventional-changelog-jquery: '*'
+  conventional-changelog-jshint: '*'
+  git-raw-commits: '*'
+  git-semver-tags: '*'
+  q: '*'
+  stringify-package: '*'
+  whatwg-encoding: '*'
