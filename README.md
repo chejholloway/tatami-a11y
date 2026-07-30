@@ -600,7 +600,7 @@ The component recursively walks the DOM to apply `role="treeitem"`, `aria-level`
 
 ### `ReorderableList`
 
-A keyboard-driven reorderable list where items are rearranged with `Ctrl+ArrowUp/Down`, `Ctrl+Home/End`. Announces each move via the shared announcer so screen reader users always know where the item landed.
+An accessible reorderable list that supports **keyboard reordering** (`Ctrl+ArrowUp/Down`, `Ctrl+Home/End`) and optional **drag-and-drop** with a visual drop indicator. Announces each move via the shared announcer so screen reader users always know where the item landed.
 
 ```js
 import { ReorderableList } from 'tatami-a11y';
@@ -608,6 +608,7 @@ import { ReorderableList } from 'tatami-a11y';
 const list = new ReorderableList({
   list: document.getElementById('my-list'),
   orientation: 'vertical',                               // or 'horizontal'
+  dragAndDrop: true,                                     // enable mouse drag-and-drop
   announce: (msg) => console.log(msg),                   // defaults to shared announce()
   onReorder: (items, movedItem, newIndex) => {
     console.log('Reordered:', movedItem.textContent, 'to index', newIndex);
@@ -628,7 +629,7 @@ list.destroy();
 </ul>
 ```
 
-The component sets `role="list"` on the container, `role="listitem"` on each child, and keeps `aria-posinset`/`aria-setsize` in sync after every reorder. Reordering swaps DOM nodes directly via `insertBefore`.
+The component sets `role="list"` on the container, `role="listitem"` on each child, and keeps `aria-posinset`/`aria-setsize` in sync after every reorder. When `dragAndDrop: true`, items are made draggable and an absolute-positioned drop indicator shows the insertion point during drag operations. Screen reader announcements provide live feedback for both keyboard and drag reordering.
 
 **Keyboard:**
 
@@ -641,7 +642,7 @@ The component sets `role="list"` on the container, `role="listitem"` on each chi
 | `Ctrl+Home` | Move focused item to start |
 | `Ctrl+End` | Move focused item to end |
 
-Boundary keys are no-ops at the limits (first item can't move up, last item can't move down).
+Boundary keys are no-ops at the limits (first item can't move up, last item can't move down). Drag-and-drop works with any pointing device — the drop indicator shows exactly where the item will land.
 
 ---
 
@@ -713,16 +714,35 @@ Try the live demo at [tatami-a11y-demo.surge.sh](https://tatami-a11y-demo.surge.
 Or run it locally:
 
 ```bash
-# Option 1: Open directly
+# Option 1: Use a simple dev server
+pnpm run serve
+
+# Option 2: Open directly
 open demo/index.html  # macOS
 start demo/index.html # Windows
 xdg-open demo/index.html # Linux
-
-# Option 2: Use a simple dev server
-pnpm run serve
 ```
 
-The demo includes interactive examples of all shared utilities and components.
+The demo includes interactive examples of all shared utilities and components, plus a **theme switcher** that lets you toggle between the Modern theme and retro OS-inspired styles (Windows 98, Windows 2000, Windows 7). The retro themes include authentic pixel fonts (`MS Sans Serif`) and period-accurate color palettes.
+
+## Storybook
+
+Every component has a corresponding Storybook story for interactive development and visual regression testing:
+
+```bash
+pnpm run storybook    # Start Storybook on port 6006
+pnpm run build-storybook  # Build static Storybook site
+```
+
+Stories are in [`stories/`](./stories/) and cover all components and shared utilities (announcer, focus stack, focus trap, roving tabindex).
+
+## Documentation Site
+
+Full API documentation is built with [Docusaurus](https://docusaurus.io/) and [TypeDoc](https://typedoc.org/):
+
+```bash
+pnpm run doc  # Build documentation site
+```
 
 ## Publishing
 
@@ -750,12 +770,40 @@ The `prepublishOnly` script runs tests and build automatically before publishing
 
 ```bash
 pnpm install
-pnpm run build      # Build to dist/
-pnpm run dev        # Watch mode
-pnpm run test       # Run tests
-pnpm run test:watch # Watch tests
-pnpm run typecheck  # TypeScript type checking
+pnpm run build        # Build to dist/ (ESM + CJS + types)
+pnpm run dev          # Watch mode (re-build on changes)
+pnpm run serve        # Serve demo locally on port 8080
+pnpm run test         # Run tests (Vitest)
+pnpm run test:watch   # Watch tests
+pnpm run test:verbose # Run tests with verbose output
+pnpm run typecheck    # TypeScript type checking (tsc --noEmit)
+pnpm run lint         # Lint with oxlint
+pnpm run format       # Format with Prettier
+pnpm run storybook    # Storybook dev server
+pnpm run build-storybook  # Build Storybook
+pnpm run doc          # Build Docusaurus docs
 ```
+
+### Code Quality
+
+| Tool | Purpose |
+|---|---|
+| [oxlint](https://oxc.rs/) | Fast Rust-based linter (configured in `.oxlintrc.json`) |
+| [Prettier](https://prettier.io/) | Code formatter (`.prettierrc`) |
+| [Husky](https://typicode.github.io/husky/) | Git hooks (`.husky/pre-commit`) |
+| [lint-staged](https://github.com/lint-staged/lint-staged) | Run linters only on staged files |
+| [TypeScript](https://www.typescriptlang.org/) | Type checking with `tsc --noEmit` |
+| [Vitest](https://vitest.dev/) | Unit tests with jsdom |
+| [tsup](https://tsup.egoist.dev/) | ESM + CJS + DTS bundler |
+
+### CI Pipeline
+
+GitHub Actions (`.github/workflows/ci.yml`) runs on every push and PR to `main`:
+
+1. `pnpm install --frozen-lockfile`
+2. `pnpm run lint` (oxlint)
+3. `pnpm run typecheck` (TypeScript)
+4. `pnpm run test` (Vitest)
 
 ## License
 

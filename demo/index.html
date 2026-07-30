@@ -14,6 +14,7 @@
   <p class="subtitle">Framework-agnostic accessibility primitives for vanilla JavaScript</p>
 
   <!-- ── Theme Switcher ────────────────────────────────────────────── -->
+  <!-- Temporarily disabled — needs font assets and polish
   <div class="theme-switcher">
     <span>Theme:</span>
     <button class="btn-primary theme-btn" data-theme="style-modern.css">Modern</button>
@@ -21,6 +22,7 @@
     <button class="btn-secondary theme-btn" data-theme="../styles/retro/7.css">Windows 7</button>
     <button class="btn-secondary theme-btn" data-theme="../styles/retro/win2k.css">Windows 2000</button>
   </div>
+  -->
 
   <!-- ── Shared Primitives ─────────────────────────────────────────── -->
 
@@ -710,6 +712,7 @@
     const reorderList = document.getElementById('reorderable-demo');
     let reorderInstance = new ReorderableList({
       list: reorderList,
+      dragAndDrop: true,
       announce: (msg) => { reorderOutput.textContent = msg; },
     });
     document.getElementById('reorder-reset-btn').addEventListener('click', () => {
@@ -723,6 +726,7 @@
       `;
       reorderInstance = new ReorderableList({
         list: reorderList,
+        dragAndDrop: true,
         announce: (msg) => { reorderOutput.textContent = msg; },
       });
       reorderOutput.textContent = 'Order reset';
@@ -777,18 +781,18 @@
     document.getElementById('cmd-open-btn').addEventListener('click', () => palette.open());
 
     // ── Theme Switcher ────────────────────────────────────────────────────
-    const themeStylesheet = document.getElementById('theme-stylesheet');
-    document.querySelectorAll('.theme-btn').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        themeStylesheet.href = btn.getAttribute('data-theme');
-        document.querySelectorAll('.theme-btn').forEach((b) => {
-          b.classList.remove('btn-primary');
-          b.classList.add('btn-secondary');
-        });
-        btn.classList.remove('btn-secondary');
-        btn.classList.add('btn-primary');
-      });
-    });
+    // const themeStylesheet = document.getElementById('theme-stylesheet');
+    // document.querySelectorAll('.theme-btn').forEach((btn) => {
+    //   btn.addEventListener('click', () => {
+    //     themeStylesheet.href = btn.getAttribute('data-theme');
+    //     document.querySelectorAll('.theme-btn').forEach((b) => {
+    //       b.classList.remove('btn-primary');
+    //       b.classList.add('btn-secondary');
+    //     });
+    //     btn.classList.remove('btn-secondary');
+    //     btn.classList.add('btn-primary');
+    //   });
+    // });
   </script>
 </body>
 
