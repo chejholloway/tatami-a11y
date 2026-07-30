@@ -18,11 +18,11 @@ if (target === 'storybook') {
   console.log('✓ Storybook built successfully');
   console.log('Deploy to: surge storybook-static tatami-a11y-storybook.surge.sh');
 } else if (target === 'docs') {
-  // Build documentation
-  console.log('Building documentation...');
-  execSync('pnpm run doc', { cwd: rootDir, stdio: 'inherit' });
-  console.log('✓ Documentation built successfully');
-  console.log('Deploy to: surge build tatami-a11y-docs.surge.sh');
+  // Build API documentation (TypeDoc only, not Docusaurus)
+  console.log('Building API documentation...');
+  execSync('pnpm run doc:api', { cwd: rootDir, stdio: 'inherit' });
+  console.log('✓ API documentation built successfully');
+  console.log('Deploy to: surge docs/api tatami-a11y-docs.surge.sh');
 } else {
   // Build demo (original behavior)
   const surgeDir = path.join(rootDir, 'surge');
