@@ -5,10 +5,11 @@
 [![license](https://img.shields.io/npm/l/tatami-a11y)](LICENSE)
 [![tested with axe-core](https://img.shields.io/badge/tested%20with-axe--core-%231a1a1a)](https://www.deque.com/axe/)
 [![WCAG AA](https://img.shields.io/badge/WCAG%202.2-AA-%231a7f37)](https://www.w3.org/TR/WCAG22/)
+[![vitest](https://img.shields.io/badge/test%20runner-vitest-6B9B3F)](https://vitest.dev/)
 
 Framework-agnostic, accessibility-first UI primitives and components for vanilla JavaScript.
 
-**16 components**, **6 shared primitives**, **700+ tests**, **zero runtime dependencies** — all implementing WAI-ARIA authoring practices with verified WCAG 2.2 AA compliance.
+**16 components**, **6 shared primitives**, **700+ unit tests**, **16 browser-level Storybook integration tests with a11y checks**, **zero runtime dependencies** — all implementing WAI-ARIA authoring practices with verified WCAG 2.2 AA compliance.
 
 ## The Problem
 
@@ -94,7 +95,9 @@ popFocusStack(); // focus returns to triggerElement — or the nearest valid fal
 
 ## Compliance
 
-- **716 tests** across **23 test files**, all passing
+- **716 unit tests** across **23 test files** (jsdom via vitest), all passing
+- **16 Storybook integration tests** — each component rendered in a real Playwright browser and verified for interactive behavior
+- **Built-in a11y checks** — every Storybook story is automatically audited with axe-core via `@storybook/addon-a11y`, surfaced inline in the test UI and blocked in CI
 - **WCAG 2.2 AA** — verified with axe-core (zero violations, zero incompletes)
 - **WAI-ARIA** — every component follows the relevant APG authoring practice
 - **Reduced motion** — every animation respects `prefers-reduced-motion`
@@ -107,7 +110,8 @@ popFocusStack(); // focus returns to triggerElement — or the nearest valid fal
 pnpm install
 pnpm run build          # Build to dist/ (ESM + CJS + type declarations)
 pnpm run dev            # Watch mode
-pnpm run test           # Run 700+ tests
+pnpm run test           # Run 700+ unit tests (vitest, jsdom)
+pnpm run test:storybook # Run 16 browser-level Storybook integration tests (vitest --project=storybook, Playwright)
 pnpm run storybook      # Start Storybook on port 6006
 pnpm run doc            # Build API documentation
 ```
