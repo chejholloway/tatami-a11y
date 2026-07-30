@@ -71,6 +71,9 @@ importers:
       lint-staged:
         specifier: ^15.0.0
         version: 15.5.2(supports-color@8.1.1)
+      oxlint:
+        specifier: ^1.76.0
+        version: 1.76.0
       prettier:
         specifier: ^3.0.0
         version: 3.9.6
@@ -84,7 +87,7 @@ importers:
         specifier: ^0.26.0
         version: 0.26.11(typescript@5.9.3)
       typedoc-plugin-markdown:
-        specifier: ^4.0.0
+        specifier: ^4.12.0
         version: 4.12.0(typedoc@0.26.11(typescript@5.9.3))
       typescript:
         specifier: ^5.0.0
