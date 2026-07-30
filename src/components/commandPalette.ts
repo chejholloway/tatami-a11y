@@ -34,48 +34,97 @@ import { checkReducedMotion } from '../shared/reducedMotion.js';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
+/**
+ * A single command item in the {@link CommandPalette}.
+ */
 export interface CommandItem {
+  /**
+   * Unique identifier for this command.
+   */
   id: string;
+  /**
+   * Primary display text for the command.
+   */
   label: string;
-  /** Optional secondary text shown below the label */
+  /**
+   * Optional secondary text shown below the label.
+   */
   description?: string;
-  /** Optional group name — items with the same group are visually + semantically grouped */
+  /**
+   * Optional group name — items with the same group are visually and semantically grouped.
+   */
   group?: string;
-  /** Optional keyboard shortcut hint (display only) */
+  /**
+   * Optional keyboard shortcut hint (display only, not functional).
+   */
   shortcut?: string;
-  /** The action to run when this item is selected */
+  /**
+   * The action to run when this command is selected.
+   */
   action: () => void;
 }
 
+/**
+ * Options for configuring the {@link CommandPalette} component.
+ */
 export interface CommandPaletteOptions {
-  /** The full-screen overlay (or modal backdrop container) */
+  /** The full-screen overlay (or modal backdrop container). */
   overlay: HTMLElement;
-  /** The inner dialog box */
+  /** The inner dialog box that contains the input and results. */
   dialog: HTMLElement;
-  /** The search input */
+  /** The search input element. */
   input: HTMLInputElement;
-  /** The listbox that receives rendered results */
+  /** The listbox element that receives rendered command items. */
   listbox: HTMLElement;
-  /** Element where "N results" live region text renders */
+  /** Element where "N results" live region text renders. */
   statusRegion: HTMLElement;
-  /** Optional backdrop element — clicking it closes the palette */
+  /** Optional backdrop element — clicking it closes the palette. */
   backdrop?: HTMLElement;
-  /** The initial full list of commands */
+  /** The initial full list of commands. */
   commands?: CommandItem[];
-  /** Custom filter — defaults to case-insensitive label/description match */
+  /**
+   * Custom filter function.
+   *
+   * @param item - The command item to evaluate
+   * @param query - The current search query
+   * @returns Whether the command matches the query
+   * @default Case-insensitive match on label and description
+   */
   filter?: (item: CommandItem, query: string) => boolean;
-  /** Called when a command is selected */
+  /** Called when a command is selected. */
   onSelect?: (item: CommandItem) => void;
-  /** Called when the palette opens */
+  /** Called when the palette opens. */
   onOpen?: () => void;
-  /** Called when the palette closes */
+  /** Called when the palette closes. */
   onClose?: () => void;
-  /** Keyboard shortcut that opens the palette (default: Meta+K / Ctrl+K) */
+  /**
+   * Keyboard shortcut that opens the palette.
+   * The meta/ctrl key is always required. Defaults to `'k'` (Ctrl+K / Cmd+K).
+   */
   hotkey?: string;
 }
 
 // ─── CommandPalette class ─────────────────────────────────────────────────────
 
+/**
+ * An accessible command palette (Ctrl+K) overlay component.
+ *
+ * Implements the WAI-ARIA combobox pattern for the search input and the
+ * dialog-modal pattern for the overlay. Features focus trapping, result
+ * grouping, keyboard navigation (Arrow keys, Enter, Escape), and live-region
+ * announcements for filtered result counts and selections.
+ *
+ * @example
+ * ```typescript
+ * const palette = new CommandPalette({
+ *   overlay: document.getElementById('cmd-overlay'),
+ *   dialog: document.getElementById('cmd-dialog'),
+ *   input: document.getElementById('cmd-input'),
+ *   listbox: document.getElementById('cmd-listbox'),
+ *   statusRegion: document.getElementById('cmd-status'),
+ * });
+ * ```
+ */
 export class CommandPalette {
   private overlay: HTMLElement;
   private dialog: HTMLElement;
@@ -107,6 +156,9 @@ export class CommandPalette {
   };
   private globalKeydownHandler  = (e: KeyboardEvent) => this.handleGlobalKeyDown(e);
 
+  /**
+   * @param options - Configuration options for the command palette
+   */
   constructor(options: CommandPaletteOptions) {
     this.overlay      = options.overlay;
     this.dialog       = options.dialog;
@@ -381,7 +433,7 @@ export class CommandPalette {
     const isMeta = e.metaKey || e.ctrlKey;
     if (isMeta && e.key.toLowerCase() === this.hotkey.toLowerCase()) {
       e.preventDefault();
-      this.isOpen ? this.close() : this.open();
+      if (this.isOpen) { this.close(); } else { this.open(); }
     }
   }
 
@@ -405,6 +457,12 @@ export class CommandPalette {
 
   // ─── Open / close ───────────────────────────────────────────────────────────
 
+  /**
+   * Open the command palette.
+   *
+   * Shows the overlay, activates the focus trap, stores the current focus target,
+   * and focuses the search input. Announces the available command count.
+   */
   public open(): void {
     if (this.isOpen) return;
     this.isOpen = true;
@@ -436,6 +494,12 @@ export class CommandPalette {
     this.onOpen?.();
   }
 
+  /**
+   * Close the command palette.
+   *
+   * Hides the overlay, deactivates the focus trap, and restores focus to
+   * the element that had it before opening.
+   */
   public close(): void {
     if (!this.isOpen) return;
     this.isOpen = false;
@@ -482,7 +546,13 @@ export class CommandPalette {
 
   // ─── Public API ─────────────────────────────────────────────────────────────
 
-  /** Replace the full command list at runtime (e.g. after async load) */
+  /**
+   * Replace the full command list at runtime (e.g. after an async fetch).
+   *
+   * If the palette is currently open, the results are re-rendered immediately.
+   *
+   * @param commands - The new command list
+   */
   public setCommands(commands: CommandItem[]): void {
     this.commands = commands;
     if (this.isOpen) {
@@ -491,7 +561,11 @@ export class CommandPalette {
     }
   }
 
-  /** Add a single command without rebuilding the whole list */
+  /**
+   * Add a single command without rebuilding the whole list.
+   *
+   * @param command - The command to add
+   */
   public addCommand(command: CommandItem): void {
     this.commands = [...this.commands, command];
     if (this.isOpen) {
@@ -500,7 +574,11 @@ export class CommandPalette {
     }
   }
 
-  /** Remove a command by id */
+  /**
+   * Remove a command by its id.
+   *
+   * @param id - The id of the command to remove
+   */
   public removeCommand(id: string): void {
     this.commands = this.commands.filter(c => c.id !== id);
     if (this.isOpen) {
@@ -509,6 +587,11 @@ export class CommandPalette {
     }
   }
 
+  /**
+   * Remove all event listeners and clean up the command palette.
+   *
+   * Closes the palette if open before cleaning up.
+   */
   public destroy(): void {
     this.input.removeEventListener('input', this.inputInputHandler);
     this.input.removeEventListener('keydown', this.inputKeydownHandler);

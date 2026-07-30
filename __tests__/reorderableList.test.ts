@@ -13,8 +13,8 @@ function buildFixture(): { list: HTMLElement } {
 }
 
 function dragEvent(type: string, opts: { clientX?: number; clientY?: number } = {}): Event {
-  const e = new Event(type, { bubbles: true, cancelable: true }) as any;
-  e.dataTransfer = { effectAllowed: '', setData: () => {}, getData: () => '' };
+  const e = new Event(type, { bubbles: true, cancelable: true }) as Event & Record<string, unknown>;
+  e.dataTransfer = { effectAllowed: '', setData: () => { }, getData: () => '' };
   if (opts.clientX !== undefined) e.clientX = opts.clientX;
   if (opts.clientY !== undefined) e.clientY = opts.clientY;
   return e;
@@ -314,7 +314,7 @@ describe('ReorderableList', () => {
 
       dragged.dispatchEvent(dragEvent('dragstart'));
 
-      const rect = { top: 100, bottom: 140, left: 0, right: 200, width: 200, height: 40, x: 0, y: 100, toJSON: () => {} };
+      const rect = { top: 100, bottom: 140, left: 0, right: 200, width: 200, height: 40, x: 0, y: 100, toJSON: () => { } };
       vi.spyOn(target, 'getBoundingClientRect').mockReturnValue(rect);
 
       target.dispatchEvent(dragEvent('dragover', { clientY: 105 }));
@@ -333,7 +333,7 @@ describe('ReorderableList', () => {
 
       dragged.dispatchEvent(dragEvent('dragstart'));
 
-      const rect = { top: 100, bottom: 140, left: 0, right: 200, width: 200, height: 40, x: 0, y: 100, toJSON: () => {} };
+      const rect = { top: 100, bottom: 140, left: 0, right: 200, width: 200, height: 40, x: 0, y: 100, toJSON: () => { } };
       vi.spyOn(target, 'getBoundingClientRect').mockReturnValue(rect);
 
       target.dispatchEvent(dragEvent('dragover', { clientY: 130 }));
@@ -374,13 +374,13 @@ describe('ReorderableList', () => {
 
       item.dispatchEvent(dragEvent('dragstart'));
 
-      const rect = { top: 100, bottom: 140, left: 0, right: 200, width: 200, height: 40, x: 0, y: 100, toJSON: () => {} };
+      const rect = { top: 100, bottom: 140, left: 0, right: 200, width: 200, height: 40, x: 0, y: 100, toJSON: () => { } };
       vi.spyOn(items[2], 'getBoundingClientRect').mockReturnValue(rect);
 
       items[2].dispatchEvent(dragEvent('drop', { clientY: 105 }));
 
       expect(onReorder).toHaveBeenCalledTimes(1);
-      const [resultItems, movedItem, newIndex] = onReorder.mock.calls[0];
+      const [, movedItem, newIndex] = onReorder.mock.calls[0];
       expect(movedItem).toBe(item);
       expect(newIndex).toBe(2);
     });

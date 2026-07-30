@@ -68,10 +68,17 @@ const handleTabKey = (event: KeyboardEvent, container: HTMLElement): void => {
   }
 };
 
+/**
+ * Internal state for the focus trap.
+ */
 type FocusTrapState = {
+  /** The container element currently trapping focus, or null if inactive. */
   container: HTMLElement | null;
+  /** The element that had focus before the trap was activated. */
   previousActiveElement: HTMLElement | null;
+  /** Whether the focus trap is currently active. */
   isActive: boolean;
+  /** The bound keydown event handler, or null if inactive. */
   keydownHandler: ((event: KeyboardEvent) => void) | null;
 };
 

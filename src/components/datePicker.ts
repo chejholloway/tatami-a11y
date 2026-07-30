@@ -38,34 +38,50 @@ import type { RovingTabindexController } from '../shared/rovingTabindex.js';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
+/**
+ * Options for configuring the {@link DatePicker} component.
+ */
 export interface DatePickerOptions {
-  /** The text input that shows the selected date */
+  /** The text input that shows the selected date. */
   input: HTMLInputElement;
-  /** The calendar dialog container */
+  /** The calendar dialog container. */
   dialog: HTMLElement;
-  /** Button that opens/closes the calendar */
+  /** Button that opens and closes the calendar. */
   toggleButton: HTMLElement;
-  /** The element where the month/year heading renders — updated dynamically */
+  /** The element where the month/year heading renders — updated dynamically. */
   monthYearLabel: HTMLElement;
-  /** Button to go to the previous month */
+  /** Button to go to the previous month. */
   prevMonthButton: HTMLElement;
-  /** Button to go to the next month */
+  /** Button to go to the next month. */
   nextMonthButton: HTMLElement;
-  /** The grid element — tbody or div that receives the day cells */
+  /** The grid element that receives the day cells. */
   calendarGrid: HTMLElement;
-  /** Date format for the input value. Defaults to 'YYYY-MM-DD' */
+  /**
+   * Date format for the input value.
+   * @default 'YYYY-MM-DD'
+   */
   dateFormat?: 'YYYY-MM-DD' | 'MM/DD/YYYY' | 'DD/MM/YYYY';
-  /** Earliest selectable date */
+  /** Earliest selectable date. */
   minDate?: Date;
-  /** Latest selectable date */
+  /** Latest selectable date. */
   maxDate?: Date;
-  /** Called when the calendar dialog opens */
+  /** Called when the calendar dialog opens. */
   onOpen?: () => void;
-  /** Called when the calendar dialog closes */
+  /** Called when the calendar dialog closes. */
   onClose?: () => void;
-  /** Called when a date is committed (Enter or click) */
+  /**
+   * Called when a date is committed (Enter key or click).
+   *
+   * @param date - The selected Date object
+   * @param formatted - The formatted date string
+   */
   onSelect?: (date: Date, formatted: string) => void;
-  /** Called when the visible month changes */
+  /**
+   * Called when the visible month changes.
+   *
+   * @param year - The new view year
+   * @param month - The new view month (0-based)
+   */
   onMonthChange?: (year: number, month: number) => void;
 }
 
@@ -101,6 +117,31 @@ const addDays = (date: Date, days: number): Date => {
 
 // ─── DatePicker class ────────────────────────────────────────────────────────
 
+/**
+ * An accessible date picker component following the WAI-ARIA Date Picker Dialog pattern.
+ *
+ * Displays a calendar grid in a modal dialog with:
+ * - `role="grid"` / `role="gridcell"` for the calendar layout
+ * - `aria-selected` on the selected day
+ * - `aria-current="date"` on today's cell
+ * - Descriptive `aria-label` on every cell (e.g. "15 January 2026")
+ * - Live region announcements when the visible month changes
+ * - Focus trapping when the dialog is open
+ * - Roving tabindex for grid keyboard navigation
+ *
+ * @example
+ * ```typescript
+ * const picker = new DatePicker({
+ *   input: document.getElementById('date-input'),
+ *   dialog: document.getElementById('date-dialog'),
+ *   toggleButton: document.getElementById('date-toggle'),
+ *   monthYearLabel: document.getElementById('date-heading'),
+ *   prevMonthButton: document.getElementById('date-prev'),
+ *   nextMonthButton: document.getElementById('date-next'),
+ *   calendarGrid: document.getElementById('date-grid'),
+ * });
+ * ```
+ */
 export class DatePicker {
   private input: HTMLInputElement;
   private dialog: HTMLElement;
@@ -135,6 +176,9 @@ export class DatePicker {
   private gridClickHandler      = (e: MouseEvent) => this.handleGridClick(e);
   private inputChangeHandler    = () => this.syncFromInput();
 
+  /**
+   * @param options - Configuration options for the date picker
+   */
   constructor(options: DatePickerOptions) {
     this.input           = options.input;
     this.dialog          = options.dialog;
@@ -206,11 +250,11 @@ export class DatePicker {
           case 'ArrowUp':    e.preventDefault(); this.moveFocus(-7); return true;
           case 'Home':
             e.preventDefault();
-            e.ctrlKey ? this.moveToMonthBoundary(true) : this.moveToWeekBoundary(true);
+            if (e.ctrlKey) { this.moveToMonthBoundary(true); } else { this.moveToWeekBoundary(true); }
             return true;
           case 'End':
             e.preventDefault();
-            e.ctrlKey ? this.moveToMonthBoundary(false) : this.moveToWeekBoundary(false);
+            if (e.ctrlKey) { this.moveToMonthBoundary(false); } else { this.moveToWeekBoundary(false); }
             return true;
           case 'PageUp':
             e.preventDefault();
@@ -454,6 +498,12 @@ export class DatePicker {
 
   // ─── Open / close ───────────────────────────────────────────────────────────
 
+  /**
+   * Open the calendar dialog.
+   *
+   * Syncs the view to the selected date (or today if nothing is selected),
+   * activates the focus trap, and focuses the appropriate day cell.
+   */
   public open(): void {
     if (this.isOpen) return;
     this.isOpen = true;
@@ -492,6 +542,9 @@ export class DatePicker {
     this.onOpen?.();
   }
 
+  /**
+   * Close the calendar dialog and restore focus.
+   */
   public close(): void {
     if (!this.isOpen) return;
     this.isOpen = false;
@@ -507,8 +560,11 @@ export class DatePicker {
     this.onClose?.();
   }
 
+  /**
+   * Toggle the calendar dialog open or closed.
+   */
   public toggle(): void {
-    this.isOpen ? this.close() : this.open();
+    if (this.isOpen) { this.close(); } else { this.open(); }
   }
 
   private showDialog(): void {
@@ -537,6 +593,14 @@ export class DatePicker {
 
   // ─── Month navigation ────────────────────────────────────────────────────────
 
+  /**
+   * Shift the visible month by a relative number of months.
+   *
+   * Positive values advance forward, negative values go backward.
+   * Rolls over year boundaries cleanly.
+   *
+   * @param delta - Number of months to shift (can be negative)
+   */
   public shiftMonth(delta: number): void {
     let month = this.viewMonth + delta;
     let year  = this.viewYear;
@@ -654,7 +718,13 @@ export class DatePicker {
 
   // ─── Public helpers ──────────────────────────────────────────────────────────
 
-  /** Programmatically select a date without opening the calendar */
+  /**
+   * Programmatically select a date without opening the calendar.
+   *
+   * The date is clamped to the {@link DatePickerOptions.minDate} / {@link DatePickerOptions.maxDate} range.
+   *
+   * @param date - The date to select
+   */
   public setValue(date: Date): void {
     const clamped       = clamp(date, this.minDate, this.maxDate);
     this.selectedDate   = clamped;
@@ -665,17 +735,29 @@ export class DatePicker {
     if (this.isOpen) this.renderMonth();
   }
 
-  /** Clear the selection */
+  /**
+   * Clear the selected date and input value.
+   */
   public clearValue(): void {
     this.selectedDate = null;
     this.input.value  = '';
     if (this.isOpen) this.renderMonth();
   }
 
+  /**
+   * Get the currently selected date, or null if none is selected.
+   *
+   * @returns A copy of the selected date, or null
+   */
   public getSelectedDate(): Date | null {
     return this.selectedDate ? new Date(this.selectedDate) : null;
   }
 
+  /**
+   * Remove all event listeners and clean up the date picker.
+   *
+   * Closes the dialog and destroys the roving tabindex controller.
+   */
   public destroy(): void {
     this.toggleButton.removeEventListener('click', this.toggleClickHandler);
     this.prevMonthButton.removeEventListener('click', this.prevMonthClickHandler);

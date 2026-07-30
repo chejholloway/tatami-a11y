@@ -63,7 +63,7 @@ describe('globalRegistry', () => {
 
     it('should create new instance in non-browser environment', () => {
       const originalWindow = global.window;
-      delete (global as any).window;
+      delete (globalThis as { window?: Window | undefined }).window;
 
       let callCount = 0;
       const factory = () => {
@@ -132,7 +132,7 @@ describe('globalRegistry', () => {
 
     it('should return early in non-browser environment', () => {
       const originalWindow = global.window;
-      delete (global as any).window;
+      delete (globalThis as { window?: Window | undefined }).window;
 
       let cleanupCalled = false;
       const cleanup = () => {

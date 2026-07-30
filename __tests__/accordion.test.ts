@@ -25,9 +25,9 @@ describe('Accordion', () => {
     });
 
     // Mock setTimeout for animation tests
-    vi.spyOn(window, 'setTimeout').mockImplementation((cb: (...args: any[]) => void, _delay?: number) => {
+    vi.spyOn(window, 'setTimeout').mockImplementation((cb: (...args: unknown[]) => void, _delay?: number) => {
       cb();
-      return 0 as any;
+      return 0 as unknown as number;
     });
   });
 
@@ -61,7 +61,7 @@ describe('Accordion', () => {
       accordionInstance = new Accordion({ container });
 
       const panels = container.querySelectorAll('[id^="panel-"]');
-      panels.forEach((panel, index) => {
+      panels.forEach((panel, _index) => {
         expect((panel as HTMLElement).getAttribute('role')).toBe('region');
         expect((panel as HTMLElement).hidden).toBe(true);
       });

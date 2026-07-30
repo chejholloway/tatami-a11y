@@ -1,15 +1,68 @@
+/**
+ * @module tatami-a11y/components
+ *
+ * An accessible reorderable list component following WAI-ARIA patterns.
+ *
+ * Supports keyboard reordering (Ctrl+Arrow keys, Ctrl+Home/End) and
+ * optional drag-and-drop. Items receive `role="listitem"` with
+ * `aria-posinset` and `aria-setsize` for accurate screen reader
+ * position announcements.
+ */
+
 import { createRovingTabindex } from '../shared/rovingTabindex.js';
 import type { RovingTabindexController } from '../shared/rovingTabindex.js';
 import { announce as defaultAnnounce } from '../shared/announcer.js';
 
+/**
+ * Options for configuring the {@link ReorderableList} component.
+ */
 export interface ReorderableListOptions {
+  /**
+   * The container element for the list items.
+   */
   list: HTMLElement;
+  /**
+   * The layout direction of the list.
+   * @default 'vertical'
+   */
   orientation?: 'vertical' | 'horizontal';
+  /**
+   * When true, enables mouse-based drag-and-drop reordering in addition
+   * to keyboard reordering.
+   * @default false
+   */
   dragAndDrop?: boolean;
+  /**
+   * Called when items are reordered.
+   *
+   * @param items - The current list of items in their new order
+   * @param movedItem - The item that was moved
+   * @param newIndex - The new index of the moved item
+   */
   onReorder?: (items: HTMLElement[], movedItem: HTMLElement, newIndex: number) => void;
+  /**
+   * Custom announcement function for reorder events.
+   * Defaults to the {@link announce} utility.
+   */
   announce?: (message: string) => void;
 }
 
+/**
+ * An accessible reorderable list that supports keyboard and drag-and-drop reordering.
+ *
+ * Keyboard reordering uses Ctrl+ArrowUp/Down (or Ctrl+Home/End) to move items.
+ * When drag-and-drop is enabled, items are made draggable and a visual drop
+ * indicator is shown during drag operations. Screen reader announcements
+ * provide feedback on reorder actions.
+ *
+ * @example
+ * ```typescript
+ * const list = new ReorderableList({
+ *   list: document.getElementById('my-list'),
+ *   dragAndDrop: true,
+ * });
+ * ```
+ */
 export class ReorderableList {
   private list: HTMLElement;
   private orientation: 'vertical' | 'horizontal';
@@ -25,6 +78,9 @@ export class ReorderableList {
   private draggedItem: HTMLElement | null = null;
   private dropIndicator: HTMLElement | null = null;
 
+  /**
+   * @param options - Configuration options for the reorderable list
+   */
   constructor(options: ReorderableListOptions) {
     this.list = options.list;
     this.orientation = options.orientation ?? 'vertical';
@@ -291,10 +347,18 @@ export class ReorderableList {
     }
   }
 
+  /**
+   * Get the current list of items in display order.
+   *
+   * @returns Array of list item elements
+   */
   getItems(): HTMLElement[] {
     return this.roving?.getItems() ?? [];
   }
 
+  /**
+   * Remove all event listeners and clean up the reorderable list.
+   */
   destroy(): void {
     if (!this.roving) return;
     if (this.dragAndDrop) {

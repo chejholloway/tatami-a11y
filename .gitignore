@@ -46,6 +46,16 @@ Thumbs.db
 surge
 
 failing-tests.md
+
+# Storybook build
+storybook-static/
+
+# Docusaurus build
+.docusaurus/
+build/
+
+# API docs
+api-docs/
 .agents
 kanpai-toast.js
 .npmrc

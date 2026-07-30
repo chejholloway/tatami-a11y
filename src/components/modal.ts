@@ -22,14 +22,45 @@ import {
 import { announce } from '../shared/announcer.js';
 import { checkReducedMotion } from '../shared/reducedMotion.js';
 
+/**
+ * Options for configuring the {@link Modal} component.
+ */
 export interface ModalOptions {
+  /**
+   * The element that triggers the modal (e.g. a button).
+   */
   trigger: HTMLElement;
+  /**
+   * The modal dialog container element.
+   */
   modal: HTMLElement;
+  /**
+   * Optional backdrop element behind the modal.
+   * Clicking the backdrop closes the modal.
+   */
   backdrop?: HTMLElement;
+  /** Called when the modal opens. */
   onOpen?: () => void;
+  /** Called when the modal closes. */
   onClose?: () => void;
 }
 
+/**
+ * An accessible modal dialog component following WAI-ARIA patterns.
+ *
+ * Traps focus inside the modal when open, locks body scroll, and restores
+ * focus to the trigger element on close. Supports an optional backdrop
+ * that closes the modal on click.
+ *
+ * @example
+ * ```typescript
+ * const modal = new Modal({
+ *   trigger: document.getElementById('modal-trigger'),
+ *   modal: document.getElementById('modal-panel'),
+ *   backdrop: document.getElementById('modal-backdrop'),
+ * });
+ * ```
+ */
 export class Modal {
   private trigger: HTMLElement;
   private modal: HTMLElement;
@@ -44,6 +75,9 @@ export class Modal {
   private modalKeydownHandler: (e: KeyboardEvent) => void = (e) => this.handleKeyDown(e);
   private backdropClickHandler?: () => void;
 
+  /**
+   * @param options - Configuration options for the modal
+   */
   constructor(options: ModalOptions) {
     this.trigger = options.trigger;
     this.modal = options.modal;
@@ -90,6 +124,12 @@ export class Modal {
     return Array.from(this.modal.querySelectorAll(focusableSelectors)) as HTMLElement[];
   }
 
+  /**
+   * Open the modal.
+   *
+   * Locks body scroll, activates the focus trap, stores the current focus
+   * target, and focuses the first focusable element inside the modal.
+   */
   public open(): void {
     if (this.isOpen) return;
 
@@ -121,6 +161,11 @@ export class Modal {
     this.onOpen?.();
   }
 
+  /**
+   * Close the modal.
+   *
+   * Restores body scroll, deactivates the focus trap, and restores focus.
+   */
   public close(): void {
     if (!this.isOpen) return;
 
@@ -203,6 +248,9 @@ export class Modal {
     }
   }
 
+  /**
+   * Remove all event listeners and clean up the modal.
+   */
   public destroy(): void {
     this.trigger.removeEventListener('click', this.triggerClickHandler);
     this.modal.removeEventListener('keydown', this.modalKeydownHandler);

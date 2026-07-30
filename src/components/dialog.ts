@@ -17,13 +17,39 @@ import {
 import { announce } from '../shared/announcer.js';
 import { checkReducedMotion } from '../shared/reducedMotion.js';
 
+/**
+ * Options for configuring the {@link Dialog} component.
+ */
 export interface DialogOptions {
+  /**
+   * The element that triggers the dialog (e.g. a button).
+   */
   trigger: HTMLElement;
+  /**
+   * The dialog container element.
+   */
   dialog: HTMLElement;
+  /** Called when the dialog opens. */
   onOpen?: () => void;
+  /** Called when the dialog closes. */
   onClose?: () => void;
 }
 
+/**
+ * An accessible non-modal dialog component.
+ *
+ * Unlike {@link Modal}, this dialog does NOT trap focus, allowing users to
+ * tab out naturally. Uses the focus stack to restore focus on close.
+ * Follows the WAI-ARIA dialog pattern with `aria-modal="false"`.
+ *
+ * @example
+ * ```typescript
+ * const dialog = new Dialog({
+ *   trigger: document.getElementById('dialog-trigger'),
+ *   dialog: document.getElementById('dialog-panel'),
+ * });
+ * ```
+ */
 export class Dialog {
   private trigger: HTMLElement;
   private dialog: HTMLElement;
@@ -34,6 +60,9 @@ export class Dialog {
   private triggerClickHandler = () => this.toggle();
   private dialogKeydownHandler = (e: KeyboardEvent) => this.handleKeyDown(e);
 
+  /**
+   * @param options - Configuration options for the dialog
+   */
   constructor(options: DialogOptions) {
     this.trigger = options.trigger;
     this.dialog = options.dialog;
@@ -68,6 +97,12 @@ export class Dialog {
     }
   }
 
+  /**
+   * Open the dialog.
+   *
+   * Stores the current focus target on the focus stack, shows the dialog,
+   * and focuses the first focusable element inside it.
+   */
   public open(): void {
     if (this.isOpen) return;
     this.isOpen = true;
@@ -96,6 +131,9 @@ export class Dialog {
     this.onOpen?.();
   }
 
+  /**
+   * Close the dialog and restore focus to the trigger element.
+   */
   public close(): void {
     if (!this.isOpen) return;
     this.isOpen = false;
@@ -154,6 +192,9 @@ export class Dialog {
     }
   }
 
+  /**
+   * Remove all event listeners and clean up the dialog.
+   */
   public destroy(): void {
     this.trigger.removeEventListener('click', this.triggerClickHandler);
     this.dialog.removeEventListener('keydown', this.dialogKeydownHandler);

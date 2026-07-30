@@ -25,9 +25,9 @@ describe('Tabs', () => {
       document.createElement('div'),
     ];
     
-    panels.forEach((panel, index) => {
-      panel.id = `panel-${index + 1}`;
-      panel.textContent = `Panel ${index + 1} content`;
+    panels.forEach((panel, _index) => {
+      panel.id = `panel-${_index + 1}`;
+      panel.textContent = `Panel ${_index + 1} content`;
       document.body.appendChild(panel);
     });
     
@@ -38,9 +38,9 @@ describe('Tabs', () => {
       return 0;
     });
 
-    vi.spyOn(window, 'setTimeout').mockImplementation((cb: (...args: any[]) => void, _delay?: number) => {
+    vi.spyOn(window, 'setTimeout').mockImplementation((cb: (...args: unknown[]) => void, _delay?: number) => {
       cb();
-      return 0 as any;
+      return 0 as unknown as number;
     });
   });
 
@@ -64,19 +64,19 @@ describe('Tabs', () => {
       tabsInstance = new Tabs({ tabList });
 
       const tabs = tabList.querySelectorAll('[role="tab"]');
-      tabs.forEach((tab, index) => {
-        expect(tab.getAttribute('aria-selected')).toBe(index === 0 ? 'true' : 'false');
-        expect(tab.getAttribute('tabindex')).toBe(index === 0 ? '0' : '-1');
+      tabs.forEach((tab, _index) => {
+        expect(tab.getAttribute('aria-selected')).toBe(_index === 0 ? 'true' : 'false');
+        expect(tab.getAttribute('tabindex')).toBe(_index === 0 ? '0' : '-1');
       });
     });
 
     it('should set up ARIA attributes on panels', () => {
       tabsInstance = new Tabs({ tabList });
 
-      panels.forEach((panel, index) => {
+      panels.forEach((panel, _index) => {
         expect(panel.getAttribute('role')).toBe('tabpanel');
-        expect(panel.getAttribute('aria-labelledby')).toBe(`tab-${index + 1}`);
-        expect(panel.hidden).toBe(index !== 0);
+        expect(panel.getAttribute('aria-labelledby')).toBe(`tab-${_index + 1}`);
+        expect(panel.hidden).toBe(_index !== 0);
       });
     });
 

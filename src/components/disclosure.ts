@@ -10,12 +10,40 @@
 
 import { checkReducedMotion } from '../shared/reducedMotion.js';
 
+/**
+ * Options for configuring the {@link Disclosure} component.
+ */
 export interface DisclosureOptions {
+  /**
+   * The button or element that triggers the show/hide toggle.
+   */
   trigger: HTMLElement;
+  /**
+   * The content panel that is shown and hidden.
+   */
   content: HTMLElement;
+  /**
+   * Called when the disclosure is toggled.
+   *
+   * @param isExpanded - Whether the content is now expanded
+   */
   onToggle?: (isExpanded: boolean) => void;
 }
 
+/**
+ * An accessible disclosure (show/hide) component following WAI-ARIA patterns.
+ *
+ * Links a trigger element to a content panel using `aria-expanded` and
+ * `aria-controls`. The trigger can be any element (typically a button).
+ *
+ * @example
+ * ```typescript
+ * const disclosure = new Disclosure({
+ *   trigger: document.getElementById('disclosure-trigger'),
+ *   content: document.getElementById('disclosure-content'),
+ * });
+ * ```
+ */
 export class Disclosure {
   private trigger: HTMLElement;
   private content: HTMLElement;
@@ -24,6 +52,9 @@ export class Disclosure {
 
   private triggerClickHandler = () => this.toggle();
 
+  /**
+   * @param options - Configuration options for the disclosure
+   */
   constructor(options: DisclosureOptions) {
     this.trigger = options.trigger;
     this.content = options.content;
@@ -48,6 +79,9 @@ export class Disclosure {
     this.hideContent();
   }
 
+  /**
+   * Toggle the disclosure between expanded and collapsed states.
+   */
   public toggle(): void {
     if (this.isExpanded) {
       this.collapse();
@@ -56,6 +90,9 @@ export class Disclosure {
     }
   }
 
+  /**
+   * Expand the disclosure content.
+   */
   public expand(): void {
     if (this.isExpanded) return;
     this.isExpanded = true;
@@ -66,6 +103,9 @@ export class Disclosure {
     this.onToggle?.(true);
   }
 
+  /**
+   * Collapse the disclosure content.
+   */
   public collapse(): void {
     if (!this.isExpanded) return;
     this.isExpanded = false;
@@ -109,6 +149,9 @@ export class Disclosure {
     }
   }
 
+  /**
+   * Remove all event listeners and clean up the disclosure.
+   */
   public destroy(): void {
     this.trigger.removeEventListener('click', this.triggerClickHandler);
     

@@ -19,7 +19,7 @@ describe('reducedMotion', () => {
   describe('checkReducedMotion', () => {
     it('should return false when matchMedia is not available', () => {
       const originalMatchMedia = window.matchMedia;
-      delete (window as any).matchMedia;
+      delete (window as { matchMedia?: ((query: string) => MediaQueryList) | undefined }).matchMedia;
 
       const result = checkReducedMotion();
       expect(result).toBe(false);
@@ -29,7 +29,7 @@ describe('reducedMotion', () => {
 
     it('should return false in non-browser environment', () => {
       const originalWindow = global.window;
-      delete (global as any).window;
+      delete (globalThis as { window?: Window | undefined }).window;
 
       const result = checkReducedMotion();
       expect(result).toBe(false);
@@ -62,7 +62,7 @@ describe('reducedMotion', () => {
   describe('onReducedMotionChange', () => {
     it('should return cleanup function in non-browser environment', () => {
       const originalWindow = global.window;
-      delete (global as any).window;
+      delete (globalThis as { window?: Window | undefined }).window;
 
       const cleanup = onReducedMotionChange(() => {});
       expect(typeof cleanup).toBe('function');
@@ -159,7 +159,7 @@ describe('reducedMotion', () => {
   describe('getReducedMotion', () => {
     it('should return false in non-browser environment', () => {
       const originalWindow = global.window;
-      delete (global as any).window;
+      delete (globalThis as { window?: Window | undefined }).window;
 
       const result = getReducedMotion();
       expect(result).toBe(false);

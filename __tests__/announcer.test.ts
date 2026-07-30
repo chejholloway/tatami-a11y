@@ -95,7 +95,7 @@ describe('announcer', () => {
 
     it('should not throw in non-browser environment', () => {
       const originalDocument = global.document;
-      delete (global as any).document;
+      delete (globalThis as { document?: Document }).document;
 
       expect(() => {
         announce('Test message');

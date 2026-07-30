@@ -55,7 +55,7 @@ describe('Carousel', () => {
     });
 
     // Keep setInterval as a real timer but track calls
-    vi.spyOn(window, 'setInterval').mockImplementation((_cb, _delay) => 1 as any);
+    vi.spyOn(window, 'setInterval').mockImplementation((_cb, _delay) => 1 as unknown as number);
     vi.spyOn(window, 'clearInterval').mockImplementation(() => {});
   });
 
@@ -92,8 +92,8 @@ describe('Carousel', () => {
 
     it('should label slides as "1 of N", "2 of N", etc.', () => {
       carouselInstance = new Carousel({ container: els.container });
-      els.slides.forEach((slide, i) => {
-        expect(slide.getAttribute('aria-label')).toBe(`${i + 1} of ${els.slides.length}`);
+      els.slides.forEach((slide, _i) => {
+        expect(slide.getAttribute('aria-label')).toBe(`${_i + 1} of ${els.slides.length}`);
       });
     });
 

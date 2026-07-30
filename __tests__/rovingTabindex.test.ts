@@ -113,7 +113,6 @@ describe('createRovingTabindex', () => {
     it('ArrowRight moves forward, ArrowLeft moves backward', () => {
       buildList(3, container);
       const r = createRovingTabindex({ container, selector: '[role="option"]', orientation: 'horizontal' });
-      const items = r.getItems();
       dispatchKey(container, 'ArrowRight');
       expect(r.activeIndex).toBe(1);
       dispatchKey(container, 'ArrowLeft');

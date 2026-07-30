@@ -1,12 +1,57 @@
+/**
+ * @module tatami-a11y/components
+ *
+ * An accessible listbox component supporting single and multi-selection
+ * following the WAI-ARIA listbox pattern.
+ *
+ * Features roving tabindex navigation, Shift+Click and Ctrl+Click selection,
+ * Shift+Arrow range selection, Ctrl+A select-all, and typeahead navigation.
+ */
+
 import { createRovingTabindex } from '../shared/rovingTabindex.js';
 import type { RovingTabindexController } from '../shared/rovingTabindex.js';
 
+/**
+ * Options for configuring the {@link MultiselectListbox} component.
+ */
 export interface MultiselectListboxOptions {
+  /**
+   * The container element that will assume the `listbox` role.
+   * Its direct children are treated as options.
+   */
   listbox: HTMLElement;
+  /**
+   * When true, multiple options can be selected simultaneously.
+   * Sets `aria-multiselectable="true"` on the listbox.
+   * @default false
+   */
   multiselect?: boolean;
+  /**
+   * Called when the selection changes.
+   *
+   * @param selectedIndices - Array of indices of selected items
+   */
   onSelect?: (selectedIndices: number[]) => void;
 }
 
+/**
+ * An accessible listbox component following the WAI-ARIA listbox pattern.
+ *
+ * Supports single-selection and multi-selection modes with:
+ * - Roving tabindex keyboard navigation
+ * - Shift+Click and Ctrl+Click for range/toggle selection
+ * - Ctrl+A for select-all
+ * - Typeahead navigation by character
+ * - `aria-selected` state management
+ *
+ * @example
+ * ```typescript
+ * const listbox = new MultiselectListbox({
+ *   listbox: document.getElementById('my-listbox'),
+ *   multiselect: true,
+ * });
+ * ```
+ */
 export class MultiselectListbox {
   private listbox: HTMLElement;
   private multiselect: boolean;
@@ -19,6 +64,9 @@ export class MultiselectListbox {
   private clickHandler = (e: MouseEvent) => this.handleClick(e);
   private keydownHandler = (e: KeyboardEvent) => this.handleKeyDown(e);
 
+  /**
+   * @param options - Configuration options for the listbox
+   */
   constructor(options: MultiselectListboxOptions) {
     this.listbox = options.listbox;
     this.multiselect = options.multiselect ?? false;
@@ -227,10 +275,20 @@ export class MultiselectListbox {
     }
   }
 
+  /**
+   * Get the list of option elements managed by this listbox.
+   *
+   * @returns Array of option elements
+   */
   getItems(): HTMLElement[] {
     return this.roving?.getItems() ?? [];
   }
 
+  /**
+   * Get the indices of currently selected items.
+   *
+   * @returns Array of selected indices
+   */
   getSelectedIndices(): number[] {
     const items = this.roving?.getItems();
     if (!items) return [];
@@ -243,6 +301,9 @@ export class MultiselectListbox {
     return result;
   }
 
+  /**
+   * Select all items (only applies when {@link MultiselectListboxOptions.multiselect} is true).
+   */
   selectAll(): void {
     if (!this.multiselect) return;
     const items = this.roving?.getItems();
@@ -252,11 +313,17 @@ export class MultiselectListbox {
     this.anchorIndex = 0;
   }
 
+  /**
+   * Clear all selections.
+   */
   clearSelection(): void {
     if (!this.roving) return;
     this.applySelection([]);
   }
 
+  /**
+   * Remove all event listeners and clean up the listbox.
+   */
   destroy(): void {
     if (!this.roving) return;
     this.listbox.removeEventListener('click', this.clickHandler);

@@ -29,9 +29,9 @@ describe('Combobox', () => {
       return 0;
     });
 
-    vi.spyOn(window, 'setTimeout').mockImplementation((cb: (...args: any[]) => void, _delay?: number) => {
+    vi.spyOn(window, 'setTimeout').mockImplementation((cb: (...args: unknown[]) => void, _delay?: number) => {
       cb();
-      return 0 as any;
+      return 0 as unknown as number;
     });
   });
 

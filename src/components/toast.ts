@@ -13,30 +13,60 @@
 
 import { announce } from '../shared/announcer.js';
 import { checkReducedMotion } from '../shared/reducedMotion.js';
-import {
-  pushFocusStack,
-  popFocusStack,
-  setInitialFocusReference,
-  clearFocusStack,
-} from '../shared/focusStack.js';
-import { createSingleton, registerCleanup } from '../shared/globalRegistry.js';
+import { registerCleanup } from '../shared/globalRegistry.js';
 
+/**
+ * Variant type for a toast notification.
+ * - `info`: Neutral informational message
+ * - `success`: Positive confirmation message
+ * - `warning`: Cautionary message
+ * - `error`: Error or problem message
+ */
 export type ToastVariant = 'info' | 'success' | 'warning' | 'error';
+
+/**
+ * Screen position for the toast stack container.
+ */
 export type ToastPosition = 'top-right' | 'top-left' | 'top-center' | 'bottom-right' | 'bottom-left' | 'bottom-center';
 
+/**
+ * Options for displaying a single toast notification via {@link Toast.show}.
+ */
 export interface ToastOptions {
+  /**
+   * The visual and semantic variant of the toast.
+   * @default 'info'
+   */
   variant?: ToastVariant;
+  /**
+   * Duration in milliseconds before auto-dismissal.
+   * Set to 0 or less to disable auto-dismissal.
+   * @default 5000
+   */
   duration?: number;
+  /**
+   * Optional custom ID for the toast. If not provided, one is auto-generated.
+   */
   id?: string;
 }
 
+/**
+ * Internal representation of an active toast notification.
+ */
 interface ActiveToast {
+  /** Unique identifier for the toast. */
   id: string;
+  /** The DOM element representing the toast. */
   element: HTMLElement;
+  /** Auto-dismiss timeout ID, or null if not scheduled. */
   timer: number | null;
+  /** Exit animation cleanup timeout ID, or null. */
   cleanupTimer: number | null;
+  /** Full duration in milliseconds (set at creation). */
   totalDurationMs: number;
+  /** Remaining milliseconds (decreased while paused). */
   remainingMs: number;
+  /** Timestamp when the current timer started, or null. */
   startTimestamp: number | null;
 }
 
@@ -53,6 +83,23 @@ const EXIT_ANIMATION_DURATION_MS = 200;
 const MAX_FOCUS_STACK_SIZE = 20;
 const GLOBAL_LISTENERS_KEY = '__toastGlobalListeners__';
 
+/**
+ * An accessible toast notification system following WAI-ARIA live region patterns.
+ *
+ * Uses polite/assertive live regions based on variant severity, supports
+ * auto-dismissal with pause-on-hover/focus, provides Alt+T keyboard shortcut
+ * to jump focus to the latest toast, and respects reduced motion preference.
+ *
+ * The Toast class uses a static API — all methods are called on the class itself,
+ * not on instances. It uses an HMR-safe singleton pattern via {@link createSingleton}.
+ *
+ * @example
+ * ```typescript
+ * Toast.show('File saved successfully', { variant: 'success' });
+ * Toast.error('Connection lost');
+ * Toast.configure({ position: 'bottom-right' });
+ * ```
+ */
 export class Toast {
   private static stackWrapper: HTMLElement | null = null;
   private static politeLiveRegion: HTMLElement | null = null;
@@ -265,6 +312,16 @@ export class Toast {
     });
   }
 
+  /**
+   * Display a toast notification.
+   *
+   * Creates the toast element, sets up auto-dismiss and pause-on-hover behavior,
+   * announces via the live region, and manages the active toast limit.
+   *
+   * @param message - The notification text
+   * @param options - Configuration for this toast
+   * @returns The toast's unique ID (for use with {@link Toast.dismiss})
+   */
   public static show(message: string, options: ToastOptions = {}): string {
     if (typeof document === 'undefined') {
       console.warn('[Toast] show() called outside a browser environment; ignoring.');
@@ -333,34 +390,87 @@ export class Toast {
     return id;
   }
 
+  /**
+   * Display a success toast.
+   *
+   * @param message - The notification text
+   * @param options - Additional configuration
+   * @returns The toast's unique ID
+   */
   public static success(message: string, options?: ToastOptions): string {
     return this.show(message, { ...options, variant: 'success' });
   }
 
+  /**
+   * Display an error toast (uses assertive live region).
+   *
+   * @param message - The notification text
+   * @param options - Additional configuration
+   * @returns The toast's unique ID
+   */
   public static error(message: string, options?: ToastOptions): string {
     return this.show(message, { ...options, variant: 'error' });
   }
 
+  /**
+   * Display a warning toast.
+   *
+   * @param message - The notification text
+   * @param options - Additional configuration
+   * @returns The toast's unique ID
+   */
   public static warning(message: string, options?: ToastOptions): string {
     return this.show(message, { ...options, variant: 'warning' });
   }
 
+  /**
+   * Display an info toast.
+   *
+   * @param message - The notification text
+   * @param options - Additional configuration
+   * @returns The toast's unique ID
+   */
   public static info(message: string, options?: ToastOptions): string {
     return this.show(message, { ...options, variant: 'info' });
   }
 
+  /**
+   * Dismiss a specific toast by ID.
+   *
+   * @param id - The toast's unique ID (returned by {@link Toast.show})
+   * @param opts - Options for the dismissal
+   * @param opts.immediate - When true, skip the exit animation
+   */
   public static dismiss(id: string, opts?: { immediate?: boolean }): void {
     this.dismissToast(id, opts);
   }
 
+  /**
+   * Dismiss all active toasts.
+   *
+   * @param opts - Options for dismissal
+   * @param opts.immediate - When true, skip exit animations
+   */
   public static dismissAll(opts?: { immediate?: boolean }): void {
     this.dismissAllToasts(opts);
   }
 
+  /**
+   * Configure global toast settings.
+   *
+   * @param options - Configuration options
+   * @param options.position - Screen position for the toast stack
+   */
   public static configure(options: { position?: ToastPosition }): void {
     this.configureToastPlacement(options);
   }
 
+  /**
+   * Destroy all toast infrastructure.
+   *
+   * Dismisses all active toasts, removes the stack wrapper from the DOM,
+   * and clears all internal state.
+   */
   public static destroy(): void {
     this.dismissAllToasts();
     this.stackWrapper?.remove();

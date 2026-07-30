@@ -29,9 +29,9 @@ describe('Dropdown', () => {
       return 0;
     });
 
-    vi.spyOn(window, 'setTimeout').mockImplementation((cb: (...args: any[]) => void, _delay?: number) => {
+    vi.spyOn(window, 'setTimeout').mockImplementation((cb: (...args: unknown[]) => void, _delay?: number) => {
       cb();
-      return 0 as any;
+      return 0 as unknown as number;
     });
   });
 
@@ -96,7 +96,6 @@ describe('Dropdown', () => {
       dropdownInstance = new Dropdown({ trigger, menu });
       dropdownInstance.open();
 
-      const firstItem = menu.querySelector('[role="menuitem"]') as HTMLElement;
       // Focus is attempted but may not work in jsdom for div elements
       // Verify the component tries to focus by checking the index
       expect(trigger.getAttribute('aria-expanded')).toBe('true');

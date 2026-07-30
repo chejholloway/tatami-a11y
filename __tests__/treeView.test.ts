@@ -89,7 +89,6 @@ describe('TreeView', () => {
 
     it('should set aria-setsize and aria-posinset', () => {
       instance = new TreeView({ tree });
-      const items = tree.querySelectorAll('[role="treeitem"]');
       const grains = tree.querySelector('[data-label="Grains"]')!;
       expect(grains.getAttribute('aria-setsize')).toBe('3');
       expect(grains.getAttribute('aria-posinset')).toBe('3');
@@ -289,7 +288,6 @@ describe('TreeView', () => {
   describe('multi-select', () => {
     it('should allow selecting multiple nodes', () => {
       instance = new TreeView({ tree, multiselect: true });
-      const items = instance.getItems();
       instance.selectNode(0);
       instance.selectNode(1);
       expect(instance.getSelectedNodes()).toEqual([0, 1]);
@@ -436,7 +434,7 @@ describe('TreeView', () => {
 
     it('should allow garbage collection', () => {
       instance = new TreeView({ tree });
-      const roving = (instance as any).roving;
+      const roving = (instance as unknown as { roving: { getItems: () => unknown[] } }).roving;
       instance.destroy();
       expect(roving.getItems().length).toBe(0);
     });

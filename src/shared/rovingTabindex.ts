@@ -47,6 +47,25 @@ export interface RovingTabindexController {
   destroy(): void;
 }
 
+/**
+ * Creates a roving tabindex controller for the given container.
+ *
+ * Manages the WAI-ARIA roving tabindex pattern: exactly one child element has
+ * {@code tabindex="0"} at any time, while all others have {@code tabindex="-1"}.
+ * Arrow keys, Home, and End navigate between items.
+ *
+ * @param options - Configuration for the roving tabindex
+ * @returns A controller object for managing the roving tabindex
+ *
+ * @example
+ * ```typescript
+ * const roving = createRovingTabindex({
+ *   container: myList,
+ *   selector: '[role="tab"]',
+ *   orientation: 'horizontal',
+ * });
+ * ```
+ */
 export function createRovingTabindex(options: RovingTabindexOptions): RovingTabindexController {
   const {
     container,

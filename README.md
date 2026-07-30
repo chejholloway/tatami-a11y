@@ -13,7 +13,7 @@ Building [kanpai](https://www.npmjs.com/package/kanpai-toast) surfaced the same 
 
 Every one of these was a real bug I hit and fixed while building kanpai, not a hypothetical. Rebuilding each of them from scratch for every new component is how accessibility bugs multiply: the tenth reimplementation of "restore focus on close" is exactly where someone forgets the stale-reference case and ships a dropdown that silently strands keyboard focus on `<body>`.
 
-![Shared primitives problem](./shared_a11y_primitives_problem.png)
+![Shared primitives problem](https://raw.githubusercontent.com/chejholloway/tatani-a11y/main/shared_a11y_primitives_problem.png)
 
 The top panel is the state before tatami-a11y: three components, each with its own from-scratch implementation of focus handling and live-region announcing. Nothing enforces consistency between them, which is exactly how kanpai's bugs happened, and how the same class of bug would've quietly reappeared in a modal or dropdown built the same way.
 

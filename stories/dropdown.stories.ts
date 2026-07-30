@@ -1,0 +1,20 @@
+import type { Meta, StoryObj } from '@storybook/html';
+
+const meta: Meta = {
+  title: 'Dropdown',
+  render: () => `
+    <p>Click the button to open the dropdown menu. Use Arrow keys to navigate, Enter to select, Escape to close.</p>
+    <div class="controls" style="margin-top: 0.5rem;">
+      <button class="btn-primary" id="dropdown-trigger">Open Menu</button>
+    </div>
+    <div id="dropdown-menu" class="dropdown-menu dropdown-menu-demo">
+      <button class="dropdown-item dropdown-item-demo" role="menuitem">Option 1</button>
+      <button class="dropdown-item dropdown-item-demo" role="menuitem">Option 2</button>
+      <button class="dropdown-item dropdown-item-demo" role="menuitem">Option 3</button>
+    </div>
+  `,
+};
+
+export default meta;
+
+export const Default: StoryObj = {};

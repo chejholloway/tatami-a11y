@@ -21,13 +21,40 @@ import {
 import { announce } from '../shared/announcer.js';
 import { checkReducedMotion } from '../shared/reducedMotion.js';
 
+/**
+ * Options for configuring the {@link Dropdown} component.
+ */
 export interface DropdownOptions {
+  /**
+   * The element that triggers the dropdown menu.
+   */
   trigger: HTMLElement;
+  /**
+   * The menu container element containing menu items.
+   */
   menu: HTMLElement;
+  /** Called when the dropdown opens. */
   onOpen?: () => void;
+  /** Called when the dropdown closes. */
   onClose?: () => void;
 }
 
+/**
+ * An accessible dropdown menu component.
+ *
+ * Follows the WAI-ARIA menu pattern with `role="menu"` and `role="menuitem"`.
+ * Supports focus trapping when open, keyboard navigation (Arrow keys, Home, End,
+ * Enter, Escape), and click-outside-to-close behavior. Menu items can use
+ * `role="menuitem"`, `role="menuitemcheckbox"`, or `role="menuitemradio"`.
+ *
+ * @example
+ * ```typescript
+ * const dropdown = new Dropdown({
+ *   trigger: document.getElementById('dropdown-trigger'),
+ *   menu: document.getElementById('dropdown-menu'),
+ * });
+ * ```
+ */
 export class Dropdown {
   private trigger: HTMLElement;
   private menu: HTMLElement;
@@ -41,6 +68,9 @@ export class Dropdown {
   private menuKeydownHandler: (e: KeyboardEvent) => void = (e) => this.handleMenuKeyDown(e);
   private documentClickHandler: (e: MouseEvent) => void = (e) => this.handleDocumentClick(e);
 
+  /**
+   * @param options - Configuration options for the dropdown
+   */
   constructor(options: DropdownOptions) {
     this.trigger = options.trigger;
     this.menu = options.menu;
@@ -82,6 +112,12 @@ export class Dropdown {
     }
   }
 
+  /**
+   * Open the dropdown menu.
+   *
+   * Activates the focus trap, stores the current focus target, and
+   * focuses the first menu item.
+   */
   public open(): void {
     if (this.isOpen) return;
 
@@ -110,6 +146,9 @@ export class Dropdown {
     this.onOpen?.();
   }
 
+  /**
+   * Close the dropdown menu and restore focus.
+   */
   public close(): void {
     if (!this.isOpen) return;
 
@@ -214,7 +253,7 @@ export class Dropdown {
         this.menuItems[this.currentIndex]?.focus();
         break;
       case 'Enter':
-      case ' ':
+      case ' ': {
         e.preventDefault();
         const currentItem = this.menuItems[this.currentIndex];
         if (currentItem) {
@@ -222,6 +261,7 @@ export class Dropdown {
           this.close();
         }
         break;
+      }
     }
   }
 
@@ -252,6 +292,9 @@ export class Dropdown {
     }
   }
 
+  /**
+   * Remove all event listeners and clean up the dropdown.
+   */
   public destroy(): void {
     this.trigger.removeEventListener('click', this.triggerClickHandler);
     this.trigger.removeEventListener('keydown', this.triggerKeydownHandler);

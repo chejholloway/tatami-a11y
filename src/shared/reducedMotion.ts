@@ -5,6 +5,11 @@
  * Provides a callback registration for listening to changes.
  */
 
+/**
+ * Callback invoked when the user's reduced motion preference changes.
+ *
+ * @param prefersReduced - Whether the user now prefers reduced motion
+ */
 type ReducedMotionCallback = (prefersReduced: boolean) => void;
 
 const listeners = new Set<ReducedMotionCallback>();

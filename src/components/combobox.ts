@@ -12,13 +12,53 @@
 import { announce } from '../shared/announcer.js';
 import { checkReducedMotion } from '../shared/reducedMotion.js';
 
+/**
+ * Options for configuring the {@link Combobox} component.
+ */
 export interface ComboboxOptions {
+  /**
+   * The text input element that receives the user's search query.
+   */
   input: HTMLInputElement;
+  /**
+   * The listbox element containing the option elements.
+   * Child elements should have `role="option"`.
+   */
   listbox: HTMLElement;
+  /**
+   * Called when an option is selected.
+   *
+   * @param value - The text value of the selected option
+   * @param index - The index of the selected option among visible (unfiltered) options
+   */
   onSelect?: (value: string, index: number) => void;
+  /**
+   * Custom filter function. Receives each option's text and the current query.
+   * Return true to include the option.
+   *
+   * @param item - The option text to evaluate
+   * @param query - The current search query
+   * @returns Whether the option matches the query
+   * @default Case-insensitive substring match
+   */
   filter?: (item: string, query: string) => boolean;
 }
 
+/**
+ * An accessible combobox / autocomplete component following the WAI-ARIA combobox pattern.
+ *
+ * Manages an input element linked to a listbox for filtering and selecting options.
+ * Supports keyboard navigation (Arrow keys, Enter, Escape), custom filtering logic,
+ * and announces selection changes to assistive technology.
+ *
+ * @example
+ * ```typescript
+ * const combobox = new Combobox({
+ *   input: document.getElementById('my-input'),
+ *   listbox: document.getElementById('my-listbox'),
+ * });
+ * ```
+ */
 export class Combobox {
   private input: HTMLInputElement;
   private listbox: HTMLElement;
@@ -32,6 +72,9 @@ export class Combobox {
   private listboxClickHandler: (e: MouseEvent) => void = (e) => this.handleListboxClick(e);
   private documentClickHandler: (e: MouseEvent) => void = (e) => this.handleDocumentClick(e);
 
+  /**
+   * @param options - Configuration options for the combobox
+   */
   constructor(options: ComboboxOptions) {
     this.input = options.input;
     this.listbox = options.listbox;
@@ -168,6 +211,13 @@ export class Combobox {
     this.input.setAttribute('aria-activedescendant', option.id || '');
   }
 
+  /**
+   * Select an option by its visible (unfiltered) index.
+   *
+   * Updates the input value, closes the listbox, and fires the {@link ComboboxOptions.onSelect} callback.
+   *
+   * @param index - The index of the option among visible options
+   */
   public selectOption(index: number): void {
     const visibleOptions = this.options.filter((opt) => !opt.hidden);
     if (index < 0 || index >= visibleOptions.length) return;
@@ -183,6 +233,11 @@ export class Combobox {
     this.onSelect?.(value, index);
   }
 
+  /**
+   * Open the listbox and display filtered options.
+   *
+   * Updates ARIA attributes to reflect the expanded state.
+   */
   public open(): void {
     if (this.isOpen) return;
 
@@ -198,6 +253,9 @@ export class Combobox {
     }
   }
 
+  /**
+   * Close the listbox and reset the active descendant.
+   */
   public close(): void {
     if (!this.isOpen) return;
 
@@ -239,6 +297,11 @@ export class Combobox {
     }
   }
 
+  /**
+   * Remove all event listeners and clean up the combobox.
+   *
+   * Call this when removing the combobox from the DOM to prevent memory leaks.
+   */
   public destroy(): void {
     this.input.removeEventListener('input', this.inputInputHandler);
     this.input.removeEventListener('keydown', this.inputKeydownHandler);

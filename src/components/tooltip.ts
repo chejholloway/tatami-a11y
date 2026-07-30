@@ -10,18 +10,50 @@
 
 import { checkReducedMotion } from '../shared/reducedMotion.js';
 
+/**
+ * Options for configuring the {@link Tooltip} component.
+ */
 export interface TooltipOptions {
+  /**
+   * The element that triggers the tooltip on hover or focus.
+   */
   trigger: HTMLElement;
+  /**
+   * The tooltip element that is shown and hidden.
+   */
   tooltip: HTMLElement;
-  /** Called when the tooltip becomes visible. Follows the same onOpen/onClose convention as Dropdown, Modal, etc. */
+  /**
+   * Called when the tooltip becomes visible.
+   */
   onOpen?: () => void;
+  /**
+   * Called when the tooltip is hidden.
+   */
   onClose?: () => void;
-  /** @deprecated Use onOpen instead — kept for backwards compatibility */
+  /**
+   * @deprecated Use {@link TooltipOptions.onOpen} instead — kept for backwards compatibility.
+   */
   onShow?: () => void;
-  /** @deprecated Use onClose instead — kept for backwards compatibility */
+  /**
+   * @deprecated Use {@link TooltipOptions.onClose} instead — kept for backwards compatibility.
+   */
   onHide?: () => void;
 }
 
+/**
+ * An accessible tooltip component following WAI-ARIA patterns.
+ *
+ * Links the trigger element to the tooltip via `aria-describedby`.
+ * The tooltip appears on hover and focus, and can be dismissed via Escape.
+ *
+ * @example
+ * ```typescript
+ * const tooltip = new Tooltip({
+ *   trigger: document.getElementById('tooltip-trigger'),
+ *   tooltip: document.getElementById('tooltip-content'),
+ * });
+ * ```
+ */
 export class Tooltip {
   private trigger: HTMLElement;
   private tooltip: HTMLElement;
@@ -35,6 +67,9 @@ export class Tooltip {
   private triggerBlurHandler = () => this.hide();
   private triggerKeydownHandler = (e: KeyboardEvent) => this.handleKeyDown(e);
 
+  /**
+   * @param options - Configuration options for the tooltip
+   */
   constructor(options: TooltipOptions) {
     this.trigger = options.trigger;
     this.tooltip = options.tooltip;
@@ -65,6 +100,11 @@ export class Tooltip {
     this.hideImmediately();
   }
 
+  /**
+   * Show the tooltip.
+   *
+   * Makes the tooltip visible with a fade-in animation (unless reduced motion is preferred).
+   */
   public show(): void {
     if (this.isVisible) return;
     this.isVisible = true;
@@ -84,6 +124,11 @@ export class Tooltip {
     this.onOpen?.();
   }
 
+  /**
+   * Hide the tooltip.
+   *
+   * Fades out the tooltip (unless reduced motion is preferred).
+   */
   public hide(): void {
     if (!this.isVisible) return;
     this.isVisible = false;
@@ -117,6 +162,9 @@ export class Tooltip {
     }
   }
 
+  /**
+   * Remove all event listeners and clean up the tooltip.
+   */
   public destroy(): void {
     this.trigger.removeEventListener('mouseenter', this.triggerMouseEnterHandler);
     this.trigger.removeEventListener('mouseleave', this.triggerMouseLeaveHandler);

@@ -47,9 +47,9 @@ describe('CommandPalette', () => {
       cb(performance.now());
       return 0;
     });
-    vi.spyOn(window, 'setTimeout').mockImplementation((cb: (...args: any[]) => void) => {
+    vi.spyOn(window, 'setTimeout').mockImplementation((cb: (...args: unknown[]) => void) => {
       cb();
-      return 0 as any;
+      return 0 as unknown as number;
     });
   });
 

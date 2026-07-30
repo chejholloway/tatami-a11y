@@ -1,7 +1,15 @@
 /**
- * a11y-primitives - Framework-agnostic, accessibility-first UI primitives for vanilla JavaScript.
+ * @module tatami-a11y
  *
- * Exports shared utilities for building accessible UIs without framework lock-in.
+ * Framework-agnostic, accessibility-first UI primitives for vanilla JavaScript.
+ *
+ * Provides shared utilities (announcer, focus management, reduced motion, roving tabindex)
+ * and fully accessible UI components (accordion, carousel, combobox, command palette,
+ * date picker, dialog, disclosure, dropdown, menu button, modal, multiselect listbox,
+ * reorderable list, tabs, toast, tooltip, tree view).
+ *
+ * All components implement WAI-ARIA authoring practices and are designed to work
+ * with any framework or no framework at all.
  */
 
 // Shared utilities

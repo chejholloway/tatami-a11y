@@ -22,13 +22,39 @@ import {
 import { announce } from '../shared/announcer.js';
 import { checkReducedMotion } from '../shared/reducedMotion.js';
 
+/**
+ * Options for configuring the {@link MenuButton} component.
+ */
 export interface MenuButtonOptions {
+  /**
+   * The button element that triggers the menu.
+   */
   trigger: HTMLElement;
+  /**
+   * The menu container element containing menu items.
+   */
   menu: HTMLElement;
+  /** Called when the menu opens. */
   onOpen?: () => void;
+  /** Called when the menu closes. */
   onClose?: () => void;
 }
 
+/**
+ * An accessible menu button component following WAI-ARIA patterns.
+ *
+ * Combines a trigger button with `aria-haspopup="menu"` and a menu panel
+ * with `role="menu"`. Supports focus trapping, keyboard navigation
+ * (Arrow keys, Home, End, Enter, Space, Escape), and click-outside-to-close.
+ *
+ * @example
+ * ```typescript
+ * const menu = new MenuButton({
+ *   trigger: document.getElementById('menu-trigger'),
+ *   menu: document.getElementById('menu-panel'),
+ * });
+ * ```
+ */
 export class MenuButton {
   private trigger: HTMLElement;
   private menu: HTMLElement;
@@ -42,6 +68,9 @@ export class MenuButton {
   private menuKeydownHandler: (e: KeyboardEvent) => void = (e) => this.handleMenuKeyDown(e);
   private documentClickHandler: (e: MouseEvent) => void = (e) => this.handleDocumentClick(e);
 
+  /**
+   * @param options - Configuration options for the menu button
+   */
   constructor(options: MenuButtonOptions) {
     this.trigger = options.trigger;
     this.menu = options.menu;
@@ -77,6 +106,12 @@ export class MenuButton {
     }
   }
 
+  /**
+   * Open the menu.
+   *
+   * Activates the focus trap, stores the current focus target, and
+   * focuses the first menu item.
+   */
   public open(): void {
     if (this.isOpen) return;
 
@@ -100,6 +135,9 @@ export class MenuButton {
     this.onOpen?.();
   }
 
+  /**
+   * Close the menu and restore focus.
+   */
   public close(): void {
     if (!this.isOpen) return;
 
@@ -199,7 +237,7 @@ export class MenuButton {
         this.menuItems[this.currentIndex]?.focus();
         break;
       case 'Enter':
-      case ' ':
+      case ' ': {
         e.preventDefault();
         const currentItem = this.menuItems[this.currentIndex];
         if (currentItem) {
@@ -207,6 +245,7 @@ export class MenuButton {
           this.close();
         }
         break;
+      }
     }
   }
 
@@ -228,6 +267,9 @@ export class MenuButton {
     }
   }
 
+  /**
+   * Remove all event listeners and clean up the menu button.
+   */
   public destroy(): void {
     this.trigger.removeEventListener('click', this.triggerClickHandler);
     this.trigger.removeEventListener('keydown', this.triggerKeydownHandler);

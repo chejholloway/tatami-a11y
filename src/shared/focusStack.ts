@@ -8,6 +8,10 @@
 
 const MAX_STACK_SIZE = 20;
 
+/**
+ * A single entry in the focus restoration stack.
+ * Each entry is an {@link HTMLElement} that should receive focus when popped.
+ */
 type FocusStackEntry = HTMLElement;
 
 let focusStack: FocusStackEntry[] = [];

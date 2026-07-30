@@ -1,19 +1,76 @@
+/**
+ * @module tatami-a11y/components
+ *
+ * An accessible tree view component following the WAI-ARIA tree pattern.
+ *
+ * Supports expand/collapse of nested nodes, single and multi-selection,
+ * roving tabindex keyboard navigation, ArrowLeft/Right for collapse/expand,
+ * and typeahead navigation.
+ */
+
 import { createRovingTabindex } from '../shared/rovingTabindex.js';
 import type { RovingTabindexController } from '../shared/rovingTabindex.js';
 
+/**
+ * Options for configuring the {@link TreeView} component.
+ */
 export interface TreeViewOptions {
+  /**
+   * The root tree container element.
+   * Receives `role="tree"`.
+   */
   tree: HTMLElement;
+  /**
+   * When true, multiple tree nodes can be selected simultaneously.
+   * @default false
+   */
   multiselect?: boolean;
+  /**
+   * Called when a tree node is selected.
+   *
+   * @param node - The selected tree item element
+   * @param index - The flattened index of the selected node
+   */
   onSelect?: (node: HTMLElement, index: number) => void;
 }
 
+/**
+ * Internal representation of a tree node and its subtree.
+ */
 interface TreeNode {
+  /** The DOM element for this node. */
   element: HTMLElement;
+  /** The text label of this node. */
   label: string;
+  /** Child tree nodes. */
   children: TreeNode[];
+  /** Whether this node has no children. */
   isLeaf: boolean;
 }
 
+/**
+ * An accessible tree view component following the WAI-ARIA tree pattern.
+ *
+ * Manages a hierarchical tree with expand/collapse, single and multi-selection,
+ * roving tabindex navigation, and typeahead. Expects nested `ul`/`ol` elements
+ * for child subtrees.
+ *
+ * Keyboard navigation:
+ * - ArrowUp/Down: move between visible nodes
+ * - ArrowRight: expand a collapsed node
+ * - ArrowLeft: collapse an expanded node or move to parent
+ * - Home/End: jump to first/last visible node
+ * - Enter/Space: select the focused node
+ * - Typeahead: jump to a node by typing its label
+ *
+ * @example
+ * ```typescript
+ * const tree = new TreeView({
+ *   tree: document.getElementById('my-tree'),
+ *   multiselect: false,
+ * });
+ * ```
+ */
 export class TreeView {
   private tree: HTMLElement;
   private multiselect: boolean;
@@ -25,6 +82,9 @@ export class TreeView {
   private typeaheadTimer: ReturnType<typeof setTimeout> | null = null;
   private suppressOnSelect = false;
 
+  /**
+   * @param options - Configuration options for the tree view
+   */
   constructor(options: TreeViewOptions) {
     this.tree = options.tree;
     this.multiselect = options.multiselect ?? false;
@@ -281,10 +341,23 @@ export class TreeView {
     }
   }
 
+  /**
+   * Get all currently visible tree items.
+   *
+   * @returns Array of visible tree item elements
+   */
   getItems(): HTMLElement[] {
     return this.roving?.getItems() ?? [];
   }
 
+  /**
+   * Select a tree node by its flattened visible index.
+   *
+   * In multi-select mode, marks only the specified node as selected.
+   * In single-select mode, clears other selections.
+   *
+   * @param index - The flattened index of the node to select
+   */
   selectNode(index: number): void {
     const items = this.roving?.getItems();
     if (!items || index < 0 || index >= items.length) return;
@@ -300,6 +373,11 @@ export class TreeView {
     this.suppressOnSelect = false;
   }
 
+  /**
+   * Get the indices of all currently selected nodes.
+   *
+   * @returns Array of selected node indices
+   */
   getSelectedNodes(): number[] {
     const items = this.roving?.getItems();
     if (!items) return [];
@@ -312,6 +390,9 @@ export class TreeView {
     return result;
   }
 
+  /**
+   * Remove all event listeners and clean up the tree view.
+   */
   destroy(): void {
     if (!this.roving) return;
     this.tree.removeEventListener('keydown', this.treeKeydownHandler);

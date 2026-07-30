@@ -22,8 +22,6 @@ describe('focusStack', () => {
       element.focus();
       const activeBefore = document.activeElement;
       popFocusStack();
-      const activeAfter = document.activeElement;
-
       expect(activeBefore).toBe(element);
       document.body.removeChild(element);
     });

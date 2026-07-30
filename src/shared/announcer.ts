@@ -11,7 +11,14 @@ import { createSingleton } from './globalRegistry.js';
 const POLITE_KEY = '__a11y_announcer_polite__';
 const ASSERTIVE_KEY = '__a11y_announcer_assertive__';
 
+/**
+ * Options for the {@link announce} function.
+ */
 type AnnounceOptions = {
+  /**
+   * When true, uses the assertive live region (immediate announcement).
+   * When false (default), uses the polite live region (announced when idle).
+   */
   urgent?: boolean;
 };
 
@@ -88,7 +95,10 @@ export const announce = (message: string, options: AnnounceOptions = {}): void =
 /**
  * React hook for using the announcer.
  *
- * @returns The announce function
+ * Provides a stable reference to the {@link announce} function for use in React
+ * components without breaking the rules of hooks.
+ *
+ * @returns The {@link announce} function
  */
 export const useAnnouncer = (): typeof announce => {
   return announce;

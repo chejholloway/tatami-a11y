@@ -12,33 +12,78 @@
 import { announce } from '../shared/announcer.js';
 import { checkReducedMotion } from '../shared/reducedMotion.js';
 
+/**
+ * Options for configuring the {@link Carousel} component.
+ */
 export interface CarouselOptions {
+  /**
+   * The container element that wraps the carousel track and controls.
+   */
   container: HTMLElement;
+  /**
+   * When true, slides advance automatically on an interval.
+   * Auto-play is disabled when the user prefers reduced motion.
+   * Defaults to false.
+   */
   autoPlay?: boolean;
+  /**
+   * Interval in milliseconds between automatic slide advances.
+   * Defaults to 5000 (5 seconds).
+   */
   autoPlayInterval?: number;
+  /**
+   * Called when the active slide changes.
+   *
+   * @param index - The index of the newly active slide
+   */
   onSlideChange?: (index: number) => void;
 }
 
+/**
+ * An accessible carousel / slider component following WAI-ARIA patterns.
+ *
+ * Uses proper ARIA roles (`region`, `group`, `roledescription`), provides
+ * accessible controls (previous, next, play/pause), announces slide changes
+ * via live regions, and respects the user's reduced motion preference.
+ *
+ * The carousel expects DOM elements with data attributes:
+ * - `[data-carousel-track]` - the element wrapping the slides
+ * - `[data-carousel-slide]` - individual slide elements
+ * - `[data-carousel-prev]` - previous button (optional)
+ * - `[data-carousel-next]` - next button (optional)
+ * - `[data-carousel-playpause]` - play/pause button (optional)
+ *
+ * @example
+ * ```typescript
+ * const carousel = new Carousel({
+ *   container: document.getElementById('my-carousel'),
+ *   autoPlay: true,
+ * });
+ * ```
+ */
 export class Carousel {
   private container: HTMLElement;
   private autoPlay: boolean;
   private autoPlayInterval: number;
   private onSlideChange?: (index: number) => void;
-  
+
   private track!: HTMLElement;
   private slides: HTMLElement[] = [];
   private prevButton!: HTMLElement | null;
   private nextButton!: HTMLElement | null;
   private playPauseButton!: HTMLElement | null;
-  
+
   private currentIndex: number = 0;
-  private autoPlayTimer: any = null;
+  private autoPlayTimer: ReturnType<typeof setInterval> | null = null;
   private isPlaying: boolean = false;
 
   private prevClickHandler = () => this.prev();
   private nextClickHandler = () => this.next();
   private playPauseClickHandler = () => this.togglePlay();
 
+  /**
+   * @param options - Configuration options for the carousel
+   */
   constructor(options: CarouselOptions) {
     this.container = options.container;
     this.autoPlay = options.autoPlay ?? false;
@@ -104,6 +149,14 @@ export class Carousel {
     }
   }
 
+  /**
+   * Navigate to a specific slide by index.
+   *
+   * Wraps around at boundaries (negative indices go to the last slide).
+   *
+   * @param index - The target slide index
+   * @param shouldAnnounce - When true (default), announces the slide change via the live region
+   */
   public goToSlide(index: number, shouldAnnounce: boolean = true): void {
     if (this.slides.length === 0) return;
 
@@ -127,11 +180,21 @@ export class Carousel {
     this.onSlideChange?.(this.currentIndex);
   }
 
+  /**
+   * Advance to the next slide.
+   *
+   * Pauses auto-play if active (user interaction stops auto-advance).
+   */
   public next(): void {
     if (this.isPlaying) this.pause(); // User interaction pauses autoplay
     this.goToSlide(this.currentIndex + 1);
   }
 
+  /**
+   * Go back to the previous slide.
+   *
+   * Pauses auto-play if active (user interaction stops auto-advance).
+   */
   public prev(): void {
     if (this.isPlaying) this.pause(); // User interaction pauses autoplay
     this.goToSlide(this.currentIndex - 1);
@@ -155,6 +218,9 @@ export class Carousel {
     });
   }
 
+  /**
+   * Toggle between playing and paused states.
+   */
   public togglePlay(): void {
     if (this.isPlaying) {
       this.pause();
@@ -163,6 +229,11 @@ export class Carousel {
     }
   }
 
+  /**
+   * Start auto-advancing slides.
+   *
+   * Does nothing if there is only one slide or if the user prefers reduced motion.
+   */
   public play(): void {
     if (this.slides.length <= 1) return;
     const prefersReducedMotion = checkReducedMotion();
@@ -181,6 +252,9 @@ export class Carousel {
     }, this.autoPlayInterval);
   }
 
+  /**
+   * Pause auto-advancement.
+   */
   public pause(): void {
     this.isPlaying = false;
     if (this.playPauseButton) {
@@ -193,6 +267,11 @@ export class Carousel {
     }
   }
 
+  /**
+   * Remove all event listeners and clean up the carousel.
+   *
+   * Call this when removing the carousel from the DOM to prevent memory leaks.
+   */
   public destroy(): void {
     if (this.autoPlayTimer) {
       clearInterval(this.autoPlayTimer);

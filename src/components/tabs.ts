@@ -12,11 +12,37 @@
 import { announce } from '../shared/announcer.js';
 import { checkReducedMotion } from '../shared/reducedMotion.js';
 
+/**
+ * Options for configuring the {@link Tabs} component.
+ */
 export interface TabOptions {
+  /**
+   * The container element that holds the tab buttons.
+   * Receives `role="tablist"`.
+   */
   tabList: HTMLElement;
+  /**
+   * Called when the active tab changes.
+   *
+   * @param index - The index of the newly activated tab
+   */
   onTabChange?: (index: number) => void;
 }
 
+/**
+ * An accessible tabs component following the WAI-ARIA tabs pattern.
+ *
+ * Manages a set of tab buttons (`role="tab"`) and their associated tab panels
+ * (`role="tabpanel"`). Supports keyboard navigation (Arrow keys, Home, End)
+ * and announces tab changes to assistive technology.
+ *
+ * @example
+ * ```typescript
+ * const tabs = new Tabs({
+ *   tabList: document.getElementById('my-tablist'),
+ * });
+ * ```
+ */
 export class Tabs {
   private tabList: HTMLElement;
   private tabs!: HTMLElement[];
@@ -26,6 +52,9 @@ export class Tabs {
   private tabClickHandlers: Array<() => void> = [];
   private tabKeydownHandlers: Array<(e: KeyboardEvent) => void> = [];
 
+  /**
+   * @param options - Configuration options for the tabs component
+   */
   constructor(options: TabOptions) {
     this.tabList = options.tabList;
     this.onTabChange = options.onTabChange;
@@ -46,7 +75,7 @@ export class Tabs {
           return document.getElementById(panelId);
         }
         return null;
-      }) as any;
+      }) as HTMLElement[];
 
     // Set up each tab
     this.tabs.forEach((tab, index) => {
@@ -77,6 +106,14 @@ export class Tabs {
     this.activateTab(0, false);
   }
 
+  /**
+   * Activate a tab by index.
+   *
+   * Deactivates the current tab, activates the new one, and focuses it.
+   *
+   * @param index - The index of the tab to activate
+   * @param shouldAnnounce - When true (default), announces the tab change
+   */
   public activateTab(index: number, shouldAnnounce: boolean = true): void {
     if (index < 0 || index >= this.tabs.length) return;
 
@@ -141,16 +178,18 @@ export class Tabs {
 
   private handleTabKeyDown(e: KeyboardEvent, index: number): void {
     switch (e.key) {
-      case 'ArrowRight':
+      case 'ArrowRight': {
         e.preventDefault();
         const nextIndex = (index + 1) % this.tabs.length;
         this.activateTab(nextIndex);
         break;
-      case 'ArrowLeft':
+      }
+      case 'ArrowLeft': {
         e.preventDefault();
         const prevIndex = (index - 1 + this.tabs.length) % this.tabs.length;
         this.activateTab(prevIndex);
         break;
+      }
       case 'Home':
         e.preventDefault();
         this.activateTab(0);
@@ -162,10 +201,18 @@ export class Tabs {
     }
   }
 
+  /**
+   * Get the index of the currently active tab.
+   *
+   * @returns The active tab index
+   */
   public getCurrentIndex(): number {
     return this.currentIndex;
   }
 
+  /**
+   * Remove all event listeners and clean up the tabs component.
+   */
   public destroy(): void {
     this.tabs.forEach((tab, index) => {
       tab.removeEventListener('click', this.tabClickHandlers[index]);
