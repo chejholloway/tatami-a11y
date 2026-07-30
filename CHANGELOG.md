@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.1](https://github.com/chejholloway/tatami-a11y/compare/v1.0.0...v1.0.1) (2026-07-30)
+
+
+### Bug Fixes
+
+* **a11y:** 🎨 fix WCAG AA color contrast on toast buttons, carousel slides, dark mode tabs, and command palette, ♿ add aria-expanded init, manage datepicker aria-hidden, add live region roles, 🔄 migrate all story imports and test script to .mjs, 🗑️ remove redundant aria-expanded from a11y test fixture ([502c706](https://github.com/chejholloway/tatami-a11y/commit/502c70655a3b4258bb93f5e1f96b766a0014115b))
+* **demo:** 🎨 fix kbd opacity contrast in demo/index.html, 🔧 update package.json entry points and metadata, 📝 polish README ([4863042](https://github.com/chejholloway/tatami-a11y/commit/4863042f308dea5efe1b67186b53b411eefa8df7))
+* **storybook:** 🎭 fix version mismatch and JavaScript functionality across 16 components ([3129f31](https://github.com/chejholloway/tatami-a11y/commit/3129f31885d1871168fc0f449627dcba2ab7734b))
+
 ## [1.0.0](https://github.com/chejholloway/tatani-a11y/compare/v0.2.1...v1.0.0) (2026-07-30)
 
 
