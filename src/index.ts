@@ -32,6 +32,8 @@ export { Modal } from './components/modal.js';
 export { Accordion } from './components/accordion.js';
 export { Toast } from './components/toast.js';
 export { MenuButton } from './components/menuButton.js';
+export { MultiselectListbox } from './components/multiselectListbox.js';
+export type { MultiselectListboxOptions } from './components/multiselectListbox.js';
 export { Combobox } from './components/combobox.js';
 export { Tooltip } from './components/tooltip.js';
 export { Carousel } from './components/carousel.js';

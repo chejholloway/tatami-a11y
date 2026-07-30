@@ -917,7 +917,6 @@
     list-style: none;
     padding: 0;
     margin-block-end: var(--spacing-md);
-    position: relative;
   }
 
   #reorderable-demo [role="listitem"] {
@@ -940,49 +939,6 @@
 
   #reorderable-demo .label {
     pointer-events: none;
-  }
-
-  /* ── Multi-Select Listbox ─────────────────────────────────────────────── */
-  .msl-listbox {
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-sm);
-    max-block-size: 220px;
-    overflow-y: auto;
-    user-select: none;
-    background: var(--color-surface);
-    margin-bottom: var(--spacing-sm);
-  }
-
-  .msl-listbox [role="option"] {
-    padding: var(--spacing-sm) var(--spacing-md);
-    cursor: pointer;
-    border-bottom: 1px solid var(--color-border);
-    transition: background var(--transition-fast);
-  }
-
-  .msl-listbox [role="option"]:last-child {
-    border-bottom: none;
-  }
-
-  .msl-listbox [role="option"]:hover {
-    background: var(--color-hover);
-  }
-
-  .msl-listbox [role="option"]:focus,
-  .msl-listbox [role="option"]:focus-visible {
-    outline: 2px solid var(--color-primary);
-    outline-offset: -2px;
-    background: color-mix(in srgb, var(--color-primary) 10%, transparent);
-  }
-
-  .msl-listbox [role="option"][aria-selected="true"] {
-    background: var(--color-primary);
-    color: white;
-  }
-
-  .msl-listbox [role="option"][aria-selected="true"]:focus,
-  .msl-listbox [role="option"][aria-selected="true"]:focus-visible {
-    outline-color: color-mix(in srgb, var(--color-primary) 80%, black);
   }
 
   /* ── Date Picker ──────────────────────────────────────────────────────── */

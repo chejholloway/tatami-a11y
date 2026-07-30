@@ -544,6 +544,7 @@ button {
   list-style: none;
   padding: 0;
   margin-bottom: 1rem;
+  position: relative;
 }
 
 #reorderable-demo [role="listitem"] {
@@ -566,5 +567,60 @@ button {
 
 #reorderable-demo .label {
   pointer-events: none;
+}
+
+/* Multi-Select Listbox */
+.msl-listbox {
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  max-height: 220px;
+  overflow-y: auto;
+  user-select: none;
+  background: white;
+  margin-bottom: 0.75rem;
+}
+
+.msl-listbox [role="option"] {
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+  border-bottom: 1px solid #e0e0e0;
+  transition: background 0.15s ease;
+}
+
+.msl-listbox [role="option"]:last-child {
+  border-bottom: none;
+}
+
+.msl-listbox [role="option"]:hover {
+  background: #f0f0f0;
+}
+
+.msl-listbox [role="option"]:focus,
+.msl-listbox [role="option"]:focus-visible {
+  outline: 2px solid #1a7f37;
+  outline-offset: -2px;
+  background: #e8f5e9;
+}
+
+.msl-listbox [role="option"][aria-selected="true"] {
+  background: #1a7f37;
+  color: white;
+}
+
+.msl-listbox [role="option"][aria-selected="true"]:focus,
+.msl-listbox [role="option"][aria-selected="true"]:focus-visible {
+  outline-color: #0d5e1e;
+}
+
+.reorderable-dragging {
+  opacity: 0.4;
+}
+
+.reorderable-drop-indicator {
+  position: absolute;
+  z-index: 10;
+  background: #1a7f37;
+  pointer-events: none;
+  display: none;
 }
 

@@ -365,6 +365,43 @@
     <div class="output" id="cmd-output">Command palette operations will appear here</div>
   </div>
 
+  <!-- ── Multi-Select Listbox ──────────────────────────────────────── -->
+  <div class="section">
+    <h2>☑️ Multi-Select Listbox</h2>
+    <p class="description">Accessible listbox with single/multi-select, keyboard navigation, Shift+Click range, Ctrl+Click toggle, and typeahead.</p>
+    <div class="controls">
+      <button class="btn-secondary" id="msl-single-btn">Single Select</button>
+      <button class="btn-secondary" id="msl-multi-btn">Multi Select</button>
+      <button class="btn-secondary" id="msl-select-all-btn">Select All</button>
+      <button class="btn-secondary" id="msl-clear-btn">Clear</button>
+    </div>
+    <div id="msl-listbox" class="msl-listbox">
+      <div>🍎 Apples</div>
+      <div>🍌 Bananas</div>
+      <div>🍒 Cherries</div>
+      <div>🍇 Grapes</div>
+      <div>🥝 Kiwis</div>
+    </div>
+    <div class="output" id="msl-output">Selected: none</div>
+  </div>
+
+  <!-- ── Reorderable List ──────────────────────────────────────────── -->
+  <div class="section">
+    <h2>🔀 Reorderable List</h2>
+    <p class="description">Accessible reorderable list with Ctrl+ArrowUp/Down, Ctrl+Home/End, and live announcements. Drag and drop is also supported.</p>
+    <div class="controls">
+      <button class="btn-secondary" id="reorder-reset-btn">Reset Order</button>
+    </div>
+    <ul id="reorderable-demo">
+      <li><span class="label">🍎 Apples</span></li>
+      <li><span class="label">🍌 Bananas</span></li>
+      <li><span class="label">🍒 Cherries</span></li>
+      <li><span class="label">🍇 Grapes</span></li>
+      <li><span class="label">🍊 Oranges</span></li>
+    </ul>
+    <div class="output" id="reorderable-output">Use Ctrl+ArrowUp/Down to reorder</div>
+  </div>
+
   <!-- ── Portals (overlays rendered outside section flow) ─────────── -->
 
   <!-- Focus Trap demo modal -->
@@ -416,7 +453,7 @@
       activateFocusTrap, deactivateFocusTrap,
       createSingleton, registerCleanup,
       Dropdown, Tabs, Modal, Accordion, Toast,
-      MenuButton, Combobox, Tooltip, Carousel,
+      MenuButton, MultiselectListbox, Combobox, Tooltip, Carousel,
       Dialog, Disclosure, DatePicker, CommandPalette, TreeView,
     } from '../dist/index.js';
 
@@ -558,6 +595,46 @@
     document.querySelectorAll('.menu-button-item').forEach((item, i) =>
       item.addEventListener('click', () => { mbOutput.textContent = `Menu Button: selected Option ${i + 1}`; })
     );
+
+    // ── Multi-Select Listbox ──────────────────────────────────────────────
+    const mslOutput = document.getElementById('msl-output');
+    const mslListbox = document.getElementById('msl-listbox');
+    let mslInstance = new MultiselectListbox({
+      listbox: mslListbox,
+      onSelect: (indices) => {
+        const labels = mslInstance.getItems().filter((_, i) => indices.includes(i)).map(el => el.textContent?.trim()).join(', ');
+        mslOutput.textContent = labels ? `Selected: ${labels}` : 'Selected: none';
+      },
+    });
+    document.getElementById('msl-single-btn').addEventListener('click', () => {
+      mslInstance.destroy();
+      mslInstance = new MultiselectListbox({
+        listbox: mslListbox,
+        onSelect: (indices) => {
+          const labels = mslInstance.getItems().filter((_, i) => indices.includes(i)).map(el => el.textContent?.trim()).join(', ');
+          mslOutput.textContent = labels ? `Selected: ${labels}` : 'Selected: none';
+        },
+      });
+      mslOutput.textContent = 'Switched to single-select mode';
+    });
+    document.getElementById('msl-multi-btn').addEventListener('click', () => {
+      mslInstance.destroy();
+      mslInstance = new MultiselectListbox({
+        listbox: mslListbox,
+        multiselect: true,
+        onSelect: (indices) => {
+          const labels = mslInstance.getItems().filter((_, i) => indices.includes(i)).map(el => el.textContent?.trim()).join(', ');
+          mslOutput.textContent = labels ? `Selected: ${labels}` : 'Selected: none';
+        },
+      });
+      mslOutput.textContent = 'Switched to multi-select mode';
+    });
+    document.getElementById('msl-select-all-btn').addEventListener('click', () => {
+      mslInstance.selectAll();
+    });
+    document.getElementById('msl-clear-btn').addEventListener('click', () => {
+      mslInstance.clearSelection();
+    });
 
     // ── Combobox ───────────────────────────────────────────────────────────
     const comboboxOutput = document.getElementById('combobox-output');

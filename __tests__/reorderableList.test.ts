@@ -12,6 +12,14 @@ function buildFixture(): { list: HTMLElement } {
   return { list };
 }
 
+function dragEvent(type: string, opts: { clientX?: number; clientY?: number } = {}): Event {
+  const e = new Event(type, { bubbles: true, cancelable: true }) as any;
+  e.dataTransfer = { effectAllowed: '', setData: () => {}, getData: () => '' };
+  if (opts.clientX !== undefined) e.clientX = opts.clientX;
+  if (opts.clientY !== undefined) e.clientY = opts.clientY;
+  return e;
+}
+
 function getLabels(instance: ReorderableList): string[] {
   return instance.getItems().map(el => el.textContent?.trim() || '');
 }
@@ -102,7 +110,9 @@ describe('ReorderableList', () => {
     it('should focus first item on Home', () => {
       instance = new ReorderableList({ list });
       const items = instance.getItems();
-      items[3].dispatchEvent(new KeyboardEvent('keydown', { key: 'Home', bubbles: true }));
+      list.dispatchEvent(new KeyboardEvent('keydown', { key: 'End', bubbles: true }));
+      expect(document.activeElement).toBe(items[3]);
+      list.dispatchEvent(new KeyboardEvent('keydown', { key: 'Home', bubbles: true }));
       expect(document.activeElement).toBe(items[0]);
     });
 
@@ -266,6 +276,113 @@ describe('ReorderableList', () => {
       instance = new ReorderableList({ list });
       instance.destroy();
       expect(() => instance.destroy()).not.toThrow();
+    });
+  });
+
+  describe('drag and drop', () => {
+    beforeEach(() => {
+      instance = new ReorderableList({ list, dragAndDrop: true });
+    });
+
+    it('should set draggable on items when dragAndDrop is true', () => {
+      instance!.destroy();
+      instance = new ReorderableList({ list, dragAndDrop: true });
+      instance.getItems().forEach(el => {
+        expect(el.draggable).toBe(true);
+      });
+    });
+
+    it('should NOT set draggable when dragAndDrop is false', () => {
+      instance!.destroy();
+      instance = new ReorderableList({ list });
+      instance.getItems().forEach(el => {
+        expect(el.draggable).toBe(false);
+      });
+    });
+
+    it('should start drag with dragging class', () => {
+      const items = instance!.getItems();
+      const item = items[0];
+      item.dispatchEvent(dragEvent('dragstart'));
+      expect(item.classList.contains('reorderable-dragging')).toBe(true);
+    });
+
+    it('should reorder on drop before target', () => {
+      const items = instance!.getItems();
+      const dragged = items[0];
+      const target = items[2];
+
+      dragged.dispatchEvent(dragEvent('dragstart'));
+
+      const rect = { top: 100, bottom: 140, left: 0, right: 200, width: 200, height: 40, x: 0, y: 100, toJSON: () => {} };
+      vi.spyOn(target, 'getBoundingClientRect').mockReturnValue(rect);
+
+      target.dispatchEvent(dragEvent('dragover', { clientY: 105 }));
+      target.dispatchEvent(dragEvent('drop', { clientY: 105 }));
+
+      const result = instance!.getItems();
+      expect(result[0]).toBe(items[1]);
+      expect(result[1]).toBe(items[0]);
+      expect(result[2]).toBe(items[2]);
+    });
+
+    it('should reorder on drop after target', () => {
+      const items = instance!.getItems();
+      const dragged = items[0];
+      const target = items[1];
+
+      dragged.dispatchEvent(dragEvent('dragstart'));
+
+      const rect = { top: 100, bottom: 140, left: 0, right: 200, width: 200, height: 40, x: 0, y: 100, toJSON: () => {} };
+      vi.spyOn(target, 'getBoundingClientRect').mockReturnValue(rect);
+
+      target.dispatchEvent(dragEvent('dragover', { clientY: 130 }));
+      target.dispatchEvent(dragEvent('drop', { clientY: 130 }));
+
+      const result = instance!.getItems();
+      expect(result[1]).toBe(items[0]);
+      expect(result[0]).toBe(items[1]);
+    });
+
+    it('should be a no-op when dropping on the same item', () => {
+      const items = instance!.getItems();
+      const item = items[0];
+
+      item.dispatchEvent(dragEvent('dragstart'));
+      item.dispatchEvent(dragEvent('drop', { clientY: 0 }));
+
+      expect(instance!.getItems().map(el => el.textContent?.trim())).toEqual(['Apples', 'Bananas', 'Cherries', 'Grapes']);
+    });
+
+    it('should clean up on dragend', () => {
+      const items = instance!.getItems();
+      const item = items[0];
+
+      item.dispatchEvent(dragEvent('dragstart'));
+      expect(item.classList.contains('reorderable-dragging')).toBe(true);
+
+      item.dispatchEvent(dragEvent('dragend'));
+      expect(item.classList.contains('reorderable-dragging')).toBe(false);
+      expect(instance!.getItems().length).toBe(4);
+    });
+
+    it('should fire onReorder after drop', () => {
+      const onReorder = vi.fn();
+      instance = new ReorderableList({ list, dragAndDrop: true, onReorder });
+      const items = instance.getItems();
+      const item = items[0];
+
+      item.dispatchEvent(dragEvent('dragstart'));
+
+      const rect = { top: 100, bottom: 140, left: 0, right: 200, width: 200, height: 40, x: 0, y: 100, toJSON: () => {} };
+      vi.spyOn(items[2], 'getBoundingClientRect').mockReturnValue(rect);
+
+      items[2].dispatchEvent(dragEvent('drop', { clientY: 105 }));
+
+      expect(onReorder).toHaveBeenCalledTimes(1);
+      const [resultItems, movedItem, newIndex] = onReorder.mock.calls[0];
+      expect(movedItem).toBe(item);
+      expect(newIndex).toBe(2);
     });
   });
 });

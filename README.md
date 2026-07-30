@@ -645,6 +645,67 @@ Boundary keys are no-ops at the limits (first item can't move up, last item can'
 
 ---
 
+### `MultiselectListbox`
+
+A WAI-ARIA compliant listbox with single-select and multi-select modes, keyboard navigation, Shift+Click range selection, Ctrl+Click toggle, and typeahead.
+
+```js
+import { MultiselectListbox } from 'tatami-a11y';
+
+const msl = new MultiselectListbox({
+  listbox: document.getElementById('my-listbox'),
+  multiselect: true,
+  onSelect: (indices) => {
+    console.log('Selected indices:', indices);
+  },
+});
+
+// Public API
+msl.getItems();              // option elements
+msl.getSelectedIndices();    // [0, 2, 3]
+msl.selectAll();             // select all (multi only)
+msl.clearSelection();        // deselect all
+msl.destroy();
+```
+
+**Required HTML — container with `div` children:**
+```html
+<div id="my-listbox">
+  <div>Apples</div>
+  <div>Bananas</div>
+  <div>Cherries</div>
+</div>
+```
+
+The component sets `role="listbox"` on the container, `role="option"` and `aria-selected` on each child. In multi-select mode it also sets `aria-multiselectable="true"` on the container. Selection state lives entirely in `aria-selected` attributes on the DOM nodes.
+
+**Keyboard — single-select (`multiselect: false`):**
+
+| Key | Action |
+|-----|--------|
+| `ArrowDown` / `ArrowUp` | Move focus and select |
+| `Home` / `End` | First / last, select |
+| `Space` | Select focused |
+| Character key | Typeahead |
+
+**Keyboard — multi-select (`multiselect: true`):**
+
+| Key | Action |
+|-----|--------|
+| `ArrowDown` / `ArrowUp` | Move focus only |
+| `Ctrl+ArrowDown` / `Ctrl+ArrowUp` | Move focus only |
+| `Space` | Toggle focused item |
+| `Ctrl+Space` | Toggle focused item |
+| `Shift+ArrowDown` / `Shift+ArrowUp` | Extend / contract selection range |
+| `Shift+Click` | Range select from anchor to clicked |
+| `Ctrl+Click` | Toggle clicked, preserve others |
+| Plain click | Select only clicked, clear rest |
+| `Ctrl+A` | Select all |
+| `Shift+Home` / `Shift+End` | Extend range to first / last |
+| Character key | Typeahead |
+
+---
+
 ## Demo
 
 Try the live demo at [tatami-a11y-demo.surge.sh](https://tatami-a11y-demo.surge.sh)
