@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.3](https://github.com/chejholloway/tatami-a11y/compare/v1.0.2...v1.0.3) (2026-07-31)
+
+
+### Features
+
+* **a11y:** 🎭 add Storybook test-runner with axe-core browser-level a11y checks, ♿ fix combobox missing `role="combobox"`, 🧪 update unit test assertion, 🔧 add orchestration and verbose scripts ([da62949](https://github.com/chejholloway/tatami-a11y/commit/da629491d1405c23b89a3d6fd2767b665c475f19))
+* **a11y:** 🎭 add Storybook test-runner with axe-core browser-level a11y checks, ♿ fix combobox missing `role="combobox"`, 🧪 update unit test assertion, 🔧 add orchestration and verbose scripts ([fcdc23c](https://github.com/chejholloway/tatami-a11y/commit/fcdc23c50f4ce8601631f3e8295b4f125eadab90))
+
 ### [1.0.2](https://github.com/chejholloway/tatami-a11y/compare/v1.0.1...v1.0.2) (2026-07-30)
 
 ### [1.0.1](https://github.com/chejholloway/tatami-a11y/compare/v1.0.0...v1.0.1) (2026-07-30)
