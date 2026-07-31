@@ -58,7 +58,7 @@ export const Default: StoryObj = {
       if (selectAllBtn) {
         selectAllBtn.addEventListener('click', () => {
           const items = Array.from(listbox.children) as HTMLElement[];
-          items.forEach((item, idx) => item.setAttribute('aria-selected', 'true'));
+          items.forEach((item, _idx) => item.setAttribute('aria-selected', 'true'));
         });
       }
       

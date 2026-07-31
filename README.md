@@ -1,40 +1,31 @@
 # tatami-a11y
 
-[![CI](https://github.com/chejholloway/tatami-a11y/actions/workflows/ci.yml/badge.svg)](https://github.com/chejholloway/tatami-a11y/actions/workflows/ci.yml)
-[![npm version](https://img.shields.io/npm/v/tatami-a11y)](https://www.npmjs.com/package/tatami-a11y)
-[![license](https://img.shields.io/npm/l/tatami-a11y)](LICENSE)
-[![tested with axe-core](https://img.shields.io/badge/tested%20with-axe--core-%231a1a1a)](https://www.deque.com/axe/)
-[![WCAG AA](https://img.shields.io/badge/WCAG%202.2-AA-%231a7f37)](https://www.w3.org/TR/WCAG22/)
-[![vitest](https://img.shields.io/badge/test%20runner-vitest-6B9B3F)](https://vitest.dev/)
+<!-- keep your existing badge line here exactly as it is: CI, npm version, license, tested with axe-core, WCAG AA, vitest -->
 
 Framework-agnostic, accessibility-first UI primitives and components for vanilla JavaScript.
 
-**16 components**, **6 shared primitives**, **700+ unit tests**, **16 browser-level Storybook integration tests with a11y checks**, **zero runtime dependencies** — all implementing WAI-ARIA authoring practices with verified WCAG 2.2 AA compliance.
+**16 components, 6 shared primitives, 700+ unit tests, 16 browser-level Storybook integration tests with a11y checks, zero runtime dependencies**, all implementing WAI-ARIA authoring practices with verified WCAG 2.2 AA compliance.
 
 ## The Problem
 
 Every accessible interactive component needs the same hard, easy-to-get-wrong infrastructure:
 
-- **Live regions** — announcing to screen readers without stealing focus
-- **Focus restoration** — returning focus when transient UI closes, even when the trigger element is gone
-- **Focus trapping** — keeping keyboard navigation inside modals and dialogs
-- **Reduced motion** — respecting system preferences without manual checks everywhere
-- **Roving tabindex** — arrow-key navigation for lists, grids, trees, and tablists
-- **HMR-safe singletons** — surviving hot module reloads without duplicating DOM nodes or leaking listeners
+- **Live regions:** announcing to screen readers without stealing focus
+- **Focus restoration:** returning focus when transient UI closes, even when the trigger element is gone
+- **Focus trapping:** keeping keyboard navigation inside modals and dialogs
+- **Reduced motion:** respecting system preferences without manual checks everywhere
+- **Roving tabindex:** arrow-key navigation for lists, grids, trees, and tablists
+- **HMR-safe singletons:** surviving hot module reloads without duplicating DOM nodes or leaking listeners
 
 Most projects rebuild these from scratch for each component. The tenth reimplementation of "restore focus on close" is exactly where someone forgets the stale-reference case and ships a dropdown that silently strands keyboard focus on `<body>`.
 
 tatami-a11y extracts these shared primitives into a single, tested foundation, then builds fully accessible components on top of them. Every component in the library relies on the same battle-tested primitives, so a bug fixed in one is fixed in all.
 
-<img
-  src="assets/problem.png"
-  alt="Diagram comparing reimplementing accessibility per component vs. building on shared tested primitives."
-  style="display:block; margin:0 auto; width:100%; max-width:900px; height:auto;"
-/>
+![Diagram comparing reimplementing accessibility per component vs. building on shared tested primitives](./assets/shared_a11y_primitives_problem.png)
 
 ## Why "tatami"?
 
-A tatami is a traditional Japanese floor mat — a standardized, interchangeable module that serves as the foundation for an entire room. You don't notice the tatami, but everything stable is built on top of it. Same idea here: these primitives are the foundation; the components are the room you actually live in.
+A tatami is a traditional Japanese floor mat, a standardized, interchangeable module that serves as the foundation for an entire room. You don't notice the tatami, but everything stable is built on top of it. Same idea here: these primitives are the foundation, the components are the room you actually live in.
 
 ## Why Framework-Agnostic
 
@@ -49,47 +40,47 @@ pnpm install tatami-a11y
 ```js
 import { announce, pushFocusStack, popFocusStack } from 'tatami-a11y';
 
-// Screen reader announcements — polite by default, assertive when urgent
+// Screen reader announcements: polite by default, assertive when urgent
 announce('Changes saved');
 announce('Error: something went wrong', { urgent: true });
 
 // Focus restoration for transient UI (modals, dropdowns, dialogs)
 pushFocusStack(triggerElement);
 // ... open your modal/dropdown ...
-popFocusStack(); // focus returns to triggerElement — or the nearest valid fallback
+popFocusStack(); // focus returns to triggerElement, or the nearest valid fallback
 ```
 
 ## Deployed Sites
 
-- **Storybook** — https://tatami-a11y-storybook.surge.sh (interactive component examples with a11y addon)
-- **Documentation** — https://tatami-a11y-docs.surge.sh (full API docs generated by TypeDoc)
-- **Demo** — https://tatami-a11y-demo.surge.sh (live demo with all components)
+- **Storybook:** [tatami-a11y-storybook.surge.sh](https://tatami-a11y-storybook.surge.sh), interactive component examples with the a11y addon
+- **Documentation:** [tatami-a11y-docs.surge.sh](https://tatami-a11y-docs.surge.sh), full API docs generated by TypeDoc
+- **Demo:** [tatami-a11y-demo.surge.sh](https://tatami-a11y-demo.surge.sh), live demo with all components
 
 ## What's Included
 
 ### Shared Primitives
 
 | Primitive | Description |
-|-----------|-------------|
+|---|---|
 | `announce()` | Screen reader announcements via ARIA live regions. Supports polite/assertive routing, deduplication, and proper `aria-atomic` semantics. |
 | `checkReducedMotion()` / `onReducedMotionChange()` | System-level reduced motion detection with change listeners. Every component respects this automatically. |
-| `pushFocusStack()` / `popFocusStack()` | Focus restoration with stale-reference fallback chain — if the trigger element is gone, it walks up to the nearest focusable ancestor. |
+| `pushFocusStack()` / `popFocusStack()` | Focus restoration with stale-reference fallback chain, if the trigger element is gone, it walks up to the nearest focusable ancestor. |
 | `activateFocusTrap()` / `deactivateFocusTrap()` | Modal focus trapping with first/last-element boundary detection and proper Tab/Shift+Tab cycling. |
 | `createRovingTabindex()` | Arrow-key navigation for lists, grids, trees, and tablists. Supports orientation, column-count, wrapping, and custom key handlers. |
-| `createSingleton()` / `registerCleanup()` | HMR-safe singleton factory — components survive hot reloads without leaking listeners or duplicating DOM nodes. |
+| `createSingleton()` / `registerCleanup()` | HMR-safe singleton factory, components survive hot reloads without leaking listeners or duplicating DOM nodes. |
 
 ### Components
 
 | Component | ARIA Pattern | Key features |
-|-----------|-------------|--------------|
+|---|---|---|
 | Accordion | `aria-expanded` / `aria-controls` | Arrow-key navigation, Home/End, live-region announcements |
 | Carousel | `region` / `group` / `aria-roledescription` | Auto-play, reduced-motion respect, slide announcements |
-| Combobox | combobox + listbox | Type-to-filter, Arrow-key navigation, active-descendant management |
+| Combobox | combobox + listbox | Type-to-filter, arrow-key navigation, active-descendant management |
 | CommandPalette | combobox + dialog-modal | Ctrl+K global hotkey, grouping, focus trap, live-region count |
 | DatePicker | dialog + grid | Full keyboard navigation, focus trap, month navigation |
-| Dialog | non-modal dialog | Focus management *without* trapping — users can tab out |
+| Dialog | non-modal dialog | Focus management without trapping, users can tab out |
 | Disclosure | `aria-expanded` / `aria-controls` | Simple show/hide with proper semantics |
-| Dropdown | menu + menuitem | Focus trap, Arrow-key navigation, Escape-to-close |
+| Dropdown | menu + menuitem | Focus trap, arrow-key navigation, Escape-to-close |
 | MenuButton | `aria-haspopup="menu"` | Menu-button pattern, focus management |
 | Modal | dialog-modal | Focus trap, backdrop, Escape-to-close, focus restoration |
 | MultiselectListbox | listbox (multi-select) | Shift+Click range, Ctrl+Click toggle, typeahead |
@@ -97,29 +88,29 @@ popFocusStack(); // focus returns to triggerElement — or the nearest valid fal
 | Tabs | tablist + tab + tabpanel | Arrow-key navigation, Home/End, automatic tabpanel visibility |
 | Toast | live region + `role="alert"` | Auto-dismiss, Alt+T jump shortcut, stack management |
 | Tooltip | `aria-describedby` | Hover/focus trigger, Escape dismiss, reduced-motion respect |
-| TreeView | tree + treeitem | Expand/collapse, Arrow-key navigation, typeahead, single/multi-select |
+| TreeView | tree + treeitem | Expand/collapse, arrow-key navigation, typeahead, single/multi-select |
 
 ## Compliance
 
-- **716 unit tests** across **23 test files** (jsdom via vitest), all passing
-- **16 Storybook integration tests** — each component rendered in a real Playwright browser and verified for interactive behavior
-- **Built-in a11y checks** — every Storybook story is automatically audited with axe-core via `@storybook/addon-a11y`, surfaced inline in the test UI and blocked in CI
-- **WCAG 2.2 AA** — verified with axe-core (zero violations, zero incompletes)
-- **WAI-ARIA** — every component follows the relevant APG authoring practice
-- **Reduced motion** — every animation respects `prefers-reduced-motion`
-- **Keyboard navigation** — every interactive element is fully operable by keyboard
-- **Screen reader** — every state change is announced via live regions
+- **716 unit tests** across 23 test files (jsdom via vitest), all passing
+- **16 Storybook integration tests**, each component rendered in a real Playwright browser and verified for interactive behavior
+- **Built-in a11y checks:** every Storybook story is automatically audited with axe-core via `@storybook/addon-a11y`, surfaced inline in the test UI and blocked in CI
+- **WCAG 2.2 AA:** zero violations and zero incompletes detected by automated axe-core scanning across all Storybook stories (automated scanning covers a meaningful subset of WCAG criteria, not the full spec, manual screen reader testing is the natural next layer on top of this)
+- **WAI-ARIA:** every component follows the relevant APG authoring practice
+- **Reduced motion:** every animation respects `prefers-reduced-motion`
+- **Keyboard navigation:** every interactive element is fully operable by keyboard
+- **Screen reader:** every state change is announced via live regions
 
 ## Development
 
 ```bash
 pnpm install
 pnpm run build          # Build to dist/ (ESM + CJS + type declarations)
-pnpm run dev            # Watch mode
-pnpm run test           # Run 700+ unit tests (vitest, jsdom)
-pnpm run test:storybook # Run 16 browser-level Storybook integration tests (vitest --project=storybook, Playwright)
-pnpm run storybook      # Start Storybook on port 6006
-pnpm run doc            # Build API documentation
+pnpm run dev             # Watch mode
+pnpm run test            # Run 700+ unit tests (vitest, jsdom)
+pnpm run test:storybook  # Run 16 browser-level Storybook integration tests (vitest --project=storybook, Playwright)
+pnpm run storybook       # Start Storybook on port 6006
+pnpm run doc             # Build API documentation
 ```
 
 ## Deployment
@@ -131,8 +122,8 @@ pnpm run deploy:docs        # Build and deploy API docs to Surge
 
 ## Browser Support
 
-Targets modern browsers (ES2020): Chrome 80+, Firefox 80+, Safari 14.1+, Edge 80+. Requires DOM APIs — not designed for server-side rendering.
+Targets modern browsers (ES2020): Chrome 80+, Firefox 80+, Safari 14.1+, Edge 80+. Requires DOM APIs, not designed for server-side rendering.
 
 ## License
 
-MIT &mdash; see [LICENSE](LICENSE).
+MIT, see LICENSE.

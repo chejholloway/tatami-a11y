@@ -7,7 +7,7 @@ if (fs.existsSync('failing-tests.md')) {
 }
 
 try {
-  const output = execSync('vitest run --reporter=verbose', {
+  const output = execSync('vitest run --reporter=verbose --config vitest.config.mjs', {
     encoding: 'utf8',
     stdio: 'pipe'
   });

@@ -14,13 +14,16 @@ export default defineConfig({
           name: 'unit',
           environment: 'jsdom',
           globals: true,
-          tsconfig: './tsconfig.test.json',
+          tsconfig: './config/tsconfig.test.json',
           include: ['__tests__/**/*.test.ts'],
         },
       },
       {
+        extends: true,
         plugins: [
-          storybookTest({ configDir: path.join(dirname, '.storybook') }),
+          storybookTest({
+            configDir: './.storybook',
+          }),
         ],
         test: {
           name: 'storybook',

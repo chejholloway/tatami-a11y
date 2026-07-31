@@ -34,34 +34,31 @@
   },
   "sideEffects": false,
   "scripts": {
+    "build-storybook": "storybook build -c .storybook",
     "build:surge": "node scripts/build-surge.mjs",
-    "build": "tsup src/index.ts --format esm,cjs --dts --clean && pnpm run build:surge",
-    "build-storybook": "storybook build",
-    "ci": "pnpm run lint && pnpm run typecheck && pnpm run test:storybook && pnpm run test && pnpm run build",
-    "deploy": "node scripts/deploy.mjs",
+    "build": "tsup src/index.ts --format esm,cjs --dts --clean --tsconfig config/tsconfig.json && pnpm run build:surge",
+    "ci": "pnpm run lint && pnpm run typecheck && pnpm run test-storybook:run && pnpm run test && pnpm run build",    "deploy:docs": "node scripts/build-surge.mjs docs && node scripts/deploy.mjs docs",
     "deploy:storybook": "node scripts/build-surge.mjs storybook && node scripts/deploy.mjs storybook",
-    "deploy:docs": "node scripts/build-surge.mjs docs && node scripts/deploy.mjs docs",
-    "dev": "tsup src/index.ts --format esm,cjs --dts --watch",
-    "doc": "pnpm run doc:api && docusaurus build",
+    "deploy": "node scripts/deploy.mjs",
+    "dev": "tsup src/index.ts --format esm,cjs --dts --watch --tsconfig config/tsconfig.json",
+    "doc:api": "typedoc --out docs/api src/index.ts --tsconfig config/tsconfig.json --hideGenerator --disableSources --excludeExternals",
     "doc:serve": "http-server docs/api -p 3001 -o",
-    "doc:api": "typedoc --out docs/api src/index.ts --hideGenerator --disableSources --excludeExternals",
-    "format": "prettier --write \"src/**/*.ts\" \"demo/**/*.html\" \"demo/**/*.css\" \"scripts/**/*.{js,mjs}\" \"*.md\"",
-    "lint": "oxlint --fix",
+    "doc": "pnpm run doc:api && docusaurus build --config config/docusaurus.config.cjs",
+    "format": "prettier --config config/prettierrc.json --write \"src/**/*.ts\" \"demo/**/*.html\" \"demo/**/*.css\" \"scripts/**/*.{js,mjs}\" \"*.md\"",
+    "lint": "oxlint --fix -c config/oxlintrc.json src/",
     "prepublishOnly": "pnpm run test && pnpm run build",
     "release:major": "standard-version --release-as major",
     "release:minor": "standard-version --release-as minor",
     "release:patch": "standard-version --release-as patch",
     "release": "standard-version",
     "serve": "http-server . -p 8080 -o /demo/index.html",
-    "storybook": "storybook dev -p 6006",
+    "storybook": "storybook dev -p 6006 -c .storybook",
+    "test-storybook:run-verbose": "vitest run --project=storybook --reporter=verbose",
+    "test-storybook:run": "vitest run --project=storybook",
     "test:verbose": "node scripts/test-verbose.mjs",
     "test:watch": "vitest",
     "test": "vitest run --project=unit",
-    "test:storybook": "node scripts/test-storybook.mjs",
-    "test:storybook-verbose": "node scripts/test-storybook.mjs --verbose",
-    "test-storybook:run": "vitest run --project=storybook",
-    "test-storybook:run-verbose": "vitest run --project=storybook --reporter=verbose",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit -p config/tsconfig.json"
   },
   "keywords": [
     "accessibility",
@@ -76,6 +73,42 @@
     "reduced-motion"
   ],
   "license": "MIT",
+  "standard-version": {
+    "types": [
+      {
+        "type": "feat",
+        "section": "Features"
+      },
+      {
+        "type": "fix",
+        "section": "Bug Fixes"
+      },
+      {
+        "type": "perf",
+        "section": "Performance Improvements"
+      },
+      {
+        "type": "chore",
+        "hidden": true
+      },
+      {
+        "type": "docs",
+        "hidden": true
+      },
+      {
+        "type": "style",
+        "hidden": true
+      },
+      {
+        "type": "refactor",
+        "hidden": true
+      },
+      {
+        "type": "test",
+        "hidden": true
+      }
+    ]
+  },
   "devDependencies": {
     "@docusaurus/core": "^3.0.0",
     "@docusaurus/plugin-content-docs": "^3.10.2",
@@ -125,11 +158,11 @@
   },
   "lint-staged": {
     "src/**/*.ts": [
-      "eslint --fix",
-      "prettier --write"
+      "eslint --config config/eslint.config.js --fix",
+      "prettier --config config/prettierrc.json --write"
     ],
     "*.{json,md}": [
-      "prettier --write"
+      "prettier --config config/prettierrc.json --write"
     ]
   }
 }

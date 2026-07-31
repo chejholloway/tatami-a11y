@@ -1,24 +1,5 @@
 {
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "ignorePatterns": [
-    "dist/",
-    "node_modules/",
-    "surge/",
-    ".agents/",
-    ".gemini/",
-    ".kiro/",
-    ".opencode/",
-    ".vscode/",
-    ".husky/",
-    ".github/",
-    ".storybook/",
-    "stories/",
-    "docs/",
-    "website/",
-    "scripts/",
-    "build/",
-    "coverage/"
-  ],  
+  "$schema": "../node_modules/oxlint/configuration_schema.json",
   "plugins": [
     "typescript",
     "jsx-a11y"

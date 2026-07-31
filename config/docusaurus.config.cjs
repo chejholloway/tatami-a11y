@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 
 // Load environment variables from .env file
-const envPath = path.join(__dirname, '.env');
+const envPath = path.join(__dirname, '..', '.env');
 if (fs.existsSync(envPath)) {
   const envContent = fs.readFileSync(envPath, 'utf-8');
   envContent.split('\n').forEach(line => {
@@ -41,7 +41,7 @@ module.exports = {
           routeBasePath: '/',
           exclude: ['**/superpowers/**'],
         },
-        theme: { customCss: require.resolve('./docs/custom.css') },
+          theme: { customCss: require.resolve('../docs/custom.css') },
       },
     ],
   ],

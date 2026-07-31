@@ -27,6 +27,6 @@ export default [js.configs.recommended, // TypeScript
     'node_modules/**',
     'surge/**',
     'stories/**',
-    '.storybook/**',
+    'config/storybook/**',
   ],
 }, ...storybook.configs["flat/recommended"]];
