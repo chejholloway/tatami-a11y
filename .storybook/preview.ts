@@ -1,8 +1,8 @@
 import type { Preview } from '@storybook/html-vite';
-import '../../demo/style-modern.css';
+import '../demo/style-modern.css';
 
 // Load the library globally
-import * as TatamiA11y from '../../dist/index.mjs';
+import * as TatamiA11y from '../dist/index.mjs';
 
 // Make it available globally for stories
 if (typeof window !== 'undefined') {

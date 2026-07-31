@@ -95,8 +95,6 @@
     "typescript/prefer-as-const": "error",
     "typescript/prefer-namespace-keyword": "error",
     "typescript/triple-slash-reference": "error",
-    "typescript-eslint/no-floating-promises": "error",
-    "typescript-eslint/no-misused-promises": "error",
   },
   "overrides": [
     {
