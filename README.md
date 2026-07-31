@@ -102,7 +102,6 @@ popFocusStack(); // focus returns to triggerElement, or the nearest valid fallba
 -   **Keyboard navigation:** every interactive element is fully operable by keyboard
 -   **Screen reader:** every state change is announced via live regions
 
-`--- ## Optional: Add to "Quick Start" Badges If you want to make it even more visible, add this badge line right after the existing ones at the top of the README:`
 
 markdown [](...)[CI](https://img.shields.io/github/actions/workflow/status/chejholloway/tatami-a11y/ci.yml) [](https://www.npmjs.com/package/tatami-a11y)[npm version](https://img.shields.io/npm/v/tatami-a11y) [](https://opensource.org/licenses/MIT)[License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg) [](https://github.com/chejholloway/tatami-a11y)[Tests: 732 passing](https://img.shields.io/badge/tests-732%20passing-brightgreen) [](https://oxc.rs)[Toolchain: Rust (oxlint/oxfmt)](https://img.shields.io/badge/toolchain-Rust%20\(oxlint%2Foxfmt\)-orange)
 
@@ -110,17 +109,16 @@ markdown [](...)[CI](https://img.shields.io/github/actions/workflow/status/chejh
 
 ```bash
 pnpm install
-pnpm run build          # Build to dist/ (ESM + CJS + type declarations)
-pnpm run dev            # Watch mode
-pnpm run test           # Run 716+ unit tests (vitest, jsdom)
-pnpm run test:storybook # Run 16 browser-level integration tests (vitest + Playwright)
-pnpm run storybook      # Interactive component explorer on port 6006
-pnpm run lint           # Rust-based linter (oxlint, 50–100× faster than ESLint)
-pnpm run format         # Rust-based formatter (oxfmt, 35× faster than Prettier)
-pnpm run doc            # Build API documentation
+pnpm run build              # Build to dist/ (ESM + CJS + type declarations)
+pnpm run dev                # Watch mode
+pnpm run test               # Run 716+ unit tests (vitest, jsdom)
+pnpm run test-storybook:run # Run 16 browser-level integration tests (vitest + Playwright)
+pnpm run storybook          # Interactive component explorer on port 6006
+pnpm run lint               # Rust-based linter (oxlint, 50–100× faster than ESLint)
+pnpm run format             # Rust-based formatter (oxfmt, 35× faster than Prettier)
+pnpm run doc                # Build API documentation
 ```
 
-bash pnpm install pnpm run build # Build to dist/ (ESM + CJS + type declarations) pnpm run dev # Watch mode pnpm run test # Run 700+ unit tests (vitest, jsdom) pnpm run test:storybook # Run 16 browser-level integration tests (vitest + Playwright) pnpm run storybook # Interactive component explorer on port 6006 pnpm run lint # Rust-based linter (oxlint, 50–100× faster than ESLint) pnpm run format # Rust-based formatter (oxfmt, 35× faster than Prettier) pnpm run doc # Build API documentation
 
 ### Dev Toolchain 🛠️
 
