@@ -9,8 +9,8 @@
  * - Supports single or multiple panel modes
  */
 
-import { announce } from '../shared/announcer.js';
-import { checkReducedMotion } from '../shared/reducedMotion.js';
+import { announce } from "../shared/announcer.js";
+import { checkReducedMotion } from "../shared/reducedMotion.js";
 
 /**
  * Options for configuring the {@link Accordion} component.
@@ -73,21 +73,18 @@ export class Accordion {
 
   private init(): void {
     // Set up ARIA attributes on container
-    this.container.setAttribute('role', 'region');
+    this.container.setAttribute("role", "region");
 
     // Get headers and panels
-    this.headers = Array.from(
-      this.container.querySelectorAll('button[aria-controls]')
-    );
+    this.headers = Array.from(this.container.querySelectorAll("button[aria-controls]"));
 
-    this.panels = this.headers
-      .map((header) => {
-        const panelId = header.getAttribute('aria-controls');
-        if (panelId) {
-          return document.getElementById(panelId);
-        }
-        return null;
-      }) as HTMLElement[];
+    this.panels = this.headers.map((header) => {
+      const panelId = header.getAttribute("aria-controls");
+      if (panelId) {
+        return document.getElementById(panelId);
+      }
+      return null;
+    }) as HTMLElement[];
 
     // Set up each header-panel pair
     this.headers.forEach((header, index) => {
@@ -97,31 +94,31 @@ export class Accordion {
       }
 
       // Ensure ARIA attributes are set (don't overwrite if already set)
-      if (!header.getAttribute('role')) {
-        header.setAttribute('role', 'button');
+      if (!header.getAttribute("role")) {
+        header.setAttribute("role", "button");
       }
-      header.setAttribute('aria-expanded', 'false');
-      header.setAttribute('tabindex', '0');
+      header.setAttribute("aria-expanded", "false");
+      header.setAttribute("tabindex", "0");
 
       const panel = this.panels[index];
       if (panel) {
-        if (!panel.getAttribute('role')) {
-          panel.setAttribute('role', 'region');
+        if (!panel.getAttribute("role")) {
+          panel.setAttribute("role", "region");
         }
-        panel.setAttribute('aria-labelledby', header.id);
+        panel.setAttribute("aria-labelledby", header.id);
         panel.hidden = true;
       }
 
       // Create and store event handlers
       const clickHandler = () => this.togglePanel(index);
       const keydownHandler = (e: KeyboardEvent) => this.handleKeyDown(e, index);
-      
+
       this.clickHandlers.push(clickHandler);
       this.keydownHandlers.push(keydownHandler);
 
       // Event listeners
-      header.addEventListener('click', clickHandler);
-      header.addEventListener('keydown', keydownHandler);
+      header.addEventListener("click", clickHandler);
+      header.addEventListener("keydown", keydownHandler);
     });
   }
 
@@ -136,7 +133,7 @@ export class Accordion {
     if (index < 0 || index >= this.headers.length) return;
 
     const header = this.headers[index];
-    const isExpanded = header.getAttribute('aria-expanded') === 'true';
+    const isExpanded = header.getAttribute("aria-expanded") === "true";
 
     if (isExpanded) {
       this.collapsePanel(index);
@@ -158,21 +155,21 @@ export class Accordion {
 
     const header = this.headers[index];
     const panel = this.panels[index];
-    const isExpanded = header.getAttribute('aria-expanded') === 'true';
+    const isExpanded = header.getAttribute("aria-expanded") === "true";
 
     if (isExpanded) return;
 
     // If single panel mode, collapse other panels
     if (!this.allowMultiple) {
       this.headers.forEach((h, i) => {
-        if (i !== index && h.getAttribute('aria-expanded') === 'true') {
+        if (i !== index && h.getAttribute("aria-expanded") === "true") {
           this.collapsePanel(i);
         }
       });
     }
 
     // Expand this panel
-    header.setAttribute('aria-expanded', 'true');
+    header.setAttribute("aria-expanded", "true");
     if (panel) this.showPanel(panel);
 
     // Announce
@@ -193,12 +190,12 @@ export class Accordion {
 
     const header = this.headers[index];
     const panel = this.panels[index];
-    const isExpanded = header.getAttribute('aria-expanded') === 'true';
+    const isExpanded = header.getAttribute("aria-expanded") === "true";
 
     if (!isExpanded) return;
 
     // Collapse this panel
-    header.setAttribute('aria-expanded', 'false');
+    header.setAttribute("aria-expanded", "false");
     if (panel) this.hidePanel(panel);
 
     // Announce
@@ -215,13 +212,13 @@ export class Accordion {
     panel.hidden = false;
 
     if (!prefersReducedMotion) {
-      panel.style.transition = 'opacity 0.2s ease, max-height 0.2s ease';
-      panel.style.opacity = '0';
-      panel.style.maxHeight = '0';
+      panel.style.transition = "opacity 0.2s ease, max-height 0.2s ease";
+      panel.style.opacity = "0";
+      panel.style.maxHeight = "0";
 
       requestAnimationFrame(() => {
-        panel.style.opacity = '1';
-        panel.style.maxHeight = '1000px';
+        panel.style.opacity = "1";
+        panel.style.maxHeight = "1000px";
       });
     }
   }
@@ -231,8 +228,8 @@ export class Accordion {
     const prefersReducedMotion = checkReducedMotion();
 
     if (!prefersReducedMotion) {
-      panel.style.opacity = '0';
-      panel.style.maxHeight = '0';
+      panel.style.opacity = "0";
+      panel.style.maxHeight = "0";
 
       setTimeout(() => {
         if (panel.hidden) return;
@@ -245,24 +242,24 @@ export class Accordion {
 
   private handleKeyDown(e: KeyboardEvent, index: number): void {
     switch (e.key) {
-      case 'Enter':
-      case ' ':
+      case "Enter":
+      case " ":
         e.preventDefault();
         this.togglePanel(index);
         break;
-      case 'ArrowDown':
+      case "ArrowDown":
         e.preventDefault();
         this.focusHeader((index + 1) % this.headers.length);
         break;
-      case 'ArrowUp':
+      case "ArrowUp":
         e.preventDefault();
         this.focusHeader((index - 1 + this.headers.length) % this.headers.length);
         break;
-      case 'Home':
+      case "Home":
         e.preventDefault();
         this.focusHeader(0);
         break;
-      case 'End':
+      case "End":
         e.preventDefault();
         this.focusHeader(this.headers.length - 1);
         break;
@@ -282,8 +279,8 @@ export class Accordion {
    */
   public destroy(): void {
     this.headers.forEach((header, index) => {
-      header.removeEventListener('click', this.clickHandlers[index]);
-      header.removeEventListener('keydown', this.keydownHandlers[index]);
+      header.removeEventListener("click", this.clickHandlers[index]);
+      header.removeEventListener("keydown", this.keydownHandlers[index]);
     });
     this.clickHandlers = [];
     this.keydownHandlers = [];

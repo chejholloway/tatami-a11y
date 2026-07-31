@@ -9,8 +9,8 @@
  * - Respects reduced motion preference
  */
 
-import { announce } from '../shared/announcer.js';
-import { checkReducedMotion } from '../shared/reducedMotion.js';
+import { announce } from "../shared/announcer.js";
+import { checkReducedMotion } from "../shared/reducedMotion.js";
 
 /**
  * Options for configuring the {@link Carousel} component.
@@ -95,43 +95,43 @@ export class Carousel {
 
   private init(): void {
     // Basic structural attributes
-    this.container.setAttribute('role', 'region');
-    this.container.setAttribute('aria-roledescription', 'carousel');
-    
+    this.container.setAttribute("role", "region");
+    this.container.setAttribute("aria-roledescription", "carousel");
+
     // Find internal elements
-    this.track = this.container.querySelector('[data-carousel-track]') as HTMLElement;
+    this.track = this.container.querySelector("[data-carousel-track]") as HTMLElement;
     if (!this.track) {
-      throw new Error('Carousel requires an element with [data-carousel-track]');
+      throw new Error("Carousel requires an element with [data-carousel-track]");
     }
 
-    this.slides = Array.from(this.track.querySelectorAll('[data-carousel-slide]'));
-    this.prevButton = this.container.querySelector('[data-carousel-prev]');
-    this.nextButton = this.container.querySelector('[data-carousel-next]');
-    this.playPauseButton = this.container.querySelector('[data-carousel-playpause]');
+    this.slides = Array.from(this.track.querySelectorAll("[data-carousel-slide]"));
+    this.prevButton = this.container.querySelector("[data-carousel-prev]");
+    this.nextButton = this.container.querySelector("[data-carousel-next]");
+    this.playPauseButton = this.container.querySelector("[data-carousel-playpause]");
 
     // Setup slides
     this.slides.forEach((slide, index) => {
-      slide.setAttribute('role', 'group');
-      slide.setAttribute('aria-roledescription', 'slide');
+      slide.setAttribute("role", "group");
+      slide.setAttribute("aria-roledescription", "slide");
       // aria-label for '1 of 5' is helpful for screen readers
-      if (!slide.getAttribute('aria-label')) {
-        slide.setAttribute('aria-label', `${index + 1} of ${this.slides.length}`);
+      if (!slide.getAttribute("aria-label")) {
+        slide.setAttribute("aria-label", `${index + 1} of ${this.slides.length}`);
       }
     });
 
     // Attach controls
     if (this.prevButton) {
-      this.prevButton.setAttribute('aria-label', 'Previous slide');
-      this.prevButton.addEventListener('click', this.prevClickHandler);
+      this.prevButton.setAttribute("aria-label", "Previous slide");
+      this.prevButton.addEventListener("click", this.prevClickHandler);
     }
-    
+
     if (this.nextButton) {
-      this.nextButton.setAttribute('aria-label', 'Next slide');
-      this.nextButton.addEventListener('click', this.nextClickHandler);
+      this.nextButton.setAttribute("aria-label", "Next slide");
+      this.nextButton.addEventListener("click", this.nextClickHandler);
     }
 
     if (this.playPauseButton) {
-      this.playPauseButton.addEventListener('click', this.playPauseClickHandler);
+      this.playPauseButton.addEventListener("click", this.playPauseClickHandler);
     }
 
     // Initialize state
@@ -171,8 +171,9 @@ export class Carousel {
 
     this.updateAriaStates();
 
-    const slideName = this.slides[this.currentIndex].getAttribute('aria-label') || `Slide ${this.currentIndex + 1}`;
-    
+    const slideName =
+      this.slides[this.currentIndex].getAttribute("aria-label") || `Slide ${this.currentIndex + 1}`;
+
     if (shouldAnnounce) {
       announce(`${slideName}`, { urgent: false });
     }
@@ -203,17 +204,17 @@ export class Carousel {
   private updateAriaStates(): void {
     this.slides.forEach((slide, index) => {
       const isActive = index === this.currentIndex;
-      slide.setAttribute('aria-hidden', isActive ? 'false' : 'true');
-      
+      slide.setAttribute("aria-hidden", isActive ? "false" : "true");
+
       // Update visual styles depending on motion preference
       const prefersReducedMotion = checkReducedMotion();
       if (!prefersReducedMotion) {
-        slide.style.transition = 'opacity 0.3s ease';
-        slide.style.opacity = isActive ? '1' : '0';
-        slide.style.position = isActive ? 'relative' : 'absolute';
-        slide.style.display = '';
+        slide.style.transition = "opacity 0.3s ease";
+        slide.style.opacity = isActive ? "1" : "0";
+        slide.style.position = isActive ? "relative" : "absolute";
+        slide.style.display = "";
       } else {
-        slide.style.display = isActive ? 'block' : 'none';
+        slide.style.display = isActive ? "block" : "none";
       }
     });
   }
@@ -241,7 +242,7 @@ export class Carousel {
 
     this.isPlaying = true;
     if (this.playPauseButton) {
-      this.playPauseButton.setAttribute('aria-label', 'Stop slide rotation');
+      this.playPauseButton.setAttribute("aria-label", "Stop slide rotation");
     }
 
     // Clear existing timer if any
@@ -258,7 +259,7 @@ export class Carousel {
   public pause(): void {
     this.isPlaying = false;
     if (this.playPauseButton) {
-      this.playPauseButton.setAttribute('aria-label', 'Start slide rotation');
+      this.playPauseButton.setAttribute("aria-label", "Start slide rotation");
     }
 
     if (this.autoPlayTimer) {
@@ -276,17 +277,17 @@ export class Carousel {
     if (this.autoPlayTimer) {
       clearInterval(this.autoPlayTimer);
     }
-    
+
     if (this.prevButton) {
-      this.prevButton.removeEventListener('click', this.prevClickHandler);
+      this.prevButton.removeEventListener("click", this.prevClickHandler);
     }
-    
+
     if (this.nextButton) {
-      this.nextButton.removeEventListener('click', this.nextClickHandler);
+      this.nextButton.removeEventListener("click", this.nextClickHandler);
     }
 
     if (this.playPauseButton) {
-      this.playPauseButton.removeEventListener('click', this.playPauseClickHandler);
+      this.playPauseButton.removeEventListener("click", this.playPauseClickHandler);
     }
   }
 }

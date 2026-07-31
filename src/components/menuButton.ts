@@ -10,18 +10,11 @@
  * - Respects reduced motion preference
  */
 
-import {
-  activateFocusTrap,
-  deactivateFocusTrap,
-} from '../shared/focusTrap.js';
-import {
-  pushFocusStack,
-  popFocusStack,
-  setInitialFocusReference,
-} from '../shared/focusStack.js';
-import { announce } from '../shared/announcer.js';
-import { checkReducedMotion } from '../shared/reducedMotion.js';
-import { createRovingTabindex, type RovingTabindexController } from '../shared/rovingTabindex.js';
+import { activateFocusTrap, deactivateFocusTrap } from "../shared/focusTrap.js";
+import { pushFocusStack, popFocusStack, setInitialFocusReference } from "../shared/focusStack.js";
+import { announce } from "../shared/announcer.js";
+import { checkReducedMotion } from "../shared/reducedMotion.js";
+import { createRovingTabindex, type RovingTabindexController } from "../shared/rovingTabindex.js";
 
 /**
  * Options for configuring the {@link MenuButton} component.
@@ -81,26 +74,24 @@ export class MenuButton {
   }
 
   private init(): void {
-    this.trigger.setAttribute('aria-haspopup', 'menu');
-    this.trigger.setAttribute('aria-expanded', 'false');
-    this.menu.setAttribute('role', 'menu');
-    this.menu.setAttribute('aria-hidden', 'true');
+    this.trigger.setAttribute("aria-haspopup", "menu");
+    this.trigger.setAttribute("aria-expanded", "false");
+    this.menu.setAttribute("role", "menu");
+    this.menu.setAttribute("aria-hidden", "true");
 
-    this.menuItems = Array.from(
-      this.menu.querySelectorAll('[role="menuitem"]')
-    );
+    this.menuItems = Array.from(this.menu.querySelectorAll('[role="menuitem"]'));
 
     // Set up roving tabindex for menu navigation
     this.roving = createRovingTabindex({
       container: this.menu,
       selector: '[role="menuitem"]',
-      orientation: 'vertical',
+      orientation: "vertical",
       beforeKey: (e, activeIndex) => this.handleMenuBeforeKey(e, activeIndex),
     });
 
-    this.trigger.addEventListener('click', this.triggerClickHandler);
-    this.trigger.addEventListener('keydown', this.triggerKeydownHandler);
-    document.addEventListener('click', this.documentClickHandler);
+    this.trigger.addEventListener("click", this.triggerClickHandler);
+    this.trigger.addEventListener("keydown", this.triggerKeydownHandler);
+    document.addEventListener("click", this.documentClickHandler);
 
     this.hideMenu();
   }
@@ -123,8 +114,8 @@ export class MenuButton {
     if (this.isOpen) return;
 
     this.isOpen = true;
-    this.trigger.setAttribute('aria-expanded', 'true');
-    this.menu.setAttribute('aria-hidden', 'false');
+    this.trigger.setAttribute("aria-expanded", "true");
+    this.menu.setAttribute("aria-hidden", "false");
     this.showMenu();
 
     setInitialFocusReference(this.trigger);
@@ -136,7 +127,7 @@ export class MenuButton {
       this.roving?.setActiveIndex(0, true);
     }
 
-    announce('Menu opened', { urgent: false });
+    announce("Menu opened", { urgent: false });
 
     this.onOpen?.();
   }
@@ -148,28 +139,28 @@ export class MenuButton {
     if (!this.isOpen) return;
 
     this.isOpen = false;
-    this.trigger.setAttribute('aria-expanded', 'false');
-    this.menu.setAttribute('aria-hidden', 'true');
+    this.trigger.setAttribute("aria-expanded", "false");
+    this.menu.setAttribute("aria-hidden", "true");
     this.hideMenu();
 
     deactivateFocusTrap();
     popFocusStack();
 
-    announce('Menu closed', { urgent: false });
+    announce("Menu closed", { urgent: false });
 
     this.onClose?.();
   }
 
   private showMenu(): void {
     const prefersReducedMotion = checkReducedMotion();
-    this.menu.style.display = 'block';
+    this.menu.style.display = "block";
 
     if (!prefersReducedMotion) {
-      this.menu.style.transition = 'opacity 0.2s ease';
-      this.menu.style.opacity = '0';
+      this.menu.style.transition = "opacity 0.2s ease";
+      this.menu.style.opacity = "0";
 
       requestAnimationFrame(() => {
-        this.menu.style.opacity = '1';
+        this.menu.style.opacity = "1";
       });
     }
   }
@@ -178,31 +169,31 @@ export class MenuButton {
     const prefersReducedMotion = checkReducedMotion();
 
     if (!prefersReducedMotion) {
-      this.menu.style.opacity = '0';
+      this.menu.style.opacity = "0";
       setTimeout(() => {
         if (!this.isOpen) {
-          this.menu.style.display = 'none';
+          this.menu.style.display = "none";
         }
       }, 200);
     } else {
-      this.menu.style.display = 'none';
+      this.menu.style.display = "none";
     }
   }
 
   private handleTriggerKeyDown(e: KeyboardEvent): void {
     switch (e.key) {
-      case 'Enter':
-      case ' ':
+      case "Enter":
+      case " ":
         e.preventDefault();
         this.toggle();
         break;
-      case 'ArrowDown':
+      case "ArrowDown":
         e.preventDefault();
         if (!this.isOpen) {
           this.open();
         }
         break;
-      case 'ArrowUp':
+      case "ArrowUp":
         e.preventDefault();
         if (!this.isOpen) {
           this.open();
@@ -216,13 +207,13 @@ export class MenuButton {
 
   private handleMenuBeforeKey(e: KeyboardEvent, activeIndex: number): boolean {
     switch (e.key) {
-      case 'Escape':
+      case "Escape":
         e.preventDefault();
         this.close();
         this.trigger.focus();
         return true;
-      case 'Enter':
-      case ' ': {
+      case "Enter":
+      case " ": {
         e.preventDefault();
         const items = this.roving?.getItems() ?? [];
         const currentItem = items[activeIndex];
@@ -237,7 +228,6 @@ export class MenuButton {
     }
   }
 
-
   private handleDocumentClick(e: MouseEvent): void {
     const target = e.target as HTMLElement;
     if (!this.trigger.contains(target) && !this.menu.contains(target)) {
@@ -249,9 +239,9 @@ export class MenuButton {
    * Remove all event listeners and clean up the menu button.
    */
   public destroy(): void {
-    this.trigger.removeEventListener('click', this.triggerClickHandler);
-    this.trigger.removeEventListener('keydown', this.triggerKeydownHandler);
-    document.removeEventListener('click', this.documentClickHandler);
+    this.trigger.removeEventListener("click", this.triggerClickHandler);
+    this.trigger.removeEventListener("keydown", this.triggerKeydownHandler);
+    document.removeEventListener("click", this.documentClickHandler);
     this.roving?.destroy();
 
     if (this.isOpen) {

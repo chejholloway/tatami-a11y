@@ -15,22 +15,22 @@ pnpm install tatami-a11y
 ## Quick Start
 
 ```js
-import { announce, Dropdown, Modal } from 'tatami-a11y';
+import { announce, Dropdown, Modal } from "tatami-a11y";
 
 // Screen reader announcements
-announce('Changes saved');
+announce("Changes saved");
 
 // Accessible dropdown
 const dropdown = new Dropdown({
-  trigger: document.getElementById('dropdown-trigger'),
-  menu: document.getElementById('dropdown-menu'),
+  trigger: document.getElementById("dropdown-trigger"),
+  menu: document.getElementById("dropdown-menu"),
 });
 
 // Accessible modal
 const modal = new Modal({
-  trigger: document.getElementById('modal-trigger'),
-  modal: document.getElementById('modal'),
-  backdrop: document.getElementById('modal-backdrop'),
+  trigger: document.getElementById("modal-trigger"),
+  modal: document.getElementById("modal"),
+  backdrop: document.getElementById("modal-backdrop"),
 });
 ```
 

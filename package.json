@@ -35,9 +35,10 @@
   "sideEffects": false,
   "scripts": {
     "build-storybook": "storybook build -c .storybook",
+    "build:rolldown": "rolldown -c rolldown.config.mjs",
     "build:surge": "node scripts/build-surge.mjs",
     "build": "tsup src/index.ts --format esm,cjs --dts --clean --tsconfig config/tsconfig.json && pnpm run build:surge",
-    "ci": "pnpm run lint && pnpm run typecheck && pnpm run test-storybook:run && pnpm run test && pnpm run build",
+    "ci": "pnpm run lint && pnpm run format && pnpm run test:storybook && pnpm run test && pnpm run build",
     "deploy:docs": "node scripts/build-surge.mjs docs && node scripts/deploy.mjs docs",
     "deploy:storybook": "node scripts/build-surge.mjs storybook && node scripts/deploy.mjs storybook",
     "deploy": "node scripts/deploy.mjs",
@@ -45,8 +46,10 @@
     "doc:api": "typedoc --out docs/api src/index.ts --tsconfig config/tsconfig.json --hideGenerator --disableSources --excludeExternals",
     "doc:serve": "http-server docs/api -p 3001 -o",
     "doc": "pnpm run doc:api && docusaurus build --config config/docusaurus.config.cjs",
-    "format": "prettier --config config/prettierrc.json --write \"src/**/*.ts\" \"demo/**/*.html\" \"demo/**/*.css\" \"scripts/**/*.{js,mjs}\" \"*.md\"",
+    "format": "oxfmt \"src/**/*.ts\" \"demo/**/*.html\" \"demo/**/*.css\" \"scripts/**/*.{js,mjs}\" \"*.md\"",
     "lint": "oxlint --fix -c config/oxlintrc.json src/",
+    "lint:type-aware": "oxlint --type-aware -c config/oxlintrc.json src/",
+    "lint-staged": "lint-staged",
     "prepublishOnly": "pnpm run test && pnpm run build",
     "release:major": "standard-version --release-as major",
     "release:minor": "standard-version --release-as minor",
@@ -59,7 +62,7 @@
     "test:verbose": "node scripts/test-verbose.mjs",
     "test:watch": "vitest",
     "test": "vitest run --project=unit",
-    "typecheck": "tsc --noEmit -p config/tsconfig.json"
+    "typecheck": "oxlint --type-aware -c config/oxlintrc.json src/ || tsc --noEmit -p config/tsconfig.json"
   },
   "keywords": [
     "accessibility",
@@ -114,7 +117,6 @@
     "@docusaurus/core": "^3.0.0",
     "@docusaurus/plugin-content-docs": "^3.10.2",
     "@docusaurus/preset-classic": "^3.0.0",
-    "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.62.0",
     "@storybook/addon-a11y": "^10.5.5",
     "@storybook/addon-docs": "^10.5.5",
@@ -122,48 +124,38 @@
     "@storybook/html": "^10.5.5",
     "@storybook/html-vite": "^10.5.5",
     "@types/jsdom": "^21.1.7",
-    "@typescript-eslint/eslint-plugin": "^8.65.0",
-    "@typescript-eslint/parser": "^8.65.0",
     "@vitest/browser": "^4.1.5",
     "@vitest/browser-playwright": "^4.1.5",
     "@vitest/eslint-plugin": "^1.6.24",
     "@vitest/runner": "^4.1.5",
     "axe-core": "^4.12.1",
     "concurrently": "^10.0.4",
-    "eslint": "^10.8.0",
-    "eslint-config-prettier": "^9.1.2",
-    "eslint-formatter-compact": "^9.0.1",
-    "eslint-plugin-import": "^2.32.0",
-    "eslint-plugin-jsx-a11y": "^6.8.0",
-    "eslint-plugin-n": "^18.2.2",
-    "eslint-plugin-oxlint": "^1.76.0",
-    "eslint-plugin-prettier": "^5.5.6",
-    "eslint-plugin-storybook": "10.5.5",
     "http-server": "^14.1.1",
     "husky": "^9.0.0",
     "jsdom": "^30.0.0",
     "lint-staged": "^15.5.2",
+    "oxfmt": "^0.61.0",
     "oxlint": "^1.76.0",
-    "prettier": "^3.0.0",
+    "oxlint-tsgolint": "^7.0.2001",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "rolldown": "^1.2.1",
     "standard-version": "^9.5.0",
     "storybook": "^10.5.5",
     "tsup": "^8.0.0",
     "typedoc": "^0.28.20",
     "typedoc-plugin-markdown": "^3.17.1",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.65.0",
     "vitest": "^4.1.5",
     "wait-on": "^9.1.0"
   },
   "lint-staged": {
     "src/**/*.ts": [
-      "eslint --config config/eslint.config.js --fix",
-      "prettier --config config/prettierrc.json --write"
+      "oxlint --fix -c config/oxlintrc.json",
+      "oxfmt"
     ],
     "*.{json,md}": [
-      "prettier --config config/prettierrc.json --write"
+      "oxfmt"
     ]
   }
 }

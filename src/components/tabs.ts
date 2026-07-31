@@ -9,8 +9,8 @@
  * - Respects reduced motion preference
  */
 
-import { announce } from '../shared/announcer.js';
-import { checkReducedMotion } from '../shared/reducedMotion.js';
+import { announce } from "../shared/announcer.js";
+import { checkReducedMotion } from "../shared/reducedMotion.js";
 
 /**
  * Options for configuring the {@link Tabs} component.
@@ -64,39 +64,38 @@ export class Tabs {
 
   private init(): void {
     // Set up ARIA attributes
-    this.tabList.setAttribute('role', 'tablist');
+    this.tabList.setAttribute("role", "tablist");
 
     // Get tabs and panels
     this.tabs = Array.from(this.tabList.querySelectorAll('[role="tab"]'));
-    this.panels = this.tabs
-      .map((tab) => {
-        const panelId = tab.getAttribute('aria-controls');
-        if (panelId) {
-          return document.getElementById(panelId);
-        }
-        return null;
-      }) as HTMLElement[];
+    this.panels = this.tabs.map((tab) => {
+      const panelId = tab.getAttribute("aria-controls");
+      if (panelId) {
+        return document.getElementById(panelId);
+      }
+      return null;
+    }) as HTMLElement[];
 
     // Set up each tab
     this.tabs.forEach((tab, index) => {
-      tab.setAttribute('aria-selected', index === 0 ? 'true' : 'false');
-      tab.setAttribute('tabindex', index === 0 ? '0' : '-1');
-      
+      tab.setAttribute("aria-selected", index === 0 ? "true" : "false");
+      tab.setAttribute("tabindex", index === 0 ? "0" : "-1");
+
       const clickHandler = () => this.activateTab(index);
       const keydownHandler = (e: KeyboardEvent) => this.handleTabKeyDown(e, index);
-      
+
       this.tabClickHandlers.push(clickHandler);
       this.tabKeydownHandlers.push(keydownHandler);
-      
-      tab.addEventListener('click', clickHandler);
-      tab.addEventListener('keydown', keydownHandler);
+
+      tab.addEventListener("click", clickHandler);
+      tab.addEventListener("keydown", keydownHandler);
     });
 
     // Set up each panel
     this.panels.forEach((panel, index) => {
       if (!panel) return;
-      panel.setAttribute('role', 'tabpanel');
-      panel.setAttribute('aria-labelledby', this.tabs[index].id);
+      panel.setAttribute("role", "tabpanel");
+      panel.setAttribute("aria-labelledby", this.tabs[index].id);
       if (index !== 0) {
         panel.hidden = true;
       }
@@ -121,16 +120,16 @@ export class Tabs {
     const currentTab = this.tabs[this.currentIndex];
     const currentPanel = this.panels[this.currentIndex];
 
-    currentTab.setAttribute('aria-selected', 'false');
-    currentTab.setAttribute('tabindex', '-1');
+    currentTab.setAttribute("aria-selected", "false");
+    currentTab.setAttribute("tabindex", "-1");
     if (currentPanel) this.hidePanel(currentPanel);
 
     // Activate new tab
     const newTab = this.tabs[index];
     const newPanel = this.panels[index];
 
-    newTab.setAttribute('aria-selected', 'true');
-    newTab.setAttribute('tabindex', '0');
+    newTab.setAttribute("aria-selected", "true");
+    newTab.setAttribute("tabindex", "0");
     newTab.focus();
     if (newPanel) this.showPanel(newPanel);
 
@@ -152,11 +151,11 @@ export class Tabs {
     panel.hidden = false;
 
     if (!prefersReducedMotion) {
-      panel.style.transition = 'opacity 0.2s ease';
-      panel.style.opacity = '0';
+      panel.style.transition = "opacity 0.2s ease";
+      panel.style.opacity = "0";
 
       requestAnimationFrame(() => {
-        panel.style.opacity = '1';
+        panel.style.opacity = "1";
       });
     }
   }
@@ -166,7 +165,7 @@ export class Tabs {
     const prefersReducedMotion = checkReducedMotion();
 
     if (!prefersReducedMotion) {
-      panel.style.opacity = '0';
+      panel.style.opacity = "0";
       setTimeout(() => {
         if (panel.hidden) return;
         panel.hidden = true;
@@ -178,23 +177,23 @@ export class Tabs {
 
   private handleTabKeyDown(e: KeyboardEvent, index: number): void {
     switch (e.key) {
-      case 'ArrowRight': {
+      case "ArrowRight": {
         e.preventDefault();
         const nextIndex = (index + 1) % this.tabs.length;
         this.activateTab(nextIndex);
         break;
       }
-      case 'ArrowLeft': {
+      case "ArrowLeft": {
         e.preventDefault();
         const prevIndex = (index - 1 + this.tabs.length) % this.tabs.length;
         this.activateTab(prevIndex);
         break;
       }
-      case 'Home':
+      case "Home":
         e.preventDefault();
         this.activateTab(0);
         break;
-      case 'End':
+      case "End":
         e.preventDefault();
         this.activateTab(this.tabs.length - 1);
         break;
@@ -215,8 +214,8 @@ export class Tabs {
    */
   public destroy(): void {
     this.tabs.forEach((tab, index) => {
-      tab.removeEventListener('click', this.tabClickHandlers[index]);
-      tab.removeEventListener('keydown', this.tabKeydownHandlers[index]);
+      tab.removeEventListener("click", this.tabClickHandlers[index]);
+      tab.removeEventListener("keydown", this.tabKeydownHandlers[index]);
     });
     this.tabClickHandlers = [];
     this.tabKeydownHandlers = [];

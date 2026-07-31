@@ -38,11 +38,11 @@ pnpm install tatami-a11y
 ```
 
 ```js
-import { announce, pushFocusStack, popFocusStack } from 'tatami-a11y';
+import { announce, pushFocusStack, popFocusStack } from "tatami-a11y";
 
 // Screen reader announcements: polite by default, assertive when urgent
-announce('Changes saved');
-announce('Error: something went wrong', { urgent: true });
+announce("Changes saved");
+announce("Error: something went wrong", { urgent: true });
 
 // Focus restoration for transient UI (modals, dropdowns, dialogs)
 pushFocusStack(triggerElement);
@@ -60,58 +60,83 @@ popFocusStack(); // focus returns to triggerElement, or the nearest valid fallba
 
 ### Shared Primitives
 
-| Primitive | Description |
-|---|---|
-| `announce()` | Screen reader announcements via ARIA live regions. Supports polite/assertive routing, deduplication, and proper `aria-atomic` semantics. |
-| `checkReducedMotion()` / `onReducedMotionChange()` | System-level reduced motion detection with change listeners. Every component respects this automatically. |
-| `pushFocusStack()` / `popFocusStack()` | Focus restoration with stale-reference fallback chain, if the trigger element is gone, it walks up to the nearest focusable ancestor. |
-| `activateFocusTrap()` / `deactivateFocusTrap()` | Modal focus trapping with first/last-element boundary detection and proper Tab/Shift+Tab cycling. |
-| `createRovingTabindex()` | Arrow-key navigation for lists, grids, trees, and tablists. Supports orientation, column-count, wrapping, and custom key handlers. |
-| `createSingleton()` / `registerCleanup()` | HMR-safe singleton factory, components survive hot reloads without leaking listeners or duplicating DOM nodes. |
+| Primitive                                          | Description                                                                                                                              |
+| -------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `announce()`                                       | Screen reader announcements via ARIA live regions. Supports polite/assertive routing, deduplication, and proper `aria-atomic` semantics. |
+| `checkReducedMotion()` / `onReducedMotionChange()` | System-level reduced motion detection with change listeners. Every component respects this automatically.                                |
+| `pushFocusStack()` / `popFocusStack()`             | Focus restoration with stale-reference fallback chain, if the trigger element is gone, it walks up to the nearest focusable ancestor.    |
+| `activateFocusTrap()` / `deactivateFocusTrap()`    | Modal focus trapping with first/last-element boundary detection and proper Tab/Shift+Tab cycling.                                        |
+| `createRovingTabindex()`                           | Arrow-key navigation for lists, grids, trees, and tablists. Supports orientation, column-count, wrapping, and custom key handlers.       |
+| `createSingleton()` / `registerCleanup()`          | HMR-safe singleton factory, components survive hot reloads without leaking listeners or duplicating DOM nodes.                           |
 
 ### Components
 
-| Component | ARIA Pattern | Key features |
-|---|---|---|
-| Accordion | `aria-expanded` / `aria-controls` | Arrow-key navigation, Home/End, live-region announcements |
-| Carousel | `region` / `group` / `aria-roledescription` | Auto-play, reduced-motion respect, slide announcements |
-| Combobox | combobox + listbox | Type-to-filter, arrow-key navigation, active-descendant management |
-| CommandPalette | combobox + dialog-modal | Ctrl+K global hotkey, grouping, focus trap, live-region count |
-| DatePicker | dialog + grid | Full keyboard navigation, focus trap, month navigation |
-| Dialog | non-modal dialog | Focus management without trapping, users can tab out |
-| Disclosure | `aria-expanded` / `aria-controls` | Simple show/hide with proper semantics |
-| Dropdown | menu + menuitem | Focus trap, arrow-key navigation, Escape-to-close |
-| MenuButton | `aria-haspopup="menu"` | Menu-button pattern, focus management |
-| Modal | dialog-modal | Focus trap, backdrop, Escape-to-close, focus restoration |
-| MultiselectListbox | listbox (multi-select) | Shift+Click range, Ctrl+Click toggle, typeahead |
-| ReorderableList | list + `aria-grabbed` | Ctrl+Arrow reorder, drag-and-drop, live announcements |
-| Tabs | tablist + tab + tabpanel | Arrow-key navigation, Home/End, automatic tabpanel visibility |
-| Toast | live region + `role="alert"` | Auto-dismiss, Alt+T jump shortcut, stack management |
-| Tooltip | `aria-describedby` | Hover/focus trigger, Escape dismiss, reduced-motion respect |
-| TreeView | tree + treeitem | Expand/collapse, arrow-key navigation, typeahead, single/multi-select |
+| Component          | ARIA Pattern                                | Key features                                                          |
+| ------------------ | ------------------------------------------- | --------------------------------------------------------------------- |
+| Accordion          | `aria-expanded` / `aria-controls`           | Arrow-key navigation, Home/End, live-region announcements             |
+| Carousel           | `region` / `group` / `aria-roledescription` | Auto-play, reduced-motion respect, slide announcements                |
+| Combobox           | combobox + listbox                          | Type-to-filter, arrow-key navigation, active-descendant management    |
+| CommandPalette     | combobox + dialog-modal                     | Ctrl+K global hotkey, grouping, focus trap, live-region count         |
+| DatePicker         | dialog + grid                               | Full keyboard navigation, focus trap, month navigation                |
+| Dialog             | non-modal dialog                            | Focus management without trapping, users can tab out                  |
+| Disclosure         | `aria-expanded` / `aria-controls`           | Simple show/hide with proper semantics                                |
+| Dropdown           | menu + menuitem                             | Focus trap, arrow-key navigation, Escape-to-close                     |
+| MenuButton         | `aria-haspopup="menu"`                      | Menu-button pattern, focus management                                 |
+| Modal              | dialog-modal                                | Focus trap, backdrop, Escape-to-close, focus restoration              |
+| MultiselectListbox | listbox (multi-select)                      | Shift+Click range, Ctrl+Click toggle, typeahead                       |
+| ReorderableList    | list + `aria-grabbed`                       | Ctrl+Arrow reorder, drag-and-drop, live announcements                 |
+| Tabs               | tablist + tab + tabpanel                    | Arrow-key navigation, Home/End, automatic tabpanel visibility         |
+| Toast              | live region + `role="alert"`                | Auto-dismiss, Alt+T jump shortcut, stack management                   |
+| Tooltip            | `aria-describedby`                          | Hover/focus trigger, Escape dismiss, reduced-motion respect           |
+| TreeView           | tree + treeitem                             | Expand/collapse, arrow-key navigation, typeahead, single/multi-select |
 
 ## Compliance
 
-- **716 unit tests** across 23 test files (jsdom via vitest), all passing
-- **16 Storybook integration tests**, each component rendered in a real Playwright browser and verified for interactive behavior
-- **Built-in a11y checks:** every Storybook story is automatically audited with axe-core via `@storybook/addon-a11y`, surfaced inline in the test UI and blocked in CI
-- **WCAG 2.2 AA:** zero violations and zero incompletes detected by automated axe-core scanning across all Storybook stories (automated scanning covers a meaningful subset of WCAG criteria, not the full spec, manual screen reader testing is the natural next layer on top of this)
-- **WAI-ARIA:** every component follows the relevant APG authoring practice
-- **Reduced motion:** every animation respects `prefers-reduced-motion`
-- **Keyboard navigation:** every interactive element is fully operable by keyboard
-- **Screen reader:** every state change is announced via live regions
+
+-   **716 unit tests** across 23 test files (jsdom via vitest), all passing
+-   **16 Storybook integration tests**, each component rendered in a real Playwright browser and verified for interactive behavior
+-   **Built-in a11y checks:** every Storybook story is automatically audited with axe-core via `@storybook/addon-a11y`, surfaced inline in the test UI and blocked in CI
+-   **WCAG 2.2 AA:** zero violations and zero incompletes detected by automated axe-core scanning across all Storybook stories (automated scanning covers a meaningful subset of WCAG criteria, not the full spec, manual screen reader testing is the natural next layer on top of this)
+-   **WAI-ARIA:** every component follows the relevant APG authoring practice
+-   **Reduced motion:** every animation respects `prefers-reduced-motion`
+-   **Keyboard navigation:** every interactive element is fully operable by keyboard
+-   **Screen reader:** every state change is announced via live regions
+
+`--- ## Optional: Add to "Quick Start" Badges If you want to make it even more visible, add this badge line right after the existing ones at the top of the README:`
+
+markdown [](...)[CI](https://img.shields.io/github/actions/workflow/status/chejholloway/tatami-a11y/ci.yml) [](https://www.npmjs.com/package/tatami-a11y)[npm version](https://img.shields.io/npm/v/tatami-a11y) [](https://opensource.org/licenses/MIT)[License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg) [](https://github.com/chejholloway/tatami-a11y)[Tests: 732 passing](https://img.shields.io/badge/tests-732%20passing-brightgreen) [](https://oxc.rs)[Toolchain: Rust (oxlint/oxfmt)](https://img.shields.io/badge/toolchain-Rust%20\(oxlint%2Foxfmt\)-orange)
 
 ## Development
 
 ```bash
 pnpm install
 pnpm run build          # Build to dist/ (ESM + CJS + type declarations)
-pnpm run dev             # Watch mode
-pnpm run test            # Run 700+ unit tests (vitest, jsdom)
-pnpm run test:storybook  # Run 16 browser-level Storybook integration tests (vitest --project=storybook, Playwright)
-pnpm run storybook       # Start Storybook on port 6006
-pnpm run doc             # Build API documentation
+pnpm run dev            # Watch mode
+pnpm run test           # Run 716+ unit tests (vitest, jsdom)
+pnpm run test:storybook # Run 16 browser-level integration tests (vitest + Playwright)
+pnpm run storybook      # Interactive component explorer on port 6006
+pnpm run lint           # Rust-based linter (oxlint, 50–100× faster than ESLint)
+pnpm run format         # Rust-based formatter (oxfmt, 35× faster than Prettier)
+pnpm run doc            # Build API documentation
 ```
+
+bash pnpm install pnpm run build # Build to dist/ (ESM + CJS + type declarations) pnpm run dev # Watch mode pnpm run test # Run 700+ unit tests (vitest, jsdom) pnpm run test:storybook # Run 16 browser-level integration tests (vitest + Playwright) pnpm run storybook # Interactive component explorer on port 6006 pnpm run lint # Rust-based linter (oxlint, 50–100× faster than ESLint) pnpm run format # Rust-based formatter (oxfmt, 35× faster than Prettier) pnpm run doc # Build API documentation
+
+### Dev Toolchain 🛠️
+
+| Tool | Stack | Speed Gain |
+| --- | --- | --- |
+| **Oxlint** | Rust-based linter (ESLint-compatible) | 50–100× faster |
+| **Oxfmt** | Rust-based formatter | 35× faster |
+| **Vitest 4.1.10** | Unit + Storybook test runner | Native browser mode |
+| **Storybook 10.5.5** | Component testing + a11y addon | Integrated with Vitest |
+| **Playwright** | Browser automation for integration tests | Production-grade |
+| **Rolldown** _(optional)_ | Future-ready bundler (Vite core) | Native Rust performance |
+
+Total: **732 automated tests** (716 unit + 16 integration), CI runs <30s on standard hardware.
+
+---
+
 
 ## Deployment
 

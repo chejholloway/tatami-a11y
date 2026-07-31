@@ -9,9 +9,9 @@
  * position announcements.
  */
 
-import { createRovingTabindex } from '../shared/rovingTabindex.js';
-import type { RovingTabindexController } from '../shared/rovingTabindex.js';
-import { announce as defaultAnnounce } from '../shared/announcer.js';
+import { createRovingTabindex } from "../shared/rovingTabindex.js";
+import type { RovingTabindexController } from "../shared/rovingTabindex.js";
+import { announce as defaultAnnounce } from "../shared/announcer.js";
 
 /**
  * Options for configuring the {@link ReorderableList} component.
@@ -25,7 +25,7 @@ export interface ReorderableListOptions {
    * The layout direction of the list.
    * @default 'vertical'
    */
-  orientation?: 'vertical' | 'horizontal';
+  orientation?: "vertical" | "horizontal";
   /**
    * When true, enables mouse-based drag-and-drop reordering in addition
    * to keyboard reordering.
@@ -65,7 +65,7 @@ export interface ReorderableListOptions {
  */
 export class ReorderableList {
   private list: HTMLElement;
-  private orientation: 'vertical' | 'horizontal';
+  private orientation: "vertical" | "horizontal";
   private dragAndDrop: boolean;
   private onReorder?: (items: HTMLElement[], movedItem: HTMLElement, newIndex: number) => void;
   private announce: (message: string) => void;
@@ -83,7 +83,7 @@ export class ReorderableList {
    */
   constructor(options: ReorderableListOptions) {
     this.list = options.list;
-    this.orientation = options.orientation ?? 'vertical';
+    this.orientation = options.orientation ?? "vertical";
     this.dragAndDrop = options.dragAndDrop ?? false;
     this.onReorder = options.onReorder;
     this.announce = options.announce ?? defaultAnnounce;
@@ -93,7 +93,7 @@ export class ReorderableList {
   }
 
   private init(): void {
-    this.list.setAttribute('role', 'list');
+    this.list.setAttribute("role", "list");
 
     this.applyAriaAttributes();
 
@@ -103,14 +103,17 @@ export class ReorderableList {
       orientation: this.orientation,
       wrap: false,
       beforeKey: (e) => {
-        if (e.ctrlKey && (e.key === 'ArrowUp' || e.key === 'ArrowDown' || e.key === 'Home' || e.key === 'End')) {
+        if (
+          e.ctrlKey &&
+          (e.key === "ArrowUp" || e.key === "ArrowDown" || e.key === "Home" || e.key === "End")
+        ) {
           return true;
         }
         return false;
       },
     });
 
-    this.list.addEventListener('keydown', this.keydownHandler);
+    this.list.addEventListener("keydown", this.keydownHandler);
 
     if (this.dragAndDrop) {
       this.setupDragAndDrop();
@@ -119,12 +122,12 @@ export class ReorderableList {
 
   private applyAriaAttributes(): void {
     const items = Array.from(this.list.children).filter(
-      (el): el is HTMLElement => el instanceof HTMLElement
+      (el): el is HTMLElement => el instanceof HTMLElement,
     );
     items.forEach((child, index) => {
-      child.setAttribute('role', 'listitem');
-      child.setAttribute('aria-posinset', String(index + 1));
-      child.setAttribute('aria-setsize', String(items.length));
+      child.setAttribute("role", "listitem");
+      child.setAttribute("aria-posinset", String(index + 1));
+      child.setAttribute("aria-setsize", String(items.length));
       child.draggable = this.dragAndDrop;
     });
   }
@@ -132,8 +135,8 @@ export class ReorderableList {
   private updatePosinset(): void {
     const items = this.roving.getItems();
     items.forEach((el, i) => {
-      el.setAttribute('aria-posinset', String(i + 1));
-      el.setAttribute('aria-setsize', String(items.length));
+      el.setAttribute("aria-posinset", String(i + 1));
+      el.setAttribute("aria-setsize", String(items.length));
     });
   }
 
@@ -151,16 +154,16 @@ export class ReorderableList {
     let targetIndex = -1;
 
     switch (e.key) {
-      case 'ArrowUp':
+      case "ArrowUp":
         targetIndex = idx - 1;
         break;
-      case 'ArrowDown':
+      case "ArrowDown":
         targetIndex = idx + 1;
         break;
-      case 'Home':
+      case "Home":
         targetIndex = 0;
         break;
-      case 'End':
+      case "End":
         targetIndex = items.length - 1;
         break;
       default:
@@ -171,7 +174,7 @@ export class ReorderableList {
 
     const item = items[idx];
     const target = items[targetIndex];
-    const label = item.textContent?.trim() || 'Item';
+    const label = item.textContent?.trim() || "Item";
 
     if (targetIndex < idx) {
       this.list.insertBefore(item, target);
@@ -197,23 +200,23 @@ export class ReorderableList {
 
   private setupDragAndDrop(): void {
     this.setDraggable(true);
-    this.list.addEventListener('dragstart', this.dragStartHandler);
-    this.list.addEventListener('dragover', this.dragOverHandler);
-    this.list.addEventListener('drop', this.dropHandler);
-    this.list.addEventListener('dragend', this.dragEndHandler);
+    this.list.addEventListener("dragstart", this.dragStartHandler);
+    this.list.addEventListener("dragover", this.dragOverHandler);
+    this.list.addEventListener("drop", this.dropHandler);
+    this.list.addEventListener("dragend", this.dragEndHandler);
     this.createDropIndicator();
   }
 
   private setDraggable(value: boolean): void {
     const items = Array.from(this.list.children) as HTMLElement[];
-    items.forEach(el => {
+    items.forEach((el) => {
       el.draggable = value;
     });
   }
 
   private createDropIndicator(): void {
-    this.dropIndicator = document.createElement('div');
-    this.dropIndicator.className = 'reorderable-drop-indicator';
+    this.dropIndicator = document.createElement("div");
+    this.dropIndicator.className = "reorderable-drop-indicator";
     this.dropIndicator.style.cssText = `
       position: absolute;
       z-index: 10;
@@ -222,8 +225,8 @@ export class ReorderableList {
       display: none;
     `;
     this.list.appendChild(this.dropIndicator);
-    if (!this.list.style.position || this.list.style.position === 'static') {
-      this.list.style.position = 'relative';
+    if (!this.list.style.position || this.list.style.position === "static") {
+      this.list.style.position = "relative";
     }
   }
 
@@ -233,9 +236,9 @@ export class ReorderableList {
     if (!item) return;
 
     this.draggedItem = item;
-    e.dataTransfer!.effectAllowed = 'move';
-    e.dataTransfer!.setData('text/plain', '');
-    item.classList.add('reorderable-dragging');
+    e.dataTransfer!.effectAllowed = "move";
+    e.dataTransfer!.setData("text/plain", "");
+    item.classList.add("reorderable-dragging");
   }
 
   private handleDragOver(e: DragEvent): void {
@@ -250,7 +253,7 @@ export class ReorderableList {
     }
 
     const rect = overItem.getBoundingClientRect();
-    const isVertical = this.orientation === 'vertical';
+    const isVertical = this.orientation === "vertical";
     const midpoint = isVertical ? rect.top + rect.height / 2 : rect.left + rect.width / 2;
     const cursor = isVertical ? e.clientY : e.clientX;
     const insertBefore = cursor < midpoint;
@@ -267,7 +270,7 @@ export class ReorderableList {
     const target = e.target as HTMLElement;
     const overItem = target.closest('[role="listitem"]') as HTMLElement;
     if (!overItem || overItem === this.draggedItem) {
-      this.draggedItem.classList.remove('reorderable-dragging');
+      this.draggedItem.classList.remove("reorderable-dragging");
       this.draggedItem = null;
       return;
     }
@@ -276,19 +279,19 @@ export class ReorderableList {
     const fromIdx = items.indexOf(this.draggedItem);
     const toIdx = items.indexOf(overItem);
     if (fromIdx < 0 || toIdx < 0 || fromIdx === toIdx) {
-      this.draggedItem.classList.remove('reorderable-dragging');
+      this.draggedItem.classList.remove("reorderable-dragging");
       this.draggedItem = null;
       return;
     }
 
     const rect = overItem.getBoundingClientRect();
-    const isVertical = this.orientation === 'vertical';
+    const isVertical = this.orientation === "vertical";
     const midpoint = isVertical ? rect.top + rect.height / 2 : rect.left + rect.width / 2;
     const cursor = isVertical ? e.clientY : e.clientX;
     const insertBefore = cursor < midpoint;
 
     const targetIndex = insertBefore ? toIdx : toIdx + 1;
-    const label = this.draggedItem.textContent?.trim() || 'Item';
+    const label = this.draggedItem.textContent?.trim() || "Item";
 
     if (insertBefore) {
       this.list.insertBefore(this.draggedItem, overItem);
@@ -298,7 +301,7 @@ export class ReorderableList {
 
     this.roving.refresh();
     this.updatePosinset();
-    this.draggedItem.classList.remove('reorderable-dragging');
+    this.draggedItem.classList.remove("reorderable-dragging");
 
     const newIdx = this.roving.getItems().indexOf(this.draggedItem);
     if (newIdx >= 0) {
@@ -314,7 +317,7 @@ export class ReorderableList {
   private handleDragEnd(_e: DragEvent): void {
     this.hideDropIndicator();
     if (this.draggedItem) {
-      this.draggedItem.classList.remove('reorderable-dragging');
+      this.draggedItem.classList.remove("reorderable-dragging");
       this.draggedItem = null;
     }
   }
@@ -322,28 +325,28 @@ export class ReorderableList {
   private showDropIndicator(overItem: HTMLElement, insertBefore: boolean): void {
     if (!this.dropIndicator) return;
 
-    const isVertical = this.orientation === 'vertical';
+    const isVertical = this.orientation === "vertical";
     if (isVertical) {
-      this.dropIndicator.style.height = '2px';
-      this.dropIndicator.style.width = '100%';
-      this.dropIndicator.style.left = '0';
+      this.dropIndicator.style.height = "2px";
+      this.dropIndicator.style.width = "100%";
+      this.dropIndicator.style.left = "0";
       this.dropIndicator.style.top = insertBefore
         ? `${overItem.offsetTop}px`
         : `${overItem.offsetTop + overItem.offsetHeight}px`;
     } else {
-      this.dropIndicator.style.width = '2px';
-      this.dropIndicator.style.height = '100%';
-      this.dropIndicator.style.top = '0';
+      this.dropIndicator.style.width = "2px";
+      this.dropIndicator.style.height = "100%";
+      this.dropIndicator.style.top = "0";
       this.dropIndicator.style.left = insertBefore
         ? `${overItem.offsetLeft}px`
         : `${overItem.offsetLeft + overItem.offsetWidth}px`;
     }
-    this.dropIndicator.style.display = 'block';
+    this.dropIndicator.style.display = "block";
   }
 
   private hideDropIndicator(): void {
     if (this.dropIndicator) {
-      this.dropIndicator.style.display = 'none';
+      this.dropIndicator.style.display = "none";
     }
   }
 
@@ -362,16 +365,16 @@ export class ReorderableList {
   public destroy(): void {
     if (!this.roving) return;
     if (this.dragAndDrop) {
-      this.list.removeEventListener('dragstart', this.dragStartHandler);
-      this.list.removeEventListener('dragover', this.dragOverHandler);
-      this.list.removeEventListener('drop', this.dropHandler);
-      this.list.removeEventListener('dragend', this.dragEndHandler);
+      this.list.removeEventListener("dragstart", this.dragStartHandler);
+      this.list.removeEventListener("dragover", this.dragOverHandler);
+      this.list.removeEventListener("drop", this.dropHandler);
+      this.list.removeEventListener("dragend", this.dragEndHandler);
       if (this.dropIndicator && this.dropIndicator.parentNode) {
         this.dropIndicator.parentNode.removeChild(this.dropIndicator);
       }
       this.setDraggable(false);
     }
-    this.list.removeEventListener('keydown', this.keydownHandler);
+    this.list.removeEventListener("keydown", this.keydownHandler);
     this.roving.destroy();
   }
 }

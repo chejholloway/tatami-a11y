@@ -1,789 +1,1154 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>tatami-a11y demo</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="style-modern.css" id="theme-stylesheet" />
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>tatami-a11y demo</title>
-  <link rel="icon" href="favicon.ico" type="image/x-icon">
-  <link rel="stylesheet" href="style-modern.css" id="theme-stylesheet">
-</head>
+  <body>
+    <h1>tatami-a11y demo</h1>
+    <p class="subtitle">Framework-agnostic accessibility primitives for vanilla JavaScript</p>
 
-<body>
-  <h1>tatami-a11y demo</h1>
-  <p class="subtitle">Framework-agnostic accessibility primitives for vanilla JavaScript</p>
+    <!-- ── Shared Primitives ─────────────────────────────────────────── -->
 
-
-  <!-- ── Shared Primitives ─────────────────────────────────────────── -->
-
-  <div class="section">
-    <h2>📢 Announcer</h2>
-    <p class="description">Screen reader announcements using ARIA live regions. Try with a screen reader enabled.</p>
-    <div class="controls">
-      <button class="btn-primary" id="announce-polite-btn">Announce (Polite)</button>
-      <button class="btn-danger" id="announce-urgent-btn">Announce (Urgent)</button>
-    </div>
-    <div class="output" id="announcer-output">Announcements will appear here (and be spoken by screen readers)</div>
-  </div>
-
-  <div class="section">
-    <h2>🎭 Reduced Motion</h2>
-    <p class="description">Detects system preference for reduced motion.</p>
-    <div class="controls">
-      <button class="btn-secondary" id="check-reduced-btn">Check Current</button>
-      <button class="btn-secondary" id="toggle-listener-btn">Toggle Listener</button>
-    </div>
-    <div class="output" id="reduced-motion-output">
-      Status: <span id="reduced-motion-status" class="status status-inactive">Unknown</span>
-    </div>
-  </div>
-
-  <div class="section">
-    <h2>🎯 Focus Stack</h2>
-    <p class="description">Focus restoration for transient UI. Click "Enter Focus Stack" then "Exit Focus Stack" to
-      test.</p>
-    <div class="controls">
-      <button class="btn-primary" id="focus-trigger">Enter Focus Stack</button>
-      <button class="btn-danger" id="exit-focus-stack-btn">Exit Focus Stack</button>
-      <button class="btn-secondary" id="clear-focus-stack-btn">Clear Stack</button>
-    </div>
-    <div class="output" id="focus-stack-output">Focus stack operations will appear here</div>
-  </div>
-
-  <div class="section">
-    <h2>🔒 Focus Trap</h2>
-    <p class="description">Traps focus within a container. Tab/Shift+Tab will cycle within the modal.</p>
-    <div class="controls">
-      <button class="btn-primary" id="open-modal-btn">Open Modal</button>
-    </div>
-    <div class="output" id="focus-trap-output">Focus trap operations will appear here</div>
-  </div>
-
-  <div class="section">
-    <h2>🔄 Singleton Factory</h2>
-    <p class="description">HMR-safe singleton pattern. Each call returns the same instance.</p>
-    <div class="controls">
-      <button class="btn-secondary" id="create-singleton-btn">Create Instance</button>
-      <button class="btn-secondary" id="register-cleanup-btn">Register Cleanup</button>
-    </div>
-    <div class="output" id="singleton-output">Singleton operations will appear here</div>
-  </div>
-
-  <!-- ── Components ────────────────────────────────────────────────── -->
-
-  <div class="section">
-    <h2>📋 Dropdown Menu</h2>
-    <p class="description">Accessible dropdown with keyboard navigation, focus trap, and announcements.</p>
-    <div class="controls">
-      <button class="btn-primary" id="dropdown-trigger">Open Menu</button>
-    </div>
-    <div id="dropdown-menu" class="dropdown-menu dropdown-menu-demo">
-      <button class="dropdown-item dropdown-item-demo" role="menuitem">Option 1</button>
-      <button class="dropdown-item dropdown-item-demo" role="menuitem">Option 2</button>
-      <button class="dropdown-item dropdown-item-demo" role="menuitem">Option 3</button>
-    </div>
-    <div class="output mt-0-5" id="dropdown-output">Dropdown operations will appear here</div>
-  </div>
-
-  <div class="section">
-    <h2>📑 Tabs</h2>
-    <p class="description">Accessible tabs with keyboard navigation (Arrow keys, Home, End) and announcements.</p>
-    <div role="tablist" id="tabs-demo" class="tablist-demo">
-      <button role="tab" id="tab-1" aria-controls="panel-1" aria-selected="true" tabindex="0" class="tab-demo">Tab
-        1</button>
-      <button role="tab" id="tab-2" aria-controls="panel-2" aria-selected="false" tabindex="-1" class="tab-demo">Tab
-        2</button>
-      <button role="tab" id="tab-3" aria-controls="panel-3" aria-selected="false" tabindex="-1" class="tab-demo">Tab
-        3</button>
-    </div>
-    <div id="panel-1" role="tabpanel" aria-labelledby="tab-1" class="tabpanel-demo">
-      <p>Content for Tab 1. Use arrow keys to navigate between tabs.</p>
-    </div>
-    <div id="panel-2" role="tabpanel" aria-labelledby="tab-2" hidden class="tabpanel-demo">
-      <p>Content for Tab 2. Tabs announce changes to screen readers.</p>
-    </div>
-    <div id="panel-3" role="tabpanel" aria-labelledby="tab-3" hidden class="tabpanel-demo">
-      <p>Content for Tab 3. Focus management is handled automatically.</p>
-    </div>
-    <div class="output" id="tabs-output">Tab operations will appear here</div>
-  </div>
-
-  <div class="section">
-    <h2>🪟 Modal</h2>
-    <p class="description">Accessible modal with backdrop, focus trap, and announcements.</p>
-    <div class="controls">
-      <button class="btn-primary" id="modal-component-trigger">Open Modal</button>
-    </div>
-    <div class="output" id="modal-component-output">Modal operations will appear here</div>
-  </div>
-
-  <div class="section">
-    <h2>📁 Accordion</h2>
-    <p class="description">Accessible accordion with keyboard navigation (Arrow keys, Home, End) and announcements.</p>
-    <div id="accordion-demo">
-      <button id="accordion-header-1" aria-controls="accordion-panel-1"
-        class="accordion-header accordion-header-demo">Panel 1</button>
-      <div id="accordion-panel-1" class="accordion-panel accordion-panel-demo" hidden>Content for panel 1. Use arrow
-        keys to navigate between headers.</div>
-      <button id="accordion-header-2" aria-controls="accordion-panel-2"
-        class="accordion-header accordion-header-demo">Panel 2</button>
-      <div id="accordion-panel-2" class="accordion-panel accordion-panel-demo" hidden>Content for panel 2. Accordion
-        announces expand/collapse states.</div>
-      <button id="accordion-header-3" aria-controls="accordion-panel-3"
-        class="accordion-header accordion-header-demo">Panel 3</button>
-      <div id="accordion-panel-3" class="accordion-panel accordion-panel-demo" hidden>Content for panel 3. Focus
-        management is handled automatically.</div>
-    </div>
-    <div class="output mt-1" id="accordion-output">Accordion operations will appear here</div>
-  </div>
-
-  <div class="section">
-    <h2>🍞 Toast Notifications</h2>
-    <p class="description">Accessible toast notifications with auto-dismissal and keyboard shortcut (Alt+T to jump to
-      toasts).</p>
-    <div class="controls">
-      <button class="btn-info" id="toast-info-btn">Info</button>
-      <button class="btn-success" id="toast-success-btn">Success</button>
-      <button class="btn-danger" id="toast-error-btn">Error</button>
-      <button class="btn-warning" id="toast-warning-btn">Warning</button>
-      <button class="btn-secondary" id="toast-dismiss-all-btn">Dismiss All</button>
-    </div>
-    <div class="output" id="toast-output">Toast operations will appear here</div>
-  </div>
-
-  <div class="section">
-    <h2>📋 Menu Button</h2>
-    <p class="description">Accessible menu button — distinct from Dropdown in that it uses
-      <code>aria-haspopup="menu"</code>.
-    </p>
-    <div class="controls">
-      <button class="btn-primary" id="menu-button-trigger">Open Menu</button>
-    </div>
-    <div id="menu-button-menu" class="menu-button-menu menu-button-menu-demo" style="display:none;">
-      <button class="menu-button-item menu-button-item-demo" role="menuitem">Option 1</button>
-      <button class="menu-button-item menu-button-item-demo" role="menuitem">Option 2</button>
-      <button class="menu-button-item menu-button-item-demo" role="menuitem">Option 3</button>
-    </div>
-    <div class="output mt-0-5" id="menu-button-output">Menu button operations will appear here</div>
-  </div>
-
-  <div class="section">
-    <h2>🔍 Combobox</h2>
-    <p class="description">Accessible combobox / autocomplete with filtering, keyboard navigation, and announcements.
-    </p>
-    <div class="controls">
-      <input type="text" id="combobox-input" class="combobox-input combobox-input-demo"
-        placeholder="Type to filter fruits…" autocomplete="off">
-    </div>
-    <div id="combobox-listbox" class="combobox-listbox combobox-listbox-demo" style="display:none;">
-      <div class="combobox-option combobox-option-demo" role="option" data-value="Apple">Apple</div>
-      <div class="combobox-option combobox-option-demo" role="option" data-value="Banana">Banana</div>
-      <div class="combobox-option combobox-option-demo" role="option" data-value="Cherry">Cherry</div>
-      <div class="combobox-option combobox-option-demo" role="option" data-value="Date">Date</div>
-      <div class="combobox-option combobox-option-demo" role="option" data-value="Elderberry">Elderberry</div>
-    </div>
-    <div class="output mt-0-5" id="combobox-output">Combobox operations will appear here</div>
-  </div>
-
-  <div class="section">
-    <h2>💬 Tooltip</h2>
-    <p class="description">Accessible tooltip via <code>aria-describedby</code>. Hover, focus, or tab to the button.
-      Escape dismisses it.</p>
-    <div class="controls">
-      <div class="tooltip-wrapper">
-        <button class="btn-primary" id="tooltip-trigger">Hover or Focus Me</button>
-        <div id="tooltip-content" class="tooltip-demo" style="display:none;" role="tooltip">
-          This is helpful additional information!
-        </div>
-      </div>
-    </div>
-    <div class="output mt-0-5" id="tooltip-output">Tooltip operations will appear here</div>
-  </div>
-
-  <!-- Carousel — slides use inline SVG as placeholder images (no external deps) -->
-  <div class="section">
-    <h2>🎠 Carousel</h2>
-    <p class="description">Accessible carousel with slide announcements, play/pause, and auto-disabled rotation when
-      reduced motion is on.</p>
-    <div id="carousel-demo" class="carousel-demo">
-      <div data-carousel-track class="carousel-track-demo">
-
-        <!-- Slide 1 — Mountain -->
-        <div data-carousel-slide class="carousel-slide-demo">
-          <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
-            <circle cx="40" cy="40" r="38" fill="#bbdefb" />
-            <polygon points="40,12 68,62 12,62" fill="#1565c0" opacity=".7" />
-            <polygon points="28,62 52,30 62,62" fill="#42a5f5" opacity=".6" />
-            <circle cx="58" cy="20" r="8" fill="#fff9c4" opacity=".9" />
-          </svg>
-          <span class="carousel-slide-caption">Mountain Vista</span>
-          <span class="carousel-slide-sub">Slide 1 of 3</span>
-        </div>
-
-        <!-- Slide 2 — Ocean -->
-        <div data-carousel-slide class="carousel-slide-demo">
-          <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
-            <circle cx="40" cy="40" r="38" fill="#fce4ec" />
-            <rect x="10" y="45" width="60" height="25" rx="4" fill="#880e4f" opacity=".15" />
-            <path d="M10 46 Q25 38 40 46 Q55 54 70 46" stroke="#880e4f" stroke-width="2.5" fill="none" opacity=".6" />
-            <path d="M10 54 Q25 46 40 54 Q55 62 70 54" stroke="#ad1457" stroke-width="2" fill="none" opacity=".5" />
-            <ellipse cx="40" cy="28" rx="16" ry="12" fill="#f48fb1" opacity=".55" />
-          </svg>
-          <span class="carousel-slide-caption">Ocean Sunset</span>
-          <span class="carousel-slide-sub">Slide 2 of 3</span>
-        </div>
-
-        <!-- Slide 3 — Forest -->
-        <div data-carousel-slide class="carousel-slide-demo">
-          <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
-            <circle cx="40" cy="40" r="38" fill="#e8f5e9" />
-            <rect x="36" y="48" width="8" height="18" rx="2" fill="#558b2f" />
-            <polygon points="40,14 58,50 22,50" fill="#2e7d32" opacity=".85" />
-            <polygon points="40,24 54,54 26,54" fill="#388e3c" opacity=".7" />
-            <polygon points="40,34 50,58 30,58" fill="#43a047" opacity=".6" />
-          </svg>
-          <span class="carousel-slide-caption">Forest Trail</span>
-          <span class="carousel-slide-sub">Slide 3 of 3</span>
-        </div>
-
-      </div>
-      <div class="carousel-controls-demo">
-        <button class="btn-secondary" data-carousel-prev>← Previous</button>
-        <button class="btn-primary" data-carousel-playpause>Pause</button>
-        <button class="btn-secondary" data-carousel-next>Next →</button>
-      </div>
-    </div>
-    <div class="output mt-0-5" id="carousel-output">Carousel operations will appear here</div>
-  </div>
-
-  <div class="section">
-    <h2>💬 Non-Modal Dialog</h2>
-    <p class="description">A dialog that does <em>not</em> trap focus — users can freely tab out. Good for floating
-      panels and live chat.</p>
-    <div class="controls">
-      <button class="btn-primary" id="dialog-trigger">Open Non-Modal Dialog</button>
-    </div>
-    <div id="dialog-content" class="dialog-demo" style="display:none;">
-      <h3>Floating Panel</h3>
-      <p>Open, but not trapping your focus!</p>
-      <button class="btn-secondary mt-1" id="dialog-close-btn">Close me</button>
-    </div>
-    <div class="output mt-0-5" id="dialog-output">Dialog operations will appear here</div>
-  </div>
-
-  <div class="section">
-    <h2>🔽 Disclosure</h2>
-    <p class="description">Simple show/hide widget. Correctly wires <code>aria-expanded</code> and
-      <code>aria-controls</code> on every toggle.
-    </p>
-    <div style="display:block;">
-      <button class="disclosure-trigger-demo" id="disclosure-trigger">Toggle Advanced Settings</button>
-      <div id="disclosure-content" class="disclosure-content-demo" style="display:none;">
-        <p style="margin-bottom:.5rem;">Here are some advanced settings you can configure.</p>
-        <label><input type="checkbox"> Enable turbo mode</label>
-      </div>
-    </div>
-    <div class="output mt-1" id="disclosure-output">Disclosure operations will appear here</div>
-  </div>
-
-  <!-- Tree View -->
-  <div class="section">
-    <h2>🌳 Tree View</h2>
-    <p class="description">Accessible tree view with expand/collapse, keyboard navigation (Arrow keys, Home, End,
-      typeahead), and single/multi-select.</p>
-    <div class="controls">
-      <button class="btn-secondary" id="treeview-single-btn">Single Select</button>
-      <button class="btn-secondary" id="treeview-multi-btn">Multi Select</button>
-    </div>
-    <ul id="treeview-demo" class="treeview-demo">
-      <li data-label="Documents" data-children="true">
-        <span class="label">📄 Documents</span>
-        <ul>
-          <li data-label="Work" data-children="true">
-            <span class="label">💼 Work</span>
-            <ul>
-              <li data-label="report.pdf"><span class="label">report.pdf</span></li>
-              <li data-label="budget.xlsx"><span class="label">budget.xlsx</span></li>
-            </ul>
-          </li>
-          <li data-label="Personal" data-children="true">
-            <span class="label">🏠 Personal</span>
-            <ul>
-              <li data-label="resume.pdf"><span class="label">resume.pdf</span></li>
-              <li data-label="notes.txt"><span class="label">notes.txt</span></li>
-            </ul>
-          </li>
-          <li data-label="readme.md"><span class="label">readme.md</span></li>
-        </ul>
-      </li>
-      <li data-label="Pictures" data-children="true">
-        <span class="label">🖼️ Pictures</span>
-        <ul>
-          <li data-label="vacation" data-children="true">
-            <span class="label">🌴 Vacation</span>
-            <ul>
-              <li data-label="beach.jpg"><span class="label">beach.jpg</span></li>
-              <li data-label="sunset.jpg"><span class="label">sunset.jpg</span></li>
-            </ul>
-          </li>
-          <li data-label="screenshot.png"><span class="label">screenshot.png</span></li>
-        </ul>
-      </li>
-      <li data-label="Music"><span class="label">🎵 Music</span></li>
-    </ul>
-    <div class="output" id="treeview-output">Tree view operations will appear here</div>
-  </div>
-
-  <!-- Date Picker -->
-  <div class="section">
-    <h2>📅 Date Picker</h2>
-    <p class="description">Full WAI-ARIA date picker dialog. Arrow keys navigate the grid, PageUp/Down change months,
-      Escape closes.</p>
-    <div class="datepicker-wrapper">
-      <input type="text" id="dp-input" class="datepicker-input" placeholder="YYYY-MM-DD" autocomplete="off" readonly>
-      <button id="dp-toggle" class="datepicker-toggle" type="button" aria-label="Choose date">📅</button>
-      <div id="dp-dialog" class="datepicker-dialog">
-        <div class="datepicker-nav">
-          <button id="dp-prev" type="button">◀</button>
-          <div id="dp-month-label" class="datepicker-month-label"></div>
-          <button id="dp-next" type="button">▶</button>
-        </div>
-        <div id="dp-grid" class="datepicker-grid"></div>
-      </div>
-    </div>
-    <div class="output mt-0-5" id="datepicker-output">Date picker operations will appear here</div>
-  </div>
-
-  <!-- Command Palette — press Ctrl+K / Cmd+K anywhere on the page -->
-  <div class="section">
-    <h2>⌨️ Command Palette</h2>
-    <p class="description">Press <kbd>Ctrl+K</kbd> (or <kbd>Cmd+K</kbd>) anywhere to open. Type to filter. Arrow keys
-      navigate. Enter executes.</p>
-    <div class="controls">
-      <button class="btn-primary" id="cmd-open-btn">Open Palette <kbd
-          style="opacity:.9;font-size:.8em">Ctrl+K</kbd></button>
-    </div>
-    <div class="output" id="cmd-output">Command palette operations will appear here</div>
-  </div>
-
-  <!-- ── Multi-Select Listbox ──────────────────────────────────────── -->
-  <div class="section">
-    <h2>☑️ Multi-Select Listbox</h2>
-    <p class="description">Accessible listbox with single/multi-select, keyboard navigation, Shift+Click range, Ctrl+Click toggle, and typeahead.</p>
-    <div class="controls">
-      <button class="btn-secondary" id="msl-single-btn">Single Select</button>
-      <button class="btn-secondary" id="msl-multi-btn">Multi Select</button>
-      <button class="btn-secondary" id="msl-select-all-btn">Select All</button>
-      <button class="btn-secondary" id="msl-clear-btn">Clear</button>
-    </div>
-    <div id="msl-listbox" class="msl-listbox">
-      <div>🍎 Apples</div>
-      <div>🍌 Bananas</div>
-      <div>🍒 Cherries</div>
-      <div>🍇 Grapes</div>
-      <div>🥝 Kiwis</div>
-    </div>
-    <div class="output" id="msl-output">Selected: none</div>
-  </div>
-
-  <!-- ── Reorderable List ──────────────────────────────────────────── -->
-  <div class="section">
-    <h2>🔀 Reorderable List</h2>
-    <p class="description">Accessible reorderable list with Ctrl+ArrowUp/Down, Ctrl+Home/End, and live announcements. Drag and drop is also supported.</p>
-    <div class="controls">
-      <button class="btn-secondary" id="reorder-reset-btn">Reset Order</button>
-    </div>
-    <ul id="reorderable-demo">
-      <li><span class="label">🍎 Apples</span></li>
-      <li><span class="label">🍌 Bananas</span></li>
-      <li><span class="label">🍒 Cherries</span></li>
-      <li><span class="label">🍇 Grapes</span></li>
-      <li><span class="label">🍊 Oranges</span></li>
-    </ul>
-    <div class="output" id="reorderable-output">Use Ctrl+ArrowUp/Down to reorder</div>
-  </div>
-
-  <!-- ── Portals (overlays rendered outside section flow) ─────────── -->
-
-  <!-- Focus Trap demo modal -->
-  <div id="modal" class="modal-overlay hidden">
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-      <h2 id="modal-title">Modal with Focus Trap</h2>
-      <p>Focus trapping is active. Try pressing Tab and Shift+Tab.</p>
+    <div class="section">
+      <h2>📢 Announcer</h2>
+      <p class="description">
+        Screen reader announcements using ARIA live regions. Try with a screen reader enabled.
+      </p>
       <div class="controls">
-        <button class="btn-primary" id="modal-close-btn">Close (Escape also works)</button>
+        <button class="btn-primary" id="announce-polite-btn">Announce (Polite)</button>
+        <button class="btn-danger" id="announce-urgent-btn">Announce (Urgent)</button>
+      </div>
+      <div class="output" id="announcer-output">
+        Announcements will appear here (and be spoken by screen readers)
       </div>
     </div>
-  </div>
 
-  <!-- Modal component demo -->
-  <div id="modal-component-backdrop" class="modal-overlay modal-overlay-demo hidden">
-    <div id="modal-component" class="modal modal-component-demo" role="dialog" aria-modal="true"
-      aria-labelledby="modal-component-title">
-      <h2 id="modal-component-title">Modal Component</h2>
-      <p>This Modal component uses tatami-a11y primitives — focus trap, focus restoration, and announcements.</p>
+    <div class="section">
+      <h2>🎭 Reduced Motion</h2>
+      <p class="description">Detects system preference for reduced motion.</p>
       <div class="controls">
-        <button class="btn-primary" id="modal-component-close-btn">Close (Escape also works)</button>
+        <button class="btn-secondary" id="check-reduced-btn">Check Current</button>
+        <button class="btn-secondary" id="toggle-listener-btn">Toggle Listener</button>
+      </div>
+      <div class="output" id="reduced-motion-output">
+        Status: <span id="reduced-motion-status" class="status status-inactive">Unknown</span>
       </div>
     </div>
-  </div>
 
-  <!-- Command Palette overlay — rendered at body level so it sits above everything -->
-  <div id="cmd-overlay" class="cmd-palette-overlay" role="presentation">
-    <div id="cmd-dialog" class="cmd-palette-dialog">
-      <div class="cmd-palette-input-wrap">
-        <span class="cmd-palette-search-icon" aria-hidden="true">🔍</span>
-        <input type="text" id="cmd-input" class="cmd-palette-input" placeholder="Type a command…" autocomplete="off"
-          spellcheck="false">
+    <div class="section">
+      <h2>🎯 Focus Stack</h2>
+      <p class="description">
+        Focus restoration for transient UI. Click "Enter Focus Stack" then "Exit Focus Stack" to
+        test.
+      </p>
+      <div class="controls">
+        <button class="btn-primary" id="focus-trigger">Enter Focus Stack</button>
+        <button class="btn-danger" id="exit-focus-stack-btn">Exit Focus Stack</button>
+        <button class="btn-secondary" id="clear-focus-stack-btn">Clear Stack</button>
       </div>
-      <div id="cmd-status" class="cmd-palette-status"></div>
-      <div id="cmd-listbox" class="cmd-palette-listbox"></div>
-      <div class="cmd-palette-footer">
-        <span><kbd>↑↓</kbd> navigate</span>
-        <span><kbd>↵</kbd> select</span>
-        <span><kbd>Esc</kbd> close</span>
+      <div class="output" id="focus-stack-output">Focus stack operations will appear here</div>
+    </div>
+
+    <div class="section">
+      <h2>🔒 Focus Trap</h2>
+      <p class="description">
+        Traps focus within a container. Tab/Shift+Tab will cycle within the modal.
+      </p>
+      <div class="controls">
+        <button class="btn-primary" id="open-modal-btn">Open Modal</button>
+      </div>
+      <div class="output" id="focus-trap-output">Focus trap operations will appear here</div>
+    </div>
+
+    <div class="section">
+      <h2>🔄 Singleton Factory</h2>
+      <p class="description">HMR-safe singleton pattern. Each call returns the same instance.</p>
+      <div class="controls">
+        <button class="btn-secondary" id="create-singleton-btn">Create Instance</button>
+        <button class="btn-secondary" id="register-cleanup-btn">Register Cleanup</button>
+      </div>
+      <div class="output" id="singleton-output">Singleton operations will appear here</div>
+    </div>
+
+    <!-- ── Components ────────────────────────────────────────────────── -->
+
+    <div class="section">
+      <h2>📋 Dropdown Menu</h2>
+      <p class="description">
+        Accessible dropdown with keyboard navigation, focus trap, and announcements.
+      </p>
+      <div class="controls">
+        <button class="btn-primary" id="dropdown-trigger">Open Menu</button>
+      </div>
+      <div id="dropdown-menu" class="dropdown-menu dropdown-menu-demo">
+        <button class="dropdown-item dropdown-item-demo" role="menuitem">Option 1</button>
+        <button class="dropdown-item dropdown-item-demo" role="menuitem">Option 2</button>
+        <button class="dropdown-item dropdown-item-demo" role="menuitem">Option 3</button>
+      </div>
+      <div class="output mt-0-5" id="dropdown-output">Dropdown operations will appear here</div>
+    </div>
+
+    <div class="section">
+      <h2>📑 Tabs</h2>
+      <p class="description">
+        Accessible tabs with keyboard navigation (Arrow keys, Home, End) and announcements.
+      </p>
+      <div role="tablist" id="tabs-demo" class="tablist-demo">
+        <button
+          role="tab"
+          id="tab-1"
+          aria-controls="panel-1"
+          aria-selected="true"
+          tabindex="0"
+          class="tab-demo"
+        >
+          Tab 1
+        </button>
+        <button
+          role="tab"
+          id="tab-2"
+          aria-controls="panel-2"
+          aria-selected="false"
+          tabindex="-1"
+          class="tab-demo"
+        >
+          Tab 2
+        </button>
+        <button
+          role="tab"
+          id="tab-3"
+          aria-controls="panel-3"
+          aria-selected="false"
+          tabindex="-1"
+          class="tab-demo"
+        >
+          Tab 3
+        </button>
+      </div>
+      <div id="panel-1" role="tabpanel" aria-labelledby="tab-1" class="tabpanel-demo">
+        <p>Content for Tab 1. Use arrow keys to navigate between tabs.</p>
+      </div>
+      <div id="panel-2" role="tabpanel" aria-labelledby="tab-2" hidden class="tabpanel-demo">
+        <p>Content for Tab 2. Tabs announce changes to screen readers.</p>
+      </div>
+      <div id="panel-3" role="tabpanel" aria-labelledby="tab-3" hidden class="tabpanel-demo">
+        <p>Content for Tab 3. Focus management is handled automatically.</p>
+      </div>
+      <div class="output" id="tabs-output">Tab operations will appear here</div>
+    </div>
+
+    <div class="section">
+      <h2>🪟 Modal</h2>
+      <p class="description">Accessible modal with backdrop, focus trap, and announcements.</p>
+      <div class="controls">
+        <button class="btn-primary" id="modal-component-trigger">Open Modal</button>
+      </div>
+      <div class="output" id="modal-component-output">Modal operations will appear here</div>
+    </div>
+
+    <div class="section">
+      <h2>📁 Accordion</h2>
+      <p class="description">
+        Accessible accordion with keyboard navigation (Arrow keys, Home, End) and announcements.
+      </p>
+      <div id="accordion-demo">
+        <button
+          id="accordion-header-1"
+          aria-controls="accordion-panel-1"
+          class="accordion-header accordion-header-demo"
+        >
+          Panel 1
+        </button>
+        <div id="accordion-panel-1" class="accordion-panel accordion-panel-demo" hidden>
+          Content for panel 1. Use arrow keys to navigate between headers.
+        </div>
+        <button
+          id="accordion-header-2"
+          aria-controls="accordion-panel-2"
+          class="accordion-header accordion-header-demo"
+        >
+          Panel 2
+        </button>
+        <div id="accordion-panel-2" class="accordion-panel accordion-panel-demo" hidden>
+          Content for panel 2. Accordion announces expand/collapse states.
+        </div>
+        <button
+          id="accordion-header-3"
+          aria-controls="accordion-panel-3"
+          class="accordion-header accordion-header-demo"
+        >
+          Panel 3
+        </button>
+        <div id="accordion-panel-3" class="accordion-panel accordion-panel-demo" hidden>
+          Content for panel 3. Focus management is handled automatically.
+        </div>
+      </div>
+      <div class="output mt-1" id="accordion-output">Accordion operations will appear here</div>
+    </div>
+
+    <div class="section">
+      <h2>🍞 Toast Notifications</h2>
+      <p class="description">
+        Accessible toast notifications with auto-dismissal and keyboard shortcut (Alt+T to jump to
+        toasts).
+      </p>
+      <div class="controls">
+        <button class="btn-info" id="toast-info-btn">Info</button>
+        <button class="btn-success" id="toast-success-btn">Success</button>
+        <button class="btn-danger" id="toast-error-btn">Error</button>
+        <button class="btn-warning" id="toast-warning-btn">Warning</button>
+        <button class="btn-secondary" id="toast-dismiss-all-btn">Dismiss All</button>
+      </div>
+      <div class="output" id="toast-output">Toast operations will appear here</div>
+    </div>
+
+    <div class="section">
+      <h2>📋 Menu Button</h2>
+      <p class="description">
+        Accessible menu button — distinct from Dropdown in that it uses
+        <code>aria-haspopup="menu"</code>.
+      </p>
+      <div class="controls">
+        <button class="btn-primary" id="menu-button-trigger">Open Menu</button>
+      </div>
+      <div
+        id="menu-button-menu"
+        class="menu-button-menu menu-button-menu-demo"
+        style="display: none"
+      >
+        <button class="menu-button-item menu-button-item-demo" role="menuitem">Option 1</button>
+        <button class="menu-button-item menu-button-item-demo" role="menuitem">Option 2</button>
+        <button class="menu-button-item menu-button-item-demo" role="menuitem">Option 3</button>
+      </div>
+      <div class="output mt-0-5" id="menu-button-output">
+        Menu button operations will appear here
       </div>
     </div>
-  </div>
-  <div id="cmd-backdrop" style="display:none;position:fixed;inset:0;z-index:999;" aria-hidden="true"></div>
 
-  <script type="module">
-    import {
-      announce, checkReducedMotion, onReducedMotionChange,
-      pushFocusStack, popFocusStack, setInitialFocusReference, clearFocusStack,
-      activateFocusTrap, deactivateFocusTrap,
-      createSingleton, registerCleanup,
-      Dropdown, Tabs, Modal, Accordion, Toast,
-      MenuButton, MultiselectListbox, Combobox, Tooltip, Carousel,
-      Dialog, Disclosure, DatePicker, CommandPalette, TreeView,
-      ReorderableList,
-    } from '../dist/index.js';
+    <div class="section">
+      <h2>🔍 Combobox</h2>
+      <p class="description">
+        Accessible combobox / autocomplete with filtering, keyboard navigation, and announcements.
+      </p>
+      <div class="controls">
+        <input
+          type="text"
+          id="combobox-input"
+          class="combobox-input combobox-input-demo"
+          placeholder="Type to filter fruits…"
+          autocomplete="off"
+        />
+      </div>
+      <div
+        id="combobox-listbox"
+        class="combobox-listbox combobox-listbox-demo"
+        style="display: none"
+      >
+        <div class="combobox-option combobox-option-demo" role="option" data-value="Apple">
+          Apple
+        </div>
+        <div class="combobox-option combobox-option-demo" role="option" data-value="Banana">
+          Banana
+        </div>
+        <div class="combobox-option combobox-option-demo" role="option" data-value="Cherry">
+          Cherry
+        </div>
+        <div class="combobox-option combobox-option-demo" role="option" data-value="Date">Date</div>
+        <div class="combobox-option combobox-option-demo" role="option" data-value="Elderberry">
+          Elderberry
+        </div>
+      </div>
+      <div class="output mt-0-5" id="combobox-output">Combobox operations will appear here</div>
+    </div>
 
-    // ── Announcer ──────────────────────────────────────────────────────────
-    document.getElementById('announce-polite-btn').addEventListener('click', () => {
-      announce('This is a polite announcement');
-      document.getElementById('announcer-output').textContent = 'Announced: "This is a polite announcement" (polite region)';
-    });
-    document.getElementById('announce-urgent-btn').addEventListener('click', () => {
-      announce('This is an urgent announcement', { urgent: true });
-      document.getElementById('announcer-output').textContent = 'Announced: "This is an urgent announcement" (assertive region)';
-    });
+    <div class="section">
+      <h2>💬 Tooltip</h2>
+      <p class="description">
+        Accessible tooltip via <code>aria-describedby</code>. Hover, focus, or tab to the button.
+        Escape dismisses it.
+      </p>
+      <div class="controls">
+        <div class="tooltip-wrapper">
+          <button class="btn-primary" id="tooltip-trigger">Hover or Focus Me</button>
+          <div id="tooltip-content" class="tooltip-demo" style="display: none" role="tooltip">
+            This is helpful additional information!
+          </div>
+        </div>
+      </div>
+      <div class="output mt-0-5" id="tooltip-output">Tooltip operations will appear here</div>
+    </div>
 
-    // ── Reduced Motion ─────────────────────────────────────────────────────
-    let reducedMotionListener = null;
-    const statusEl = document.getElementById('reduced-motion-status');
-    const rmOutputEl = document.getElementById('reduced-motion-output');
-    const checkReduced = () => {
-      const prefers = checkReducedMotion();
-      statusEl.textContent = prefers ? 'Reduced Motion ON' : 'Reduced Motion OFF';
-      statusEl.className = prefers ? 'status status-active' : 'status status-inactive';
-      rmOutputEl.textContent = `Current preference: ${prefers ? 'enabled' : 'disabled'}`;
-    };
-    document.getElementById('check-reduced-btn').addEventListener('click', checkReduced);
-    document.getElementById('toggle-listener-btn').addEventListener('click', () => {
-      if (reducedMotionListener) {
-        reducedMotionListener(); reducedMotionListener = null;
-        rmOutputEl.textContent = 'Listener removed';
-      } else {
-        reducedMotionListener = onReducedMotionChange(p => {
-          statusEl.textContent = p ? 'Reduced Motion ON' : 'Reduced Motion OFF';
-          statusEl.className = p ? 'status status-active' : 'status status-inactive';
-          rmOutputEl.textContent = `Changed to: ${p ? 'enabled' : 'disabled'}`;
+    <!-- Carousel — slides use inline SVG as placeholder images (no external deps) -->
+    <div class="section">
+      <h2>🎠 Carousel</h2>
+      <p class="description">
+        Accessible carousel with slide announcements, play/pause, and auto-disabled rotation when
+        reduced motion is on.
+      </p>
+      <div id="carousel-demo" class="carousel-demo">
+        <div data-carousel-track class="carousel-track-demo">
+          <!-- Slide 1 — Mountain -->
+          <div data-carousel-slide class="carousel-slide-demo">
+            <svg
+              viewBox="0 0 80 80"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <circle cx="40" cy="40" r="38" fill="#bbdefb" />
+              <polygon points="40,12 68,62 12,62" fill="#1565c0" opacity=".7" />
+              <polygon points="28,62 52,30 62,62" fill="#42a5f5" opacity=".6" />
+              <circle cx="58" cy="20" r="8" fill="#fff9c4" opacity=".9" />
+            </svg>
+            <span class="carousel-slide-caption">Mountain Vista</span>
+            <span class="carousel-slide-sub">Slide 1 of 3</span>
+          </div>
+
+          <!-- Slide 2 — Ocean -->
+          <div data-carousel-slide class="carousel-slide-demo">
+            <svg
+              viewBox="0 0 80 80"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <circle cx="40" cy="40" r="38" fill="#fce4ec" />
+              <rect x="10" y="45" width="60" height="25" rx="4" fill="#880e4f" opacity=".15" />
+              <path
+                d="M10 46 Q25 38 40 46 Q55 54 70 46"
+                stroke="#880e4f"
+                stroke-width="2.5"
+                fill="none"
+                opacity=".6"
+              />
+              <path
+                d="M10 54 Q25 46 40 54 Q55 62 70 54"
+                stroke="#ad1457"
+                stroke-width="2"
+                fill="none"
+                opacity=".5"
+              />
+              <ellipse cx="40" cy="28" rx="16" ry="12" fill="#f48fb1" opacity=".55" />
+            </svg>
+            <span class="carousel-slide-caption">Ocean Sunset</span>
+            <span class="carousel-slide-sub">Slide 2 of 3</span>
+          </div>
+
+          <!-- Slide 3 — Forest -->
+          <div data-carousel-slide class="carousel-slide-demo">
+            <svg
+              viewBox="0 0 80 80"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <circle cx="40" cy="40" r="38" fill="#e8f5e9" />
+              <rect x="36" y="48" width="8" height="18" rx="2" fill="#558b2f" />
+              <polygon points="40,14 58,50 22,50" fill="#2e7d32" opacity=".85" />
+              <polygon points="40,24 54,54 26,54" fill="#388e3c" opacity=".7" />
+              <polygon points="40,34 50,58 30,58" fill="#43a047" opacity=".6" />
+            </svg>
+            <span class="carousel-slide-caption">Forest Trail</span>
+            <span class="carousel-slide-sub">Slide 3 of 3</span>
+          </div>
+        </div>
+        <div class="carousel-controls-demo">
+          <button class="btn-secondary" data-carousel-prev>← Previous</button>
+          <button class="btn-primary" data-carousel-playpause>Pause</button>
+          <button class="btn-secondary" data-carousel-next>Next →</button>
+        </div>
+      </div>
+      <div class="output mt-0-5" id="carousel-output">Carousel operations will appear here</div>
+    </div>
+
+    <div class="section">
+      <h2>💬 Non-Modal Dialog</h2>
+      <p class="description">
+        A dialog that does <em>not</em> trap focus — users can freely tab out. Good for floating
+        panels and live chat.
+      </p>
+      <div class="controls">
+        <button class="btn-primary" id="dialog-trigger">Open Non-Modal Dialog</button>
+      </div>
+      <div id="dialog-content" class="dialog-demo" style="display: none">
+        <h3>Floating Panel</h3>
+        <p>Open, but not trapping your focus!</p>
+        <button class="btn-secondary mt-1" id="dialog-close-btn">Close me</button>
+      </div>
+      <div class="output mt-0-5" id="dialog-output">Dialog operations will appear here</div>
+    </div>
+
+    <div class="section">
+      <h2>🔽 Disclosure</h2>
+      <p class="description">
+        Simple show/hide widget. Correctly wires <code>aria-expanded</code> and
+        <code>aria-controls</code> on every toggle.
+      </p>
+      <div style="display: block">
+        <button class="disclosure-trigger-demo" id="disclosure-trigger">
+          Toggle Advanced Settings
+        </button>
+        <div id="disclosure-content" class="disclosure-content-demo" style="display: none">
+          <p style="margin-bottom: 0.5rem">Here are some advanced settings you can configure.</p>
+          <label><input type="checkbox" /> Enable turbo mode</label>
+        </div>
+      </div>
+      <div class="output mt-1" id="disclosure-output">Disclosure operations will appear here</div>
+    </div>
+
+    <!-- Tree View -->
+    <div class="section">
+      <h2>🌳 Tree View</h2>
+      <p class="description">
+        Accessible tree view with expand/collapse, keyboard navigation (Arrow keys, Home, End,
+        typeahead), and single/multi-select.
+      </p>
+      <div class="controls">
+        <button class="btn-secondary" id="treeview-single-btn">Single Select</button>
+        <button class="btn-secondary" id="treeview-multi-btn">Multi Select</button>
+      </div>
+      <ul id="treeview-demo" class="treeview-demo">
+        <li data-label="Documents" data-children="true">
+          <span class="label">📄 Documents</span>
+          <ul>
+            <li data-label="Work" data-children="true">
+              <span class="label">💼 Work</span>
+              <ul>
+                <li data-label="report.pdf"><span class="label">report.pdf</span></li>
+                <li data-label="budget.xlsx"><span class="label">budget.xlsx</span></li>
+              </ul>
+            </li>
+            <li data-label="Personal" data-children="true">
+              <span class="label">🏠 Personal</span>
+              <ul>
+                <li data-label="resume.pdf"><span class="label">resume.pdf</span></li>
+                <li data-label="notes.txt"><span class="label">notes.txt</span></li>
+              </ul>
+            </li>
+            <li data-label="readme.md"><span class="label">readme.md</span></li>
+          </ul>
+        </li>
+        <li data-label="Pictures" data-children="true">
+          <span class="label">🖼️ Pictures</span>
+          <ul>
+            <li data-label="vacation" data-children="true">
+              <span class="label">🌴 Vacation</span>
+              <ul>
+                <li data-label="beach.jpg"><span class="label">beach.jpg</span></li>
+                <li data-label="sunset.jpg"><span class="label">sunset.jpg</span></li>
+              </ul>
+            </li>
+            <li data-label="screenshot.png"><span class="label">screenshot.png</span></li>
+          </ul>
+        </li>
+        <li data-label="Music"><span class="label">🎵 Music</span></li>
+      </ul>
+      <div class="output" id="treeview-output">Tree view operations will appear here</div>
+    </div>
+
+    <!-- Date Picker -->
+    <div class="section">
+      <h2>📅 Date Picker</h2>
+      <p class="description">
+        Full WAI-ARIA date picker dialog. Arrow keys navigate the grid, PageUp/Down change months,
+        Escape closes.
+      </p>
+      <div class="datepicker-wrapper">
+        <input
+          type="text"
+          id="dp-input"
+          class="datepicker-input"
+          placeholder="YYYY-MM-DD"
+          autocomplete="off"
+          readonly
+        />
+        <button id="dp-toggle" class="datepicker-toggle" type="button" aria-label="Choose date">
+          📅
+        </button>
+        <div id="dp-dialog" class="datepicker-dialog">
+          <div class="datepicker-nav">
+            <button id="dp-prev" type="button">◀</button>
+            <div id="dp-month-label" class="datepicker-month-label"></div>
+            <button id="dp-next" type="button">▶</button>
+          </div>
+          <div id="dp-grid" class="datepicker-grid"></div>
+        </div>
+      </div>
+      <div class="output mt-0-5" id="datepicker-output">
+        Date picker operations will appear here
+      </div>
+    </div>
+
+    <!-- Command Palette — press Ctrl+K / Cmd+K anywhere on the page -->
+    <div class="section">
+      <h2>⌨️ Command Palette</h2>
+      <p class="description">
+        Press <kbd>Ctrl+K</kbd> (or <kbd>Cmd+K</kbd>) anywhere to open. Type to filter. Arrow keys
+        navigate. Enter executes.
+      </p>
+      <div class="controls">
+        <button class="btn-primary" id="cmd-open-btn">
+          Open Palette <kbd style="opacity: 0.9; font-size: 0.8em">Ctrl+K</kbd>
+        </button>
+      </div>
+      <div class="output" id="cmd-output">Command palette operations will appear here</div>
+    </div>
+
+    <!-- ── Multi-Select Listbox ──────────────────────────────────────── -->
+    <div class="section">
+      <h2>☑️ Multi-Select Listbox</h2>
+      <p class="description">
+        Accessible listbox with single/multi-select, keyboard navigation, Shift+Click range,
+        Ctrl+Click toggle, and typeahead.
+      </p>
+      <div class="controls">
+        <button class="btn-secondary" id="msl-single-btn">Single Select</button>
+        <button class="btn-secondary" id="msl-multi-btn">Multi Select</button>
+        <button class="btn-secondary" id="msl-select-all-btn">Select All</button>
+        <button class="btn-secondary" id="msl-clear-btn">Clear</button>
+      </div>
+      <div id="msl-listbox" class="msl-listbox">
+        <div>🍎 Apples</div>
+        <div>🍌 Bananas</div>
+        <div>🍒 Cherries</div>
+        <div>🍇 Grapes</div>
+        <div>🥝 Kiwis</div>
+      </div>
+      <div class="output" id="msl-output">Selected: none</div>
+    </div>
+
+    <!-- ── Reorderable List ──────────────────────────────────────────── -->
+    <div class="section">
+      <h2>🔀 Reorderable List</h2>
+      <p class="description">
+        Accessible reorderable list with Ctrl+ArrowUp/Down, Ctrl+Home/End, and live announcements.
+        Drag and drop is also supported.
+      </p>
+      <div class="controls">
+        <button class="btn-secondary" id="reorder-reset-btn">Reset Order</button>
+      </div>
+      <ul id="reorderable-demo">
+        <li><span class="label">🍎 Apples</span></li>
+        <li><span class="label">🍌 Bananas</span></li>
+        <li><span class="label">🍒 Cherries</span></li>
+        <li><span class="label">🍇 Grapes</span></li>
+        <li><span class="label">🍊 Oranges</span></li>
+      </ul>
+      <div class="output" id="reorderable-output">Use Ctrl+ArrowUp/Down to reorder</div>
+    </div>
+
+    <!-- ── Portals (overlays rendered outside section flow) ─────────── -->
+
+    <!-- Focus Trap demo modal -->
+    <div id="modal" class="modal-overlay hidden">
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <h2 id="modal-title">Modal with Focus Trap</h2>
+        <p>Focus trapping is active. Try pressing Tab and Shift+Tab.</p>
+        <div class="controls">
+          <button class="btn-primary" id="modal-close-btn">Close (Escape also works)</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal component demo -->
+    <div id="modal-component-backdrop" class="modal-overlay modal-overlay-demo hidden">
+      <div
+        id="modal-component"
+        class="modal modal-component-demo"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modal-component-title"
+      >
+        <h2 id="modal-component-title">Modal Component</h2>
+        <p>
+          This Modal component uses tatami-a11y primitives — focus trap, focus restoration, and
+          announcements.
+        </p>
+        <div class="controls">
+          <button class="btn-primary" id="modal-component-close-btn">
+            Close (Escape also works)
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Command Palette overlay — rendered at body level so it sits above everything -->
+    <div id="cmd-overlay" class="cmd-palette-overlay" role="presentation">
+      <div id="cmd-dialog" class="cmd-palette-dialog">
+        <div class="cmd-palette-input-wrap">
+          <span class="cmd-palette-search-icon" aria-hidden="true">🔍</span>
+          <input
+            type="text"
+            id="cmd-input"
+            class="cmd-palette-input"
+            placeholder="Type a command…"
+            autocomplete="off"
+            spellcheck="false"
+          />
+        </div>
+        <div id="cmd-status" class="cmd-palette-status"></div>
+        <div id="cmd-listbox" class="cmd-palette-listbox"></div>
+        <div class="cmd-palette-footer">
+          <span><kbd>↑↓</kbd> navigate</span>
+          <span><kbd>↵</kbd> select</span>
+          <span><kbd>Esc</kbd> close</span>
+        </div>
+      </div>
+    </div>
+    <div
+      id="cmd-backdrop"
+      style="display: none; position: fixed; inset: 0; z-index: 999"
+      aria-hidden="true"
+    ></div>
+
+    <script type="module">
+      import {
+        announce,
+        checkReducedMotion,
+        onReducedMotionChange,
+        pushFocusStack,
+        popFocusStack,
+        setInitialFocusReference,
+        clearFocusStack,
+        activateFocusTrap,
+        deactivateFocusTrap,
+        createSingleton,
+        registerCleanup,
+        Dropdown,
+        Tabs,
+        Modal,
+        Accordion,
+        Toast,
+        MenuButton,
+        MultiselectListbox,
+        Combobox,
+        Tooltip,
+        Carousel,
+        Dialog,
+        Disclosure,
+        DatePicker,
+        CommandPalette,
+        TreeView,
+        ReorderableList,
+      } from "../dist/index.js";
+
+      // ── Announcer ──────────────────────────────────────────────────────────
+      document.getElementById("announce-polite-btn").addEventListener("click", () => {
+        announce("This is a polite announcement");
+        document.getElementById("announcer-output").textContent =
+          'Announced: "This is a polite announcement" (polite region)';
+      });
+      document.getElementById("announce-urgent-btn").addEventListener("click", () => {
+        announce("This is an urgent announcement", { urgent: true });
+        document.getElementById("announcer-output").textContent =
+          'Announced: "This is an urgent announcement" (assertive region)';
+      });
+
+      // ── Reduced Motion ─────────────────────────────────────────────────────
+      let reducedMotionListener = null;
+      const statusEl = document.getElementById("reduced-motion-status");
+      const rmOutputEl = document.getElementById("reduced-motion-output");
+      const checkReduced = () => {
+        const prefers = checkReducedMotion();
+        statusEl.textContent = prefers ? "Reduced Motion ON" : "Reduced Motion OFF";
+        statusEl.className = prefers ? "status status-active" : "status status-inactive";
+        rmOutputEl.textContent = `Current preference: ${prefers ? "enabled" : "disabled"}`;
+      };
+      document.getElementById("check-reduced-btn").addEventListener("click", checkReduced);
+      document.getElementById("toggle-listener-btn").addEventListener("click", () => {
+        if (reducedMotionListener) {
+          reducedMotionListener();
+          reducedMotionListener = null;
+          rmOutputEl.textContent = "Listener removed";
+        } else {
+          reducedMotionListener = onReducedMotionChange((p) => {
+            statusEl.textContent = p ? "Reduced Motion ON" : "Reduced Motion OFF";
+            statusEl.className = p ? "status status-active" : "status status-inactive";
+            rmOutputEl.textContent = `Changed to: ${p ? "enabled" : "disabled"}`;
+          });
+          rmOutputEl.textContent = "Listener registered";
+        }
+      });
+      checkReduced();
+
+      // ── Focus Stack ────────────────────────────────────────────────────────
+      const focusOutput = document.getElementById("focus-stack-output");
+      document.getElementById("focus-trigger").addEventListener("click", () => {
+        const t = document.getElementById("focus-trigger");
+        setInitialFocusReference(t);
+        pushFocusStack(t);
+        focusOutput.textContent = "Focus stack: entered (stack size: 1)";
+      });
+      document.getElementById("exit-focus-stack-btn").addEventListener("click", () => {
+        popFocusStack();
+        focusOutput.textContent = "Focus stack: exited (focus restored)";
+      });
+      document.getElementById("clear-focus-stack-btn").addEventListener("click", () => {
+        clearFocusStack();
+        focusOutput.textContent = "Focus stack: cleared";
+      });
+
+      // ── Focus Trap ─────────────────────────────────────────────────────────
+      const trapOutput = document.getElementById("focus-trap-output");
+      const trapModal = document.getElementById("modal");
+      const trapContent = trapModal.querySelector(".modal");
+      const openTrap = () => {
+        trapModal.classList.remove("hidden");
+        activateFocusTrap(trapContent);
+        document.getElementById("modal-close-btn").focus();
+        trapOutput.textContent = "Focus trap: activated";
+      };
+      const closeTrap = () => {
+        deactivateFocusTrap();
+        trapModal.classList.add("hidden");
+        trapOutput.textContent = "Focus trap: deactivated";
+      };
+      document.getElementById("open-modal-btn").addEventListener("click", openTrap);
+      document.getElementById("modal-close-btn").addEventListener("click", closeTrap);
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && !trapModal.classList.contains("hidden")) closeTrap();
+      });
+
+      // ── Singleton ──────────────────────────────────────────────────────────
+      const singletonOutput = document.getElementById("singleton-output");
+      const makeSingleton = () => {
+        const inst = createSingleton(() => ({ count: 0, data: [] }), "__demoSingleton__");
+        inst.count++;
+        inst.data.push(`at ${new Date().toLocaleTimeString()}`);
+        singletonOutput.textContent = `count=${inst.count}, data=${JSON.stringify(inst.data)}`;
+      };
+      document.getElementById("create-singleton-btn").addEventListener("click", makeSingleton);
+      document.getElementById("register-cleanup-btn").addEventListener("click", () => {
+        registerCleanup("__demoSingleton__", () => {
+          singletonOutput.textContent = "Cleanup registered";
         });
-        rmOutputEl.textContent = 'Listener registered';
-      }
-    });
-    checkReduced();
+      });
+      makeSingleton();
 
-    // ── Focus Stack ────────────────────────────────────────────────────────
-    const focusOutput = document.getElementById('focus-stack-output');
-    document.getElementById('focus-trigger').addEventListener('click', () => {
-      const t = document.getElementById('focus-trigger');
-      setInitialFocusReference(t); pushFocusStack(t);
-      focusOutput.textContent = 'Focus stack: entered (stack size: 1)';
-    });
-    document.getElementById('exit-focus-stack-btn').addEventListener('click', () => {
-      popFocusStack(); focusOutput.textContent = 'Focus stack: exited (focus restored)';
-    });
-    document.getElementById('clear-focus-stack-btn').addEventListener('click', () => {
-      clearFocusStack(); focusOutput.textContent = 'Focus stack: cleared';
-    });
-
-    // ── Focus Trap ─────────────────────────────────────────────────────────
-    const trapOutput = document.getElementById('focus-trap-output');
-    const trapModal = document.getElementById('modal');
-    const trapContent = trapModal.querySelector('.modal');
-    const openTrap = () => {
-      trapModal.classList.remove('hidden');
-      activateFocusTrap(trapContent);
-      document.getElementById('modal-close-btn').focus();
-      trapOutput.textContent = 'Focus trap: activated';
-    };
-    const closeTrap = () => {
-      deactivateFocusTrap(); trapModal.classList.add('hidden');
-      trapOutput.textContent = 'Focus trap: deactivated';
-    };
-    document.getElementById('open-modal-btn').addEventListener('click', openTrap);
-    document.getElementById('modal-close-btn').addEventListener('click', closeTrap);
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Escape' && !trapModal.classList.contains('hidden')) closeTrap();
-    });
-
-    // ── Singleton ──────────────────────────────────────────────────────────
-    const singletonOutput = document.getElementById('singleton-output');
-    const makeSingleton = () => {
-      const inst = createSingleton(() => ({ count: 0, data: [] }), '__demoSingleton__');
-      inst.count++; inst.data.push(`at ${new Date().toLocaleTimeString()}`);
-      singletonOutput.textContent = `count=${inst.count}, data=${JSON.stringify(inst.data)}`;
-    };
-    document.getElementById('create-singleton-btn').addEventListener('click', makeSingleton);
-    document.getElementById('register-cleanup-btn').addEventListener('click', () => {
-      registerCleanup('__demoSingleton__', () => { singletonOutput.textContent = 'Cleanup registered'; });
-    });
-    makeSingleton();
-
-    // ── Dropdown ───────────────────────────────────────────────────────────
-    const dropdownOutput = document.getElementById('dropdown-output');
-    new Dropdown({
-      trigger: document.getElementById('dropdown-trigger'),
-      menu: document.getElementById('dropdown-menu'),
-      onOpen: () => { dropdownOutput.textContent = 'Dropdown: opened (Arrow keys to navigate, Enter to select, Escape to close)'; },
-      onClose: () => { dropdownOutput.textContent = 'Dropdown: closed'; },
-    });
-    document.querySelectorAll('.dropdown-item').forEach((item, i) =>
-      item.addEventListener('click', () => { dropdownOutput.textContent = `Dropdown: selected Option ${i + 1}`; })
-    );
-
-    // ── Tabs ───────────────────────────────────────────────────────────────
-    const tabsOutput = document.getElementById('tabs-output');
-    new Tabs({
-      tabList: document.getElementById('tabs-demo'),
-      onTabChange: i => { tabsOutput.textContent = `Tabs: switched to Tab ${i + 1}`; },
-    });
-
-    // ── Modal ──────────────────────────────────────────────────────────────
-    const modalOutput = document.getElementById('modal-component-output');
-    new Modal({
-      trigger: document.getElementById('modal-component-trigger'),
-      modal: document.getElementById('modal-component'),
-      backdrop: document.getElementById('modal-component-backdrop'),
-      onOpen: () => { modalOutput.textContent = 'Modal: opened (Escape or click backdrop to close)'; },
-      onClose: () => { modalOutput.textContent = 'Modal: closed'; },
-    });
-
-    // ── Accordion ──────────────────────────────────────────────────────────
-    const accordionOutput = document.getElementById('accordion-output');
-    new Accordion({
-      container: document.getElementById('accordion-demo'),
-      onToggle: (i, exp) => { accordionOutput.textContent = `Accordion: Panel ${i + 1} ${exp ? 'expanded' : 'collapsed'}`; },
-    });
-
-    // ── Toast ──────────────────────────────────────────────────────────────
-    const toastOutput = document.getElementById('toast-output');
-    document.getElementById('toast-info-btn').addEventListener('click', () => { Toast.info('This is an info message'); toastOutput.textContent = 'Toast: Info shown'; });
-    document.getElementById('toast-success-btn').addEventListener('click', () => { Toast.success('Changes saved!'); toastOutput.textContent = 'Toast: Success shown'; });
-    document.getElementById('toast-error-btn').addEventListener('click', () => { Toast.error('Something went wrong.'); toastOutput.textContent = 'Toast: Error shown'; });
-    document.getElementById('toast-warning-btn').addEventListener('click', () => { Toast.warning('Please review this.'); toastOutput.textContent = 'Toast: Warning shown'; });
-    document.getElementById('toast-dismiss-all-btn').addEventListener('click', () => { Toast.dismissAll(); toastOutput.textContent = 'Toast: All dismissed'; });
-
-    // ── Menu Button ────────────────────────────────────────────────────────
-    const mbOutput = document.getElementById('menu-button-output');
-    new MenuButton({
-      trigger: document.getElementById('menu-button-trigger'),
-      menu: document.getElementById('menu-button-menu'),
-      onOpen: () => { mbOutput.textContent = 'Menu Button: opened'; },
-      onClose: () => { mbOutput.textContent = 'Menu Button: closed'; },
-    });
-    document.querySelectorAll('.menu-button-item').forEach((item, i) =>
-      item.addEventListener('click', () => { mbOutput.textContent = `Menu Button: selected Option ${i + 1}`; })
-    );
-
-    // ── Multi-Select Listbox ──────────────────────────────────────────────
-    const mslOutput = document.getElementById('msl-output');
-    const mslListbox = document.getElementById('msl-listbox');
-    let mslInstance = new MultiselectListbox({
-      listbox: mslListbox,
-      onSelect: (indices) => {
-        const labels = mslInstance.getItems().filter((_, i) => indices.includes(i)).map(el => el.textContent?.trim()).join(', ');
-        mslOutput.textContent = labels ? `Selected: ${labels}` : 'Selected: none';
-      },
-    });
-    document.getElementById('msl-single-btn').addEventListener('click', () => {
-      mslInstance.destroy();
-      mslInstance = new MultiselectListbox({
-        listbox: mslListbox,
-        onSelect: (indices) => {
-          const labels = mslInstance.getItems().filter((_, i) => indices.includes(i)).map(el => el.textContent?.trim()).join(', ');
-          mslOutput.textContent = labels ? `Selected: ${labels}` : 'Selected: none';
+      // ── Dropdown ───────────────────────────────────────────────────────────
+      const dropdownOutput = document.getElementById("dropdown-output");
+      new Dropdown({
+        trigger: document.getElementById("dropdown-trigger"),
+        menu: document.getElementById("dropdown-menu"),
+        onOpen: () => {
+          dropdownOutput.textContent =
+            "Dropdown: opened (Arrow keys to navigate, Enter to select, Escape to close)";
+        },
+        onClose: () => {
+          dropdownOutput.textContent = "Dropdown: closed";
         },
       });
-      mslOutput.textContent = 'Switched to single-select mode';
-    });
-    document.getElementById('msl-multi-btn').addEventListener('click', () => {
-      mslInstance.destroy();
-      mslInstance = new MultiselectListbox({
-        listbox: mslListbox,
-        multiselect: true,
-        onSelect: (indices) => {
-          const labels = mslInstance.getItems().filter((_, i) => indices.includes(i)).map(el => el.textContent?.trim()).join(', ');
-          mslOutput.textContent = labels ? `Selected: ${labels}` : 'Selected: none';
+      document.querySelectorAll(".dropdown-item").forEach((item, i) =>
+        item.addEventListener("click", () => {
+          dropdownOutput.textContent = `Dropdown: selected Option ${i + 1}`;
+        }),
+      );
+
+      // ── Tabs ───────────────────────────────────────────────────────────────
+      const tabsOutput = document.getElementById("tabs-output");
+      new Tabs({
+        tabList: document.getElementById("tabs-demo"),
+        onTabChange: (i) => {
+          tabsOutput.textContent = `Tabs: switched to Tab ${i + 1}`;
         },
       });
-      mslOutput.textContent = 'Switched to multi-select mode';
-    });
-    document.getElementById('msl-select-all-btn').addEventListener('click', () => {
-      mslInstance.selectAll();
-    });
-    document.getElementById('msl-clear-btn').addEventListener('click', () => {
-      mslInstance.clearSelection();
-    });
 
-    // ── Combobox ───────────────────────────────────────────────────────────
-    const comboboxOutput = document.getElementById('combobox-output');
-    new Combobox({
-      input: document.getElementById('combobox-input'),
-      listbox: document.getElementById('combobox-listbox'),
-      onSelect: (value) => { comboboxOutput.textContent = `Combobox: selected "${value}"`; },
-    });
+      // ── Modal ──────────────────────────────────────────────────────────────
+      const modalOutput = document.getElementById("modal-component-output");
+      new Modal({
+        trigger: document.getElementById("modal-component-trigger"),
+        modal: document.getElementById("modal-component"),
+        backdrop: document.getElementById("modal-component-backdrop"),
+        onOpen: () => {
+          modalOutput.textContent = "Modal: opened (Escape or click backdrop to close)";
+        },
+        onClose: () => {
+          modalOutput.textContent = "Modal: closed";
+        },
+      });
 
-    // ── Tooltip ────────────────────────────────────────────────────────────
-    const tooltipOutput = document.getElementById('tooltip-output');
-    new Tooltip({
-      trigger: document.getElementById('tooltip-trigger'),
-      tooltip: document.getElementById('tooltip-content'),
-      onOpen: () => { tooltipOutput.textContent = 'Tooltip: shown'; },
-      onClose: () => { tooltipOutput.textContent = 'Tooltip: hidden'; },
-    });
+      // ── Accordion ──────────────────────────────────────────────────────────
+      const accordionOutput = document.getElementById("accordion-output");
+      new Accordion({
+        container: document.getElementById("accordion-demo"),
+        onToggle: (i, exp) => {
+          accordionOutput.textContent = `Accordion: Panel ${i + 1} ${exp ? "expanded" : "collapsed"}`;
+        },
+      });
 
-    // ── Carousel ───────────────────────────────────────────────────────────
-    const carouselOutput = document.getElementById('carousel-output');
-    new Carousel({
-      container: document.getElementById('carousel-demo'),
-      autoPlay: true,
-      autoPlayInterval: 4000,
-      onSlideChange: i => { carouselOutput.textContent = `Carousel: now on slide ${i + 1}`; },
-    });
+      // ── Toast ──────────────────────────────────────────────────────────────
+      const toastOutput = document.getElementById("toast-output");
+      document.getElementById("toast-info-btn").addEventListener("click", () => {
+        Toast.info("This is an info message");
+        toastOutput.textContent = "Toast: Info shown";
+      });
+      document.getElementById("toast-success-btn").addEventListener("click", () => {
+        Toast.success("Changes saved!");
+        toastOutput.textContent = "Toast: Success shown";
+      });
+      document.getElementById("toast-error-btn").addEventListener("click", () => {
+        Toast.error("Something went wrong.");
+        toastOutput.textContent = "Toast: Error shown";
+      });
+      document.getElementById("toast-warning-btn").addEventListener("click", () => {
+        Toast.warning("Please review this.");
+        toastOutput.textContent = "Toast: Warning shown";
+      });
+      document.getElementById("toast-dismiss-all-btn").addEventListener("click", () => {
+        Toast.dismissAll();
+        toastOutput.textContent = "Toast: All dismissed";
+      });
 
-    // ── Non-Modal Dialog ───────────────────────────────────────────────────
-    const dialogOutput = document.getElementById('dialog-output');
-    const dialog = new Dialog({
-      trigger: document.getElementById('dialog-trigger'),
-      dialog: document.getElementById('dialog-content'),
-      onOpen: () => { dialogOutput.textContent = 'Dialog: opened (non-modal — tab freely)'; },
-      onClose: () => { dialogOutput.textContent = 'Dialog: closed'; },
-    });
-    document.getElementById('dialog-close-btn').addEventListener('click', () => dialog.close());
+      // ── Menu Button ────────────────────────────────────────────────────────
+      const mbOutput = document.getElementById("menu-button-output");
+      new MenuButton({
+        trigger: document.getElementById("menu-button-trigger"),
+        menu: document.getElementById("menu-button-menu"),
+        onOpen: () => {
+          mbOutput.textContent = "Menu Button: opened";
+        },
+        onClose: () => {
+          mbOutput.textContent = "Menu Button: closed";
+        },
+      });
+      document.querySelectorAll(".menu-button-item").forEach((item, i) =>
+        item.addEventListener("click", () => {
+          mbOutput.textContent = `Menu Button: selected Option ${i + 1}`;
+        }),
+      );
 
-    // ── Disclosure ─────────────────────────────────────────────────────────
-    const disclosureOutput = document.getElementById('disclosure-output');
-    new Disclosure({
-      trigger: document.getElementById('disclosure-trigger'),
-      content: document.getElementById('disclosure-content'),
-      onToggle: exp => { disclosureOutput.textContent = `Disclosure: ${exp ? 'expanded' : 'collapsed'}`; },
-    });
+      // ── Multi-Select Listbox ──────────────────────────────────────────────
+      const mslOutput = document.getElementById("msl-output");
+      const mslListbox = document.getElementById("msl-listbox");
+      let mslInstance = new MultiselectListbox({
+        listbox: mslListbox,
+        onSelect: (indices) => {
+          const labels = mslInstance
+            .getItems()
+            .filter((_, i) => indices.includes(i))
+            .map((el) => el.textContent?.trim())
+            .join(", ");
+          mslOutput.textContent = labels ? `Selected: ${labels}` : "Selected: none";
+        },
+      });
+      document.getElementById("msl-single-btn").addEventListener("click", () => {
+        mslInstance.destroy();
+        mslInstance = new MultiselectListbox({
+          listbox: mslListbox,
+          onSelect: (indices) => {
+            const labels = mslInstance
+              .getItems()
+              .filter((_, i) => indices.includes(i))
+              .map((el) => el.textContent?.trim())
+              .join(", ");
+            mslOutput.textContent = labels ? `Selected: ${labels}` : "Selected: none";
+          },
+        });
+        mslOutput.textContent = "Switched to single-select mode";
+      });
+      document.getElementById("msl-multi-btn").addEventListener("click", () => {
+        mslInstance.destroy();
+        mslInstance = new MultiselectListbox({
+          listbox: mslListbox,
+          multiselect: true,
+          onSelect: (indices) => {
+            const labels = mslInstance
+              .getItems()
+              .filter((_, i) => indices.includes(i))
+              .map((el) => el.textContent?.trim())
+              .join(", ");
+            mslOutput.textContent = labels ? `Selected: ${labels}` : "Selected: none";
+          },
+        });
+        mslOutput.textContent = "Switched to multi-select mode";
+      });
+      document.getElementById("msl-select-all-btn").addEventListener("click", () => {
+        mslInstance.selectAll();
+      });
+      document.getElementById("msl-clear-btn").addEventListener("click", () => {
+        mslInstance.clearSelection();
+      });
 
-    // ── Tree View ──────────────────────────────────────────────────────────
-    const tvOutput = document.getElementById('treeview-output');
-    const tvDemo = document.getElementById('treeview-demo');
-    let tvInstance = new TreeView({ tree: tvDemo, onSelect: (node, idx) => { tvOutput.textContent = `Tree View: selected "${node.querySelector('.label')?.textContent || node.textContent}" at index ${idx}`; } });
-    document.getElementById('treeview-single-btn').addEventListener('click', () => {
-      tvInstance.destroy();
-      tvInstance = new TreeView({ tree: tvDemo, onSelect: (node, idx) => { tvOutput.textContent = `Tree View (single): selected "${node.querySelector('.label')?.textContent || node.textContent}" at index ${idx}`; } });
-      tvOutput.textContent = 'Tree View: switched to single-select mode';
-    });
-    document.getElementById('treeview-multi-btn').addEventListener('click', () => {
-      tvInstance.destroy();
-      tvInstance = new TreeView({ tree: tvDemo, multiselect: true, onSelect: (node, idx) => { tvOutput.textContent = `Tree View (multi): toggled "${node.querySelector('.label')?.textContent || node.textContent}" at index ${idx}`; } });
-      tvOutput.textContent = 'Tree View: switched to multi-select mode';
-    });
+      // ── Combobox ───────────────────────────────────────────────────────────
+      const comboboxOutput = document.getElementById("combobox-output");
+      new Combobox({
+        input: document.getElementById("combobox-input"),
+        listbox: document.getElementById("combobox-listbox"),
+        onSelect: (value) => {
+          comboboxOutput.textContent = `Combobox: selected "${value}"`;
+        },
+      });
 
-    // ── Reorderable List ───────────────────────────────────────────────────
-    const reorderOutput = document.getElementById('reorderable-output');
-    const reorderList = document.getElementById('reorderable-demo');
-    let reorderInstance = new ReorderableList({
-      list: reorderList,
-      dragAndDrop: true,
-      announce: (msg) => { reorderOutput.textContent = msg; },
-    });
-    document.getElementById('reorder-reset-btn').addEventListener('click', () => {
-      reorderInstance.destroy();
-      reorderList.innerHTML = `
+      // ── Tooltip ────────────────────────────────────────────────────────────
+      const tooltipOutput = document.getElementById("tooltip-output");
+      new Tooltip({
+        trigger: document.getElementById("tooltip-trigger"),
+        tooltip: document.getElementById("tooltip-content"),
+        onOpen: () => {
+          tooltipOutput.textContent = "Tooltip: shown";
+        },
+        onClose: () => {
+          tooltipOutput.textContent = "Tooltip: hidden";
+        },
+      });
+
+      // ── Carousel ───────────────────────────────────────────────────────────
+      const carouselOutput = document.getElementById("carousel-output");
+      new Carousel({
+        container: document.getElementById("carousel-demo"),
+        autoPlay: true,
+        autoPlayInterval: 4000,
+        onSlideChange: (i) => {
+          carouselOutput.textContent = `Carousel: now on slide ${i + 1}`;
+        },
+      });
+
+      // ── Non-Modal Dialog ───────────────────────────────────────────────────
+      const dialogOutput = document.getElementById("dialog-output");
+      const dialog = new Dialog({
+        trigger: document.getElementById("dialog-trigger"),
+        dialog: document.getElementById("dialog-content"),
+        onOpen: () => {
+          dialogOutput.textContent = "Dialog: opened (non-modal — tab freely)";
+        },
+        onClose: () => {
+          dialogOutput.textContent = "Dialog: closed";
+        },
+      });
+      document.getElementById("dialog-close-btn").addEventListener("click", () => dialog.close());
+
+      // ── Disclosure ─────────────────────────────────────────────────────────
+      const disclosureOutput = document.getElementById("disclosure-output");
+      new Disclosure({
+        trigger: document.getElementById("disclosure-trigger"),
+        content: document.getElementById("disclosure-content"),
+        onToggle: (exp) => {
+          disclosureOutput.textContent = `Disclosure: ${exp ? "expanded" : "collapsed"}`;
+        },
+      });
+
+      // ── Tree View ──────────────────────────────────────────────────────────
+      const tvOutput = document.getElementById("treeview-output");
+      const tvDemo = document.getElementById("treeview-demo");
+      let tvInstance = new TreeView({
+        tree: tvDemo,
+        onSelect: (node, idx) => {
+          tvOutput.textContent = `Tree View: selected "${node.querySelector(".label")?.textContent || node.textContent}" at index ${idx}`;
+        },
+      });
+      document.getElementById("treeview-single-btn").addEventListener("click", () => {
+        tvInstance.destroy();
+        tvInstance = new TreeView({
+          tree: tvDemo,
+          onSelect: (node, idx) => {
+            tvOutput.textContent = `Tree View (single): selected "${node.querySelector(".label")?.textContent || node.textContent}" at index ${idx}`;
+          },
+        });
+        tvOutput.textContent = "Tree View: switched to single-select mode";
+      });
+      document.getElementById("treeview-multi-btn").addEventListener("click", () => {
+        tvInstance.destroy();
+        tvInstance = new TreeView({
+          tree: tvDemo,
+          multiselect: true,
+          onSelect: (node, idx) => {
+            tvOutput.textContent = `Tree View (multi): toggled "${node.querySelector(".label")?.textContent || node.textContent}" at index ${idx}`;
+          },
+        });
+        tvOutput.textContent = "Tree View: switched to multi-select mode";
+      });
+
+      // ── Reorderable List ───────────────────────────────────────────────────
+      const reorderOutput = document.getElementById("reorderable-output");
+      const reorderList = document.getElementById("reorderable-demo");
+      let reorderInstance = new ReorderableList({
+        list: reorderList,
+        dragAndDrop: true,
+        announce: (msg) => {
+          reorderOutput.textContent = msg;
+        },
+      });
+      document.getElementById("reorder-reset-btn").addEventListener("click", () => {
+        reorderInstance.destroy();
+        reorderList.innerHTML = `
         <li><span class="label">🍎 Apples</span></li>
         <li><span class="label">🍌 Bananas</span></li>
         <li><span class="label">🍒 Cherries</span></li>
         <li><span class="label">🍇 Grapes</span></li>
         <li><span class="label">🍊 Oranges</span></li>
       `;
-      reorderInstance = new ReorderableList({
-        list: reorderList,
-        dragAndDrop: true,
-        announce: (msg) => { reorderOutput.textContent = msg; },
+        reorderInstance = new ReorderableList({
+          list: reorderList,
+          dragAndDrop: true,
+          announce: (msg) => {
+            reorderOutput.textContent = msg;
+          },
+        });
+        reorderOutput.textContent = "Order reset";
       });
-      reorderOutput.textContent = 'Order reset';
-    });
 
-    // ── Date Picker ────────────────────────────────────────────────────────
-    const dpOutput = document.getElementById('datepicker-output');
-    new DatePicker({
-      input: document.getElementById('dp-input'),
-      dialog: document.getElementById('dp-dialog'),
-      toggleButton: document.getElementById('dp-toggle'),
-      monthYearLabel: document.getElementById('dp-month-label'),
-      prevMonthButton: document.getElementById('dp-prev'),
-      nextMonthButton: document.getElementById('dp-next'),
-      calendarGrid: document.getElementById('dp-grid'),
-      dateFormat: 'YYYY-MM-DD',
-      onOpen: () => { dpOutput.textContent = 'Date Picker: calendar opened (Arrow keys navigate, PageUp/Down change month, Escape closes)'; },
-      onClose: () => { dpOutput.textContent = 'Date Picker: calendar closed'; },
-      onSelect: (date, formatted) => { dpOutput.textContent = `Date Picker: selected ${formatted}`; },
-      onMonthChange: (y, m) => { dpOutput.textContent = `Date Picker: navigated to month ${m + 1}/${y}`; },
-    });
+      // ── Date Picker ────────────────────────────────────────────────────────
+      const dpOutput = document.getElementById("datepicker-output");
+      new DatePicker({
+        input: document.getElementById("dp-input"),
+        dialog: document.getElementById("dp-dialog"),
+        toggleButton: document.getElementById("dp-toggle"),
+        monthYearLabel: document.getElementById("dp-month-label"),
+        prevMonthButton: document.getElementById("dp-prev"),
+        nextMonthButton: document.getElementById("dp-next"),
+        calendarGrid: document.getElementById("dp-grid"),
+        dateFormat: "YYYY-MM-DD",
+        onOpen: () => {
+          dpOutput.textContent =
+            "Date Picker: calendar opened (Arrow keys navigate, PageUp/Down change month, Escape closes)";
+        },
+        onClose: () => {
+          dpOutput.textContent = "Date Picker: calendar closed";
+        },
+        onSelect: (date, formatted) => {
+          dpOutput.textContent = `Date Picker: selected ${formatted}`;
+        },
+        onMonthChange: (y, m) => {
+          dpOutput.textContent = `Date Picker: navigated to month ${m + 1}/${y}`;
+        },
+      });
 
-    // ── Command Palette ────────────────────────────────────────────────────
-    const cmdOutput = document.getElementById('cmd-output');
+      // ── Command Palette ────────────────────────────────────────────────────
+      const cmdOutput = document.getElementById("cmd-output");
 
-    const palette = new CommandPalette({
-      overlay: document.getElementById('cmd-overlay'),
-      dialog: document.getElementById('cmd-dialog'),
-      input: document.getElementById('cmd-input'),
-      listbox: document.getElementById('cmd-listbox'),
-      statusRegion: document.getElementById('cmd-status'),
-      backdrop: document.getElementById('cmd-backdrop'),
-      hotkey: 'k',
-      commands: [
-        { id: 'new-file', label: 'New File', group: 'Files', shortcut: '⌘N', action: () => { cmdOutput.textContent = 'Command: New File executed'; } },
-        { id: 'open-file', label: 'Open File', group: 'Files', shortcut: '⌘O', action: () => { cmdOutput.textContent = 'Command: Open File executed'; } },
-        { id: 'save-file', label: 'Save File', group: 'Files', shortcut: '⌘S', action: () => { cmdOutput.textContent = 'Command: Save File executed'; } },
-        { id: 'copy-path', label: 'Copy File Path', group: 'Edit', description: 'Copy the full path to clipboard', action: () => { cmdOutput.textContent = 'Command: Copy Path executed'; } },
-        { id: 'find', label: 'Find in Files', group: 'Edit', shortcut: '⇧⌘F', action: () => { cmdOutput.textContent = 'Command: Find in Files executed'; } },
-        { id: 'toggle-dark', label: 'Toggle Dark Mode', group: 'View', action: () => { cmdOutput.textContent = 'Command: Toggle Dark Mode executed'; } },
-        { id: 'zoom-in', label: 'Zoom In', group: 'View', shortcut: '⌘+', action: () => { cmdOutput.textContent = 'Command: Zoom In executed'; } },
-        { id: 'zoom-out', label: 'Zoom Out', group: 'View', shortcut: '⌘-', action: () => { cmdOutput.textContent = 'Command: Zoom Out executed'; } },
-        { id: 'settings', label: 'Open Settings', group: 'Application', shortcut: '⌘,', action: () => { cmdOutput.textContent = 'Command: Settings executed'; } },
-        { id: 'about', label: 'About tatami-a11y', group: 'Application', action: () => { cmdOutput.textContent = 'Command: About executed'; } },
-      ],
-      onOpen: () => { cmdOutput.textContent = 'Command Palette: opened (type to filter)'; },
-      onClose: () => { /* keep last result message */ },
-      onSelect: item => { cmdOutput.textContent = `Command Palette: executed "${item.label}"`; },
-    });
+      const palette = new CommandPalette({
+        overlay: document.getElementById("cmd-overlay"),
+        dialog: document.getElementById("cmd-dialog"),
+        input: document.getElementById("cmd-input"),
+        listbox: document.getElementById("cmd-listbox"),
+        statusRegion: document.getElementById("cmd-status"),
+        backdrop: document.getElementById("cmd-backdrop"),
+        hotkey: "k",
+        commands: [
+          {
+            id: "new-file",
+            label: "New File",
+            group: "Files",
+            shortcut: "⌘N",
+            action: () => {
+              cmdOutput.textContent = "Command: New File executed";
+            },
+          },
+          {
+            id: "open-file",
+            label: "Open File",
+            group: "Files",
+            shortcut: "⌘O",
+            action: () => {
+              cmdOutput.textContent = "Command: Open File executed";
+            },
+          },
+          {
+            id: "save-file",
+            label: "Save File",
+            group: "Files",
+            shortcut: "⌘S",
+            action: () => {
+              cmdOutput.textContent = "Command: Save File executed";
+            },
+          },
+          {
+            id: "copy-path",
+            label: "Copy File Path",
+            group: "Edit",
+            description: "Copy the full path to clipboard",
+            action: () => {
+              cmdOutput.textContent = "Command: Copy Path executed";
+            },
+          },
+          {
+            id: "find",
+            label: "Find in Files",
+            group: "Edit",
+            shortcut: "⇧⌘F",
+            action: () => {
+              cmdOutput.textContent = "Command: Find in Files executed";
+            },
+          },
+          {
+            id: "toggle-dark",
+            label: "Toggle Dark Mode",
+            group: "View",
+            action: () => {
+              cmdOutput.textContent = "Command: Toggle Dark Mode executed";
+            },
+          },
+          {
+            id: "zoom-in",
+            label: "Zoom In",
+            group: "View",
+            shortcut: "⌘+",
+            action: () => {
+              cmdOutput.textContent = "Command: Zoom In executed";
+            },
+          },
+          {
+            id: "zoom-out",
+            label: "Zoom Out",
+            group: "View",
+            shortcut: "⌘-",
+            action: () => {
+              cmdOutput.textContent = "Command: Zoom Out executed";
+            },
+          },
+          {
+            id: "settings",
+            label: "Open Settings",
+            group: "Application",
+            shortcut: "⌘,",
+            action: () => {
+              cmdOutput.textContent = "Command: Settings executed";
+            },
+          },
+          {
+            id: "about",
+            label: "About tatami-a11y",
+            group: "Application",
+            action: () => {
+              cmdOutput.textContent = "Command: About executed";
+            },
+          },
+        ],
+        onOpen: () => {
+          cmdOutput.textContent = "Command Palette: opened (type to filter)";
+        },
+        onClose: () => {
+          /* keep last result message */
+        },
+        onSelect: (item) => {
+          cmdOutput.textContent = `Command Palette: executed "${item.label}"`;
+        },
+      });
 
-    // Manual open button (Ctrl+K also works anywhere on the page)
-    document.getElementById('cmd-open-btn').addEventListener('click', () => palette.open());
+      // Manual open button (Ctrl+K also works anywhere on the page)
+      document.getElementById("cmd-open-btn").addEventListener("click", () => palette.open());
 
-    // ── Theme Switcher ────────────────────────────────────────────────────
-    // const themeStylesheet = document.getElementById('theme-stylesheet');
-    // document.querySelectorAll('.theme-btn').forEach((btn) => {
-    //   btn.addEventListener('click', () => {
-    //     themeStylesheet.href = btn.getAttribute('data-theme');
-    //     document.querySelectorAll('.theme-btn').forEach((b) => {
-    //       b.classList.remove('btn-primary');
-    //       b.classList.add('btn-secondary');
-    //     });
-    //     btn.classList.remove('btn-secondary');
-    //     btn.classList.add('btn-primary');
-    //   });
-    // });
-  </script>
-</body>
-
+      // ── Theme Switcher ────────────────────────────────────────────────────
+      // const themeStylesheet = document.getElementById('theme-stylesheet');
+      // document.querySelectorAll('.theme-btn').forEach((btn) => {
+      //   btn.addEventListener('click', () => {
+      //     themeStylesheet.href = btn.getAttribute('data-theme');
+      //     document.querySelectorAll('.theme-btn').forEach((b) => {
+      //       b.classList.remove('btn-primary');
+      //       b.classList.add('btn-secondary');
+      //     });
+      //     btn.classList.remove('btn-secondary');
+      //     btn.classList.add('btn-primary');
+      //   });
+      // });
+    </script>
+  </body>
 </html>

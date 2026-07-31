@@ -9,18 +9,11 @@
  * - Respects reduced motion preference
  */
 
-import {
-  activateFocusTrap,
-  deactivateFocusTrap,
-} from '../shared/focusTrap.js';
-import {
-  pushFocusStack,
-  popFocusStack,
-  setInitialFocusReference,
-} from '../shared/focusStack.js';
-import { announce } from '../shared/announcer.js';
-import { checkReducedMotion } from '../shared/reducedMotion.js';
-import { createRovingTabindex, type RovingTabindexController } from '../shared/rovingTabindex.js';
+import { activateFocusTrap, deactivateFocusTrap } from "../shared/focusTrap.js";
+import { pushFocusStack, popFocusStack, setInitialFocusReference } from "../shared/focusStack.js";
+import { announce } from "../shared/announcer.js";
+import { checkReducedMotion } from "../shared/reducedMotion.js";
+import { createRovingTabindex, type RovingTabindexController } from "../shared/rovingTabindex.js";
 
 /**
  * Options for configuring the {@link Dropdown} component.
@@ -82,30 +75,32 @@ export class Dropdown {
 
   private init(): void {
     // Set up ARIA attributes
-    this.trigger.setAttribute('aria-haspopup', 'true');
-    this.trigger.setAttribute('aria-expanded', 'false');
-    this.menu.setAttribute('role', 'menu');
-    this.menu.setAttribute('aria-hidden', 'true');
+    this.trigger.setAttribute("aria-haspopup", "true");
+    this.trigger.setAttribute("aria-expanded", "false");
+    this.menu.setAttribute("role", "menu");
+    this.menu.setAttribute("aria-hidden", "true");
 
     // Get menu items
     this.menuItems = Array.from(
-      this.menu.querySelectorAll('[role="menuitem"], [role="menuitemcheckbox"], [role="menuitemradio"]')
+      this.menu.querySelectorAll(
+        '[role="menuitem"], [role="menuitemcheckbox"], [role="menuitemradio"]',
+      ),
     );
 
     // Set up roving tabindex for menu navigation
     this.roving = createRovingTabindex({
       container: this.menu,
       selector: '[role="menuitem"], [role="menuitemcheckbox"], [role="menuitemradio"]',
-      orientation: 'vertical',
+      orientation: "vertical",
       beforeKey: (e, activeIndex) => this.handleMenuBeforeKey(e, activeIndex),
     });
 
     // Set up event listeners
-    this.trigger.addEventListener('click', this.triggerClickHandler);
-    this.trigger.addEventListener('keydown', this.triggerKeydownHandler);
+    this.trigger.addEventListener("click", this.triggerClickHandler);
+    this.trigger.addEventListener("keydown", this.triggerKeydownHandler);
 
     // Close on click outside
-    document.addEventListener('click', this.documentClickHandler);
+    document.addEventListener("click", this.documentClickHandler);
 
     // Initially hide menu
     this.hideMenu();
@@ -129,8 +124,8 @@ export class Dropdown {
     if (this.isOpen) return;
 
     this.isOpen = true;
-    this.trigger.setAttribute('aria-expanded', 'true');
-    this.menu.setAttribute('aria-hidden', 'false');
+    this.trigger.setAttribute("aria-expanded", "true");
+    this.menu.setAttribute("aria-hidden", "false");
     this.showMenu();
 
     // Set up focus management
@@ -146,7 +141,7 @@ export class Dropdown {
     }
 
     // Announce
-    announce('Menu opened', { urgent: false });
+    announce("Menu opened", { urgent: false });
 
     // Callback
     this.onOpen?.();
@@ -159,8 +154,8 @@ export class Dropdown {
     if (!this.isOpen) return;
 
     this.isOpen = false;
-    this.trigger.setAttribute('aria-expanded', 'false');
-    this.menu.setAttribute('aria-hidden', 'true');
+    this.trigger.setAttribute("aria-expanded", "false");
+    this.menu.setAttribute("aria-hidden", "true");
     this.hideMenu();
 
     // Restore focus
@@ -168,7 +163,7 @@ export class Dropdown {
     popFocusStack();
 
     // Announce
-    announce('Menu closed', { urgent: false });
+    announce("Menu closed", { urgent: false });
 
     // Callback
     this.onClose?.();
@@ -176,47 +171,47 @@ export class Dropdown {
 
   private showMenu(): void {
     const prefersReducedMotion = checkReducedMotion();
-    this.menu.style.display = 'block';
-    
+    this.menu.style.display = "block";
+
     if (!prefersReducedMotion) {
-      this.menu.style.transition = 'opacity 0.2s ease';
-      this.menu.style.opacity = '0';
-      
+      this.menu.style.transition = "opacity 0.2s ease";
+      this.menu.style.opacity = "0";
+
       requestAnimationFrame(() => {
-        this.menu.style.opacity = '1';
+        this.menu.style.opacity = "1";
       });
     }
   }
 
   private hideMenu(): void {
     const prefersReducedMotion = checkReducedMotion();
-    
+
     if (!prefersReducedMotion) {
-      this.menu.style.opacity = '0';
+      this.menu.style.opacity = "0";
       setTimeout(() => {
         if (!this.isOpen) {
-          this.menu.style.display = 'none';
+          this.menu.style.display = "none";
         }
       }, 200);
     } else {
-      this.menu.style.display = 'none';
+      this.menu.style.display = "none";
     }
   }
 
   private handleTriggerKeyDown(e: KeyboardEvent): void {
     switch (e.key) {
-      case 'Enter':
-      case ' ':
+      case "Enter":
+      case " ":
         e.preventDefault();
         this.toggle();
         break;
-      case 'ArrowDown':
+      case "ArrowDown":
         e.preventDefault();
         if (!this.isOpen) {
           this.open();
         }
         break;
-      case 'ArrowUp':
+      case "ArrowUp":
         e.preventDefault();
         if (!this.isOpen) {
           this.open();
@@ -231,13 +226,13 @@ export class Dropdown {
 
   private handleMenuBeforeKey(e: KeyboardEvent, activeIndex: number): boolean {
     switch (e.key) {
-      case 'Escape':
+      case "Escape":
         e.preventDefault();
         this.close();
         this.trigger.focus();
         return true;
-      case 'Enter':
-      case ' ': {
+      case "Enter":
+      case " ": {
         e.preventDefault();
         const items = this.roving?.getItems() ?? [];
         const currentItem = items[activeIndex];
@@ -252,13 +247,14 @@ export class Dropdown {
     }
   }
 
-
   private handleDocumentClick(e: MouseEvent): void {
     const target = e.target as HTMLElement;
     if (!this.trigger.contains(target) && !this.menu.contains(target)) {
       this.close();
     } else if (this.menu.contains(target)) {
-      const isMenuItem = target.closest('[role="menuitem"], [role="menuitemcheckbox"], [role="menuitemradio"]');
+      const isMenuItem = target.closest(
+        '[role="menuitem"], [role="menuitemcheckbox"], [role="menuitemradio"]',
+      );
       if (isMenuItem) {
         this.close();
       }
@@ -269,9 +265,9 @@ export class Dropdown {
    * Remove all event listeners and clean up the dropdown.
    */
   public destroy(): void {
-    this.trigger.removeEventListener('click', this.triggerClickHandler);
-    this.trigger.removeEventListener('keydown', this.triggerKeydownHandler);
-    document.removeEventListener('click', this.documentClickHandler);
+    this.trigger.removeEventListener("click", this.triggerClickHandler);
+    this.trigger.removeEventListener("keydown", this.triggerKeydownHandler);
+    document.removeEventListener("click", this.documentClickHandler);
     this.roving?.destroy();
 
     if (this.isOpen) {

@@ -8,8 +8,8 @@
  * Shift+Arrow range selection, Ctrl+A select-all, and typeahead navigation.
  */
 
-import { createRovingTabindex } from '../shared/rovingTabindex.js';
-import type { RovingTabindexController } from '../shared/rovingTabindex.js';
+import { createRovingTabindex } from "../shared/rovingTabindex.js";
+import type { RovingTabindexController } from "../shared/rovingTabindex.js";
 
 /**
  * Options for configuring the {@link MultiselectListbox} component.
@@ -58,7 +58,7 @@ export class MultiselectListbox {
   private onSelect?: (selectedIndices: number[]) => void;
   private roving!: RovingTabindexController;
   private anchorIndex: number = 0;
-  private typeaheadBuffer = '';
+  private typeaheadBuffer = "";
   private typeaheadTimer: ReturnType<typeof setTimeout> | null = null;
   private suppressOnSelect = false;
   private clickHandler = (e: MouseEvent) => this.handleClick(e);
@@ -77,9 +77,9 @@ export class MultiselectListbox {
   }
 
   private init(): void {
-    this.listbox.setAttribute('role', 'listbox');
+    this.listbox.setAttribute("role", "listbox");
     if (this.multiselect) {
-      this.listbox.setAttribute('aria-multiselectable', 'true');
+      this.listbox.setAttribute("aria-multiselectable", "true");
     }
 
     this.applyAriaAttributes();
@@ -87,30 +87,30 @@ export class MultiselectListbox {
     this.roving = createRovingTabindex({
       container: this.listbox,
       selector: '[role="option"]',
-      orientation: 'vertical',
+      orientation: "vertical",
       wrap: false,
       beforeKey: (e) => {
         switch (e.key) {
-          case ' ':
+          case " ":
             if (!e.ctrlKey) {
               e.preventDefault();
               this.handleSpace();
               return true;
             }
             return false;
-          case 'a':
-          case 'A':
+          case "a":
+          case "A":
             if (e.ctrlKey && this.multiselect) {
               e.preventDefault();
               this.selectAll();
               return true;
             }
             return false;
-          case 'ArrowUp':
-          case 'ArrowDown':
+          case "ArrowUp":
+          case "ArrowDown":
             if (e.shiftKey && this.multiselect) {
               e.preventDefault();
-              const delta = e.key === 'ArrowUp' ? -1 : 1;
+              const delta = e.key === "ArrowUp" ? -1 : 1;
               const items = this.roving.getItems();
               const current = this.roving.activeIndex;
               const next = Math.max(0, Math.min(items.length - 1, current + delta));
@@ -121,7 +121,7 @@ export class MultiselectListbox {
               return true;
             }
             return false;
-          case 'Home':
+          case "Home":
             if (e.shiftKey && this.multiselect) {
               e.preventDefault();
               this.roving.setActiveIndex(0, true);
@@ -129,7 +129,7 @@ export class MultiselectListbox {
               return true;
             }
             return false;
-          case 'End':
+          case "End":
             if (e.shiftKey && this.multiselect) {
               e.preventDefault();
               const last = this.roving.getItems().length - 1;
@@ -154,17 +154,17 @@ export class MultiselectListbox {
       },
     });
 
-    this.listbox.addEventListener('click', this.clickHandler);
-    this.listbox.addEventListener('keydown', this.keydownHandler);
+    this.listbox.addEventListener("click", this.clickHandler);
+    this.listbox.addEventListener("keydown", this.keydownHandler);
   }
 
   private applyAriaAttributes(): void {
     const items = Array.from(this.listbox.children).filter(
-      (el): el is HTMLElement => el instanceof HTMLElement
+      (el): el is HTMLElement => el instanceof HTMLElement,
     );
     items.forEach((child) => {
-      child.setAttribute('role', 'option');
-      child.setAttribute('aria-selected', 'false');
+      child.setAttribute("role", "option");
+      child.setAttribute("aria-selected", "false");
     });
   }
 
@@ -182,7 +182,7 @@ export class MultiselectListbox {
   }
 
   private handleKeyDown(e: KeyboardEvent): void {
-    if (e.key === ' ' && e.ctrlKey && this.multiselect) {
+    if (e.key === " " && e.ctrlKey && this.multiselect) {
       e.preventDefault();
       const items = this.roving.getItems();
       const idx = this.roving.activeIndex;
@@ -221,8 +221,8 @@ export class MultiselectListbox {
     const items = this.roving.getItems();
     if (index < 0 || index >= items.length) return;
     const item = items[index];
-    const isSelected = item.getAttribute('aria-selected') === 'true';
-    item.setAttribute('aria-selected', String(!isSelected));
+    const isSelected = item.getAttribute("aria-selected") === "true";
+    item.setAttribute("aria-selected", String(!isSelected));
     this.emitSelection();
   }
 
@@ -230,7 +230,7 @@ export class MultiselectListbox {
     const items = this.roving.getItems();
     const selectedSet = new Set(indices);
     items.forEach((el, i) => {
-      el.setAttribute('aria-selected', selectedSet.has(i) ? 'true' : 'false');
+      el.setAttribute("aria-selected", selectedSet.has(i) ? "true" : "false");
     });
     this.emitSelection();
   }
@@ -253,7 +253,7 @@ export class MultiselectListbox {
     this.typeaheadBuffer += key.toLowerCase();
     if (this.typeaheadTimer) clearTimeout(this.typeaheadTimer);
     this.typeaheadTimer = setTimeout(() => {
-      this.typeaheadBuffer = '';
+      this.typeaheadBuffer = "";
     }, 500);
 
     const items = this.roving.getItems();
@@ -262,7 +262,7 @@ export class MultiselectListbox {
     const startIndex = this.roving.activeIndex;
     for (let i = 1; i <= items.length; i++) {
       const matchIdx = (startIndex + i) % items.length;
-      const label = (items[matchIdx].textContent || '').toLowerCase().trim();
+      const label = (items[matchIdx].textContent || "").toLowerCase().trim();
       if (label.startsWith(this.typeaheadBuffer)) {
         this.suppressOnSelect = true;
         this.roving.setActiveIndex(matchIdx, true);
@@ -294,7 +294,7 @@ export class MultiselectListbox {
     if (!items) return [];
     const result: number[] = [];
     items.forEach((el, i) => {
-      if (el.getAttribute('aria-selected') === 'true') {
+      if (el.getAttribute("aria-selected") === "true") {
         result.push(i);
       }
     });
@@ -326,8 +326,8 @@ export class MultiselectListbox {
    */
   public destroy(): void {
     if (!this.roving) return;
-    this.listbox.removeEventListener('click', this.clickHandler);
-    this.listbox.removeEventListener('keydown', this.keydownHandler);
+    this.listbox.removeEventListener("click", this.clickHandler);
+    this.listbox.removeEventListener("keydown", this.keydownHandler);
     this.roving.destroy();
   }
 }

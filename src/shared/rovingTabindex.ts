@@ -20,7 +20,7 @@ export interface RovingTabindexOptions {
   /** CSS selector for focusable child items */
   selector: string;
   /** Navigation direction. Defaults to 'vertical' */
-  orientation?: 'vertical' | 'horizontal' | 'both';
+  orientation?: "vertical" | "horizontal" | "both";
   /** For grid layouts: number of columns (ArrowDown = +columns, ArrowUp = -columns) */
   columns?: number;
   /** Wrap around at boundaries (first→last, last→first). Defaults to true */
@@ -71,7 +71,7 @@ export function createRovingTabindex(options: RovingTabindexOptions): RovingTabi
     container,
     selector,
     columns = 0,
-    orientation = columns > 0 ? 'both' : 'vertical',
+    orientation = columns > 0 ? "both" : "vertical",
     wrap = true,
   } = options;
 
@@ -87,8 +87,8 @@ export function createRovingTabindex(options: RovingTabindexOptions): RovingTabi
     let handled = true;
 
     switch (e.key) {
-      case 'ArrowDown':
-        if (orientation === 'vertical' || orientation === 'both') {
+      case "ArrowDown":
+        if (orientation === "vertical" || orientation === "both") {
           e.preventDefault();
           moveBy(columns > 0 ? columns : 1);
         } else {
@@ -96,8 +96,8 @@ export function createRovingTabindex(options: RovingTabindexOptions): RovingTabi
         }
         break;
 
-      case 'ArrowUp':
-        if (orientation === 'vertical' || orientation === 'both') {
+      case "ArrowUp":
+        if (orientation === "vertical" || orientation === "both") {
           e.preventDefault();
           moveBy(-(columns > 0 ? columns : 1));
         } else {
@@ -105,8 +105,8 @@ export function createRovingTabindex(options: RovingTabindexOptions): RovingTabi
         }
         break;
 
-      case 'ArrowRight':
-        if (orientation === 'horizontal' || orientation === 'both') {
+      case "ArrowRight":
+        if (orientation === "horizontal" || orientation === "both") {
           e.preventDefault();
           moveBy(1);
         } else {
@@ -114,8 +114,8 @@ export function createRovingTabindex(options: RovingTabindexOptions): RovingTabi
         }
         break;
 
-      case 'ArrowLeft':
-        if (orientation === 'horizontal' || orientation === 'both') {
+      case "ArrowLeft":
+        if (orientation === "horizontal" || orientation === "both") {
           e.preventDefault();
           moveBy(-1);
         } else {
@@ -123,12 +123,12 @@ export function createRovingTabindex(options: RovingTabindexOptions): RovingTabi
         }
         break;
 
-      case 'Home':
+      case "Home":
         e.preventDefault();
         goTo(0);
         break;
 
-      case 'End':
+      case "End":
         e.preventDefault();
         goTo(items.length - 1);
         break;
@@ -142,13 +142,15 @@ export function createRovingTabindex(options: RovingTabindexOptions): RovingTabi
     }
   };
 
-  container.addEventListener('keydown', keyHandler);
+  container.addEventListener("keydown", keyHandler);
 
   // Set initial tabindex
   applyTabindex();
 
   return {
-    get activeIndex() { return activeIndex; },
+    get activeIndex() {
+      return activeIndex;
+    },
 
     getItems(): HTMLElement[] {
       return [...items];
@@ -167,7 +169,7 @@ export function createRovingTabindex(options: RovingTabindexOptions): RovingTabi
     refresh,
 
     destroy(): void {
-      container.removeEventListener('keydown', keyHandler);
+      container.removeEventListener("keydown", keyHandler);
       items = [];
       activeIndex = -1;
     },
@@ -188,19 +190,19 @@ export function createRovingTabindex(options: RovingTabindexOptions): RovingTabi
   }
 
   function findInitialIndex(): number {
-    const idx = items.findIndex(el => el.getAttribute('tabindex') === '0');
+    const idx = items.findIndex((el) => el.getAttribute("tabindex") === "0");
     return idx >= 0 ? idx : 0;
   }
 
   function applyTabindex(): void {
     items.forEach((el, i) => {
-      el.setAttribute('tabindex', i === activeIndex ? '0' : '-1');
+      el.setAttribute("tabindex", i === activeIndex ? "0" : "-1");
     });
   }
 
   function moveBy(delta: number): void {
     const next = wrap
-      ? ((activeIndex + delta) % items.length + items.length) % items.length
+      ? (((activeIndex + delta) % items.length) + items.length) % items.length
       : Math.max(0, Math.min(items.length - 1, activeIndex + delta));
 
     if (next !== activeIndex) {

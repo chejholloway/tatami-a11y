@@ -10,17 +10,10 @@
  * - Locks body scroll when open
  */
 
-import {
-  activateFocusTrap,
-  deactivateFocusTrap,
-} from '../shared/focusTrap.js';
-import {
-  pushFocusStack,
-  popFocusStack,
-  setInitialFocusReference,
-} from '../shared/focusStack.js';
-import { announce } from '../shared/announcer.js';
-import { checkReducedMotion } from '../shared/reducedMotion.js';
+import { activateFocusTrap, deactivateFocusTrap } from "../shared/focusTrap.js";
+import { pushFocusStack, popFocusStack, setInitialFocusReference } from "../shared/focusStack.js";
+import { announce } from "../shared/announcer.js";
+import { checkReducedMotion } from "../shared/reducedMotion.js";
 
 /**
  * Options for configuring the {@link Modal} component.
@@ -68,7 +61,7 @@ export class Modal {
   private isOpen: boolean = false;
   private onOpen?: () => void;
   private onClose?: () => void;
-  private previousBodyOverflow: string = '';
+  private previousBodyOverflow: string = "";
   private focusableElements: HTMLElement[] = [];
   private initialFocusElement?: HTMLElement;
   private triggerClickHandler: () => void = () => this.open();
@@ -90,21 +83,21 @@ export class Modal {
 
   private init(): void {
     // Set up ARIA attributes
-    this.modal.setAttribute('role', 'dialog');
-    this.modal.setAttribute('aria-modal', 'true');
-    this.modal.setAttribute('aria-hidden', 'true');
+    this.modal.setAttribute("role", "dialog");
+    this.modal.setAttribute("aria-modal", "true");
+    this.modal.setAttribute("aria-hidden", "true");
 
     // Find focusable elements within modal
     this.focusableElements = this.getFocusableElements();
 
     // Set up event listeners
-    this.trigger.addEventListener('click', this.triggerClickHandler);
-    this.modal.addEventListener('keydown', this.modalKeydownHandler);
+    this.trigger.addEventListener("click", this.triggerClickHandler);
+    this.modal.addEventListener("keydown", this.modalKeydownHandler);
 
     // Backdrop click to close
     if (this.backdrop) {
       this.backdropClickHandler = () => this.close();
-      this.backdrop.addEventListener('click', this.backdropClickHandler);
+      this.backdrop.addEventListener("click", this.backdropClickHandler);
     }
 
     // Initially hide modal
@@ -113,13 +106,13 @@ export class Modal {
 
   private getFocusableElements(): HTMLElement[] {
     const focusableSelectors = [
-      'button:not([disabled])',
-      '[href]',
-      'input:not([disabled])',
-      'select:not([disabled])',
-      'textarea:not([disabled])',
+      "button:not([disabled])",
+      "[href]",
+      "input:not([disabled])",
+      "select:not([disabled])",
+      "textarea:not([disabled])",
       '[tabindex]:not([tabindex="-1"])',
-    ].join(', ');
+    ].join(", ");
 
     return Array.from(this.modal.querySelectorAll(focusableSelectors)) as HTMLElement[];
   }
@@ -134,12 +127,12 @@ export class Modal {
     if (this.isOpen) return;
 
     this.isOpen = true;
-    this.modal.setAttribute('aria-hidden', 'false');
+    this.modal.setAttribute("aria-hidden", "false");
     this.showModal();
 
     // Lock body scroll
     this.previousBodyOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
+    document.body.style.overflow = "hidden";
 
     // Set up focus management
     setInitialFocusReference(this.trigger);
@@ -154,7 +147,7 @@ export class Modal {
     this.initialFocusElement.focus();
 
     // Announce
-    const modalTitle = this.modal.querySelector('[id]')?.textContent || 'Modal';
+    const modalTitle = this.modal.querySelector("[id]")?.textContent || "Modal";
     announce(`${modalTitle} opened`, { urgent: false });
 
     // Callback
@@ -170,7 +163,7 @@ export class Modal {
     if (!this.isOpen) return;
 
     this.isOpen = false;
-    this.modal.setAttribute('aria-hidden', 'true');
+    this.modal.setAttribute("aria-hidden", "true");
     this.hideModal();
 
     // Restore body scroll
@@ -181,7 +174,7 @@ export class Modal {
     popFocusStack();
 
     // Announce
-    const modalTitle = this.modal.querySelector('[id]')?.textContent || 'Modal';
+    const modalTitle = this.modal.querySelector("[id]")?.textContent || "Modal";
     announce(`${modalTitle} closed`, { urgent: false });
 
     // Callback
@@ -190,25 +183,25 @@ export class Modal {
 
   private showModal(): void {
     const prefersReducedMotion = checkReducedMotion();
-    this.modal.style.display = 'block';
+    this.modal.style.display = "block";
 
     if (this.backdrop) {
-      this.backdrop.style.display = 'block';
+      this.backdrop.style.display = "block";
     }
 
     if (!prefersReducedMotion) {
-      this.modal.style.transition = 'opacity 0.2s ease';
-      this.modal.style.opacity = '0';
+      this.modal.style.transition = "opacity 0.2s ease";
+      this.modal.style.opacity = "0";
 
       if (this.backdrop) {
-        this.backdrop.style.transition = 'opacity 0.2s ease';
-        this.backdrop.style.opacity = '0';
+        this.backdrop.style.transition = "opacity 0.2s ease";
+        this.backdrop.style.opacity = "0";
       }
 
       requestAnimationFrame(() => {
-        this.modal.style.opacity = '1';
+        this.modal.style.opacity = "1";
         if (this.backdrop) {
-          this.backdrop.style.opacity = '1';
+          this.backdrop.style.opacity = "1";
         }
       });
     }
@@ -218,29 +211,29 @@ export class Modal {
     const prefersReducedMotion = checkReducedMotion();
 
     if (!prefersReducedMotion) {
-      this.modal.style.opacity = '0';
+      this.modal.style.opacity = "0";
       if (this.backdrop) {
-        this.backdrop.style.opacity = '0';
+        this.backdrop.style.opacity = "0";
       }
 
       setTimeout(() => {
         if (this.isOpen) return;
-        this.modal.style.display = 'none';
+        this.modal.style.display = "none";
         if (this.backdrop) {
-          this.backdrop.style.display = 'none';
+          this.backdrop.style.display = "none";
         }
       }, 200);
     } else {
-      this.modal.style.display = 'none';
+      this.modal.style.display = "none";
       if (this.backdrop) {
-        this.backdrop.style.display = 'none';
+        this.backdrop.style.display = "none";
       }
     }
   }
 
   private handleKeyDown(e: KeyboardEvent): void {
     switch (e.key) {
-      case 'Escape':
+      case "Escape":
         e.preventDefault();
         this.close();
         this.trigger.focus();
@@ -252,11 +245,11 @@ export class Modal {
    * Remove all event listeners and clean up the modal.
    */
   public destroy(): void {
-    this.trigger.removeEventListener('click', this.triggerClickHandler);
-    this.modal.removeEventListener('keydown', this.modalKeydownHandler);
+    this.trigger.removeEventListener("click", this.triggerClickHandler);
+    this.modal.removeEventListener("keydown", this.modalKeydownHandler);
 
     if (this.backdrop && this.backdropClickHandler) {
-      this.backdrop.removeEventListener('click', this.backdropClickHandler);
+      this.backdrop.removeEventListener("click", this.backdropClickHandler);
     }
 
     if (this.isOpen) {

@@ -11,11 +11,8 @@
  * @param key - Unique key to store the instance on window
  * @returns The singleton instance
  */
-export const createSingleton = <T>(
-  factory: () => T,
-  key: string = '__singleton__'
-): T => {
-  if (typeof window === 'undefined') {
+export const createSingleton = <T>(factory: () => T, key: string = "__singleton__"): T => {
+  if (typeof window === "undefined") {
     return factory();
   }
 
@@ -41,7 +38,7 @@ export const createSingleton = <T>(
  * @param cleanup - Function to run before replacement
  */
 export const registerCleanup = (key: string, cleanup: () => void): void => {
-  if (typeof window === 'undefined') return;
+  if (typeof window === "undefined") return;
 
   const existing = (window as unknown as Record<string, unknown>)[key] as {
     instance?: unknown;

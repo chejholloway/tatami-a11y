@@ -8,8 +8,8 @@
  * and typeahead navigation.
  */
 
-import { createRovingTabindex } from '../shared/rovingTabindex.js';
-import type { RovingTabindexController } from '../shared/rovingTabindex.js';
+import { createRovingTabindex } from "../shared/rovingTabindex.js";
+import type { RovingTabindexController } from "../shared/rovingTabindex.js";
 
 /**
  * Options for configuring the {@link TreeView} component.
@@ -78,7 +78,7 @@ export class TreeView {
   private roving!: RovingTabindexController;
   private treeKeydownHandler = (e: KeyboardEvent) => this.handleKeyDown(e);
   private treeClickHandler = (e: MouseEvent) => this.handleClick(e);
-  private typeaheadBuffer = '';
+  private typeaheadBuffer = "";
   private typeaheadTimer: ReturnType<typeof setTimeout> | null = null;
   private suppressOnSelect = false;
 
@@ -95,9 +95,9 @@ export class TreeView {
   }
 
   private init(): void {
-    this.tree.setAttribute('role', 'tree');
+    this.tree.setAttribute("role", "tree");
     if (this.multiselect) {
-      this.tree.setAttribute('aria-multiselectable', 'true');
+      this.tree.setAttribute("aria-multiselectable", "true");
     }
 
     this.applyAriaAttributes();
@@ -106,30 +106,30 @@ export class TreeView {
     this.roving = createRovingTabindex({
       container: this.tree,
       selector: '[role="treeitem"]:not([aria-hidden="true"])',
-      orientation: 'vertical',
+      orientation: "vertical",
       wrap: false,
       beforeKey: (e) => {
         switch (e.key) {
-          case 'ArrowRight': {
+          case "ArrowRight": {
             e.preventDefault();
             const item = this.roving.getItems()[this.roving.activeIndex];
-            if (item && item.getAttribute('aria-expanded') === 'false') {
+            if (item && item.getAttribute("aria-expanded") === "false") {
               this.expand(item);
             }
             return true;
           }
-          case 'ArrowLeft': {
+          case "ArrowLeft": {
             e.preventDefault();
             const item = this.roving.getItems()[this.roving.activeIndex];
-            if (item && item.getAttribute('aria-expanded') === 'true') {
+            if (item && item.getAttribute("aria-expanded") === "true") {
               this.collapse(item);
             } else {
               this.focusParent(item);
             }
             return true;
           }
-          case 'Enter':
-          case ' ':
+          case "Enter":
+          case " ":
             if (!e.ctrlKey) {
               e.preventDefault();
               const items = this.roving.getItems();
@@ -164,55 +164,50 @@ export class TreeView {
       },
     });
 
-    this.tree.addEventListener('keydown', this.treeKeydownHandler);
-    this.tree.addEventListener('click', this.treeClickHandler);
+    this.tree.addEventListener("keydown", this.treeKeydownHandler);
+    this.tree.addEventListener("click", this.treeClickHandler);
   }
 
   private applyAriaAttributes(): void {
     this.walkTree(this.tree, 1);
   }
 
-  private walkTree(
-    container: HTMLElement,
-    level: number,
-  ): TreeNode[] {
+  private walkTree(container: HTMLElement, level: number): TreeNode[] {
     const nodes: TreeNode[] = [];
     const children = Array.from(container.children).filter(
-      (el): el is HTMLElement => el instanceof HTMLElement
+      (el): el is HTMLElement => el instanceof HTMLElement,
     );
 
     children.forEach((child, index) => {
-      child.setAttribute('role', 'treeitem');
-      child.setAttribute('aria-level', String(level));
+      child.setAttribute("role", "treeitem");
+      child.setAttribute("aria-level", String(level));
 
-      const labelEl = child.querySelector('.label');
-      const label = labelEl?.textContent || child.textContent || '';
+      const labelEl = child.querySelector(".label");
+      const label = labelEl?.textContent || child.textContent || "";
       const sublist = child.querySelector('ul, ol, [role="group"]') as HTMLElement | null;
       const isLeaf = !sublist;
 
       if (sublist) {
-        sublist.setAttribute('role', 'group');
+        sublist.setAttribute("role", "group");
       }
 
       if (!isLeaf) {
-        const isExpanded = child.getAttribute('aria-expanded') === 'true'
-          || child.dataset.expanded === 'true';
-        child.setAttribute('aria-expanded', String(isExpanded));
+        const isExpanded =
+          child.getAttribute("aria-expanded") === "true" || child.dataset.expanded === "true";
+        child.setAttribute("aria-expanded", String(isExpanded));
         if (!isExpanded && sublist) {
           sublist.hidden = true;
         }
       }
 
-      child.setAttribute('aria-setsize', String(children.length));
-      child.setAttribute('aria-posinset', String(index + 1));
-      child.setAttribute('aria-selected', 'false');
+      child.setAttribute("aria-setsize", String(children.length));
+      child.setAttribute("aria-posinset", String(index + 1));
+      child.setAttribute("aria-selected", "false");
 
       nodes.push({
         element: child,
         label,
-        children: sublist
-          ? this.walkTree(sublist, level + 1)
-          : [],
+        children: sublist ? this.walkTree(sublist, level + 1) : [],
         isLeaf,
       });
     });
@@ -221,7 +216,7 @@ export class TreeView {
   }
 
   private expand(item: HTMLElement): void {
-    item.setAttribute('aria-expanded', 'true');
+    item.setAttribute("aria-expanded", "true");
     const sublist = item.querySelector('ul, ol, [role="group"]') as HTMLElement;
     if (sublist) sublist.hidden = false;
     this.refreshHiddenState();
@@ -229,7 +224,7 @@ export class TreeView {
   }
 
   private collapse(item: HTMLElement): void {
-    item.setAttribute('aria-expanded', 'false');
+    item.setAttribute("aria-expanded", "false");
     const sublist = item.querySelector('ul, ol, [role="group"]') as HTMLElement;
     if (sublist) sublist.hidden = true;
     this.refreshHiddenState();
@@ -238,7 +233,9 @@ export class TreeView {
 
   private focusParent(item: HTMLElement | undefined): void {
     if (!item) return;
-    const parentItem = item.closest('[role="group"]')?.closest('[role="treeitem"]') as HTMLElement | null;
+    const parentItem = item
+      .closest('[role="group"]')
+      ?.closest('[role="treeitem"]') as HTMLElement | null;
     if (!parentItem) return;
     const items = this.roving.getItems();
     const idx = items.indexOf(parentItem);
@@ -250,17 +247,19 @@ export class TreeView {
   private refreshHiddenState(): void {
     const walk = (container: HTMLElement, hidden: boolean) => {
       const items = Array.from(container.children).filter(
-        (el): el is HTMLElement => el instanceof HTMLElement
+        (el): el is HTMLElement => el instanceof HTMLElement,
       );
-      items.forEach(item => {
+      items.forEach((item) => {
         if (hidden) {
-          item.setAttribute('aria-hidden', 'true');
+          item.setAttribute("aria-hidden", "true");
         } else {
-          item.removeAttribute('aria-hidden');
+          item.removeAttribute("aria-hidden");
         }
-        const sublist = item.querySelector(':scope > ul, :scope > ol, :scope > [role="group"]') as HTMLElement | null;
+        const sublist = item.querySelector(
+          ':scope > ul, :scope > ol, :scope > [role="group"]',
+        ) as HTMLElement | null;
         if (sublist) {
-          const isExpanded = item.getAttribute('aria-expanded') === 'true';
+          const isExpanded = item.getAttribute("aria-expanded") === "true";
           walk(sublist, hidden || !isExpanded);
         }
       });
@@ -272,12 +271,12 @@ export class TreeView {
     const items = this.roving.getItems();
     if (index < 0 || index >= items.length) return;
     items.forEach((el, i) => {
-      el.setAttribute('aria-selected', i === index ? 'true' : 'false');
+      el.setAttribute("aria-selected", i === index ? "true" : "false");
     });
   }
 
   private handleKeyDown(e: KeyboardEvent): void {
-    if (e.key === ' ' && e.ctrlKey && this.multiselect) {
+    if (e.key === " " && e.ctrlKey && this.multiselect) {
       e.preventDefault();
       const items = this.roving.getItems();
       const idx = this.roving.activeIndex;
@@ -307,16 +306,16 @@ export class TreeView {
       this.onSelect?.(item, idx);
     }
 
-    if (item.getAttribute('aria-expanded') === 'false') {
+    if (item.getAttribute("aria-expanded") === "false") {
       this.expand(item);
-    } else if (item.getAttribute('aria-expanded') === 'true') {
+    } else if (item.getAttribute("aria-expanded") === "true") {
       this.collapse(item);
     }
   }
 
   private toggleSelect(item: HTMLElement, index: number): void {
-    const isSelected = item.getAttribute('aria-selected') === 'true';
-    item.setAttribute('aria-selected', String(!isSelected));
+    const isSelected = item.getAttribute("aria-selected") === "true";
+    item.setAttribute("aria-selected", String(!isSelected));
     this.onSelect?.(item, index);
   }
 
@@ -324,7 +323,7 @@ export class TreeView {
     this.typeaheadBuffer += key.toLowerCase();
     if (this.typeaheadTimer) clearTimeout(this.typeaheadTimer);
     this.typeaheadTimer = setTimeout(() => {
-      this.typeaheadBuffer = '';
+      this.typeaheadBuffer = "";
     }, 500);
 
     const items = this.roving.getItems();
@@ -333,7 +332,7 @@ export class TreeView {
     const startIndex = this.roving.activeIndex;
     for (let i = 1; i <= items.length; i++) {
       const idx = (startIndex + i) % items.length;
-      const label = (items[idx].textContent || '').toLowerCase().trim();
+      const label = (items[idx].textContent || "").toLowerCase().trim();
       if (label.startsWith(this.typeaheadBuffer)) {
         this.roving.setActiveIndex(idx, true);
         return;
@@ -363,7 +362,7 @@ export class TreeView {
     if (!items || index < 0 || index >= items.length) return;
 
     if (this.multiselect) {
-      items[index].setAttribute('aria-selected', 'true');
+      items[index].setAttribute("aria-selected", "true");
     } else {
       this.applySelection(index);
     }
@@ -383,7 +382,7 @@ export class TreeView {
     if (!items) return [];
     const result: number[] = [];
     items.forEach((el, i) => {
-      if (el.getAttribute('aria-selected') === 'true') {
+      if (el.getAttribute("aria-selected") === "true") {
         result.push(i);
       }
     });
@@ -395,8 +394,8 @@ export class TreeView {
    */
   public destroy(): void {
     if (!this.roving) return;
-    this.tree.removeEventListener('keydown', this.treeKeydownHandler);
-    this.tree.removeEventListener('click', this.treeClickHandler);
+    this.tree.removeEventListener("keydown", this.treeKeydownHandler);
+    this.tree.removeEventListener("click", this.treeClickHandler);
     this.roving.destroy();
   }
 }

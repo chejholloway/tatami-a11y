@@ -21,8 +21,8 @@ let currentValue = false;
  * @returns Whether reduced motion is preferred
  */
 export const checkReducedMotion = (): boolean => {
-  if (typeof window === 'undefined') return false;
-  return window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
+  if (typeof window === "undefined") return false;
+  return window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
 };
 
 /**
@@ -32,24 +32,24 @@ export const checkReducedMotion = (): boolean => {
  * @returns Cleanup function to remove the listener
  */
 export const onReducedMotionChange = (callback: ReducedMotionCallback): (() => void) => {
-  if (typeof window === 'undefined') {
+  if (typeof window === "undefined") {
     return () => {};
   }
 
   listeners.add(callback);
 
-  const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
 
   const handleChange = (event: MediaQueryListEvent) => {
     currentValue = event.matches;
     listeners.forEach((listener) => listener(currentValue));
   };
 
-  mediaQuery.addEventListener('change', handleChange);
+  mediaQuery.addEventListener("change", handleChange);
 
   return () => {
     listeners.delete(callback);
-    mediaQuery.removeEventListener('change', handleChange);
+    mediaQuery.removeEventListener("change", handleChange);
   };
 };
 
@@ -59,7 +59,7 @@ export const onReducedMotionChange = (callback: ReducedMotionCallback): (() => v
  * @returns Boolean indicating if reduced motion is preferred
  */
 export const getReducedMotion = (): boolean => {
-  if (typeof window === 'undefined') return false;
+  if (typeof window === "undefined") return false;
   if (listeners.size === 0) {
     currentValue = checkReducedMotion();
   }

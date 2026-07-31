@@ -9,13 +9,9 @@
  * - Respects reduced motion preference
  */
 
-import {
-  pushFocusStack,
-  popFocusStack,
-  setInitialFocusReference,
-} from '../shared/focusStack.js';
-import { announce } from '../shared/announcer.js';
-import { checkReducedMotion } from '../shared/reducedMotion.js';
+import { pushFocusStack, popFocusStack, setInitialFocusReference } from "../shared/focusStack.js";
+import { announce } from "../shared/announcer.js";
+import { checkReducedMotion } from "../shared/reducedMotion.js";
 
 /**
  * Options for configuring the {@link Dialog} component.
@@ -74,17 +70,17 @@ export class Dialog {
 
   private init(): void {
     // Set up ARIA attributes
-    this.trigger.setAttribute('aria-expanded', 'false');
-    this.trigger.setAttribute('aria-haspopup', 'dialog');
-    
-    this.dialog.setAttribute('role', 'dialog');
+    this.trigger.setAttribute("aria-expanded", "false");
+    this.trigger.setAttribute("aria-haspopup", "dialog");
+
+    this.dialog.setAttribute("role", "dialog");
     // Note: aria-modal="false" is technically the default, but explicitly setting it is good practice here
-    this.dialog.setAttribute('aria-modal', 'false');
-    this.dialog.setAttribute('aria-hidden', 'true');
+    this.dialog.setAttribute("aria-modal", "false");
+    this.dialog.setAttribute("aria-hidden", "true");
 
     // Attach event listeners
-    this.trigger.addEventListener('click', this.triggerClickHandler);
-    this.dialog.addEventListener('keydown', this.dialogKeydownHandler);
+    this.trigger.addEventListener("click", this.triggerClickHandler);
+    this.dialog.addEventListener("keydown", this.dialogKeydownHandler);
 
     this.hideDialog();
   }
@@ -107,9 +103,9 @@ export class Dialog {
     if (this.isOpen) return;
     this.isOpen = true;
 
-    this.trigger.setAttribute('aria-expanded', 'true');
-    this.dialog.setAttribute('aria-hidden', 'false');
-    
+    this.trigger.setAttribute("aria-expanded", "true");
+    this.dialog.setAttribute("aria-hidden", "false");
+
     // Remember where focus came from
     setInitialFocusReference(this.trigger);
     pushFocusStack(this.trigger);
@@ -117,15 +113,20 @@ export class Dialog {
     this.showDialog();
 
     // Focus first focusable element inside the dialog, or the dialog itself
-    const firstFocusable = this.dialog.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])') as HTMLElement;
+    const firstFocusable = this.dialog.querySelector(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+    ) as HTMLElement;
     if (firstFocusable) {
       firstFocusable.focus();
     } else {
-      this.dialog.setAttribute('tabindex', '-1');
+      this.dialog.setAttribute("tabindex", "-1");
       this.dialog.focus();
     }
 
-    const dialogTitle = this.dialog.getAttribute('aria-label') || this.dialog.querySelector('[id]')?.textContent || 'Dialog';
+    const dialogTitle =
+      this.dialog.getAttribute("aria-label") ||
+      this.dialog.querySelector("[id]")?.textContent ||
+      "Dialog";
     announce(`${dialogTitle} opened`, { urgent: false });
 
     this.onOpen?.();
@@ -138,15 +139,18 @@ export class Dialog {
     if (!this.isOpen) return;
     this.isOpen = false;
 
-    this.trigger.setAttribute('aria-expanded', 'false');
-    this.dialog.setAttribute('aria-hidden', 'true');
-    
+    this.trigger.setAttribute("aria-expanded", "false");
+    this.dialog.setAttribute("aria-hidden", "true");
+
     // Hand focus back gracefully
     popFocusStack();
 
     this.hideDialog();
 
-    const dialogTitle = this.dialog.getAttribute('aria-label') || this.dialog.querySelector('[id]')?.textContent || 'Dialog';
+    const dialogTitle =
+      this.dialog.getAttribute("aria-label") ||
+      this.dialog.querySelector("[id]")?.textContent ||
+      "Dialog";
     announce(`${dialogTitle} closed`, { urgent: false });
 
     this.onClose?.();
@@ -154,16 +158,16 @@ export class Dialog {
 
   private showDialog(): void {
     const prefersReducedMotion = checkReducedMotion();
-    this.dialog.style.display = 'block';
+    this.dialog.style.display = "block";
 
     if (!prefersReducedMotion) {
-      this.dialog.style.transition = 'opacity 0.2s ease, transform 0.2s ease';
-      this.dialog.style.opacity = '0';
-      this.dialog.style.transform = 'translateY(-10px)';
+      this.dialog.style.transition = "opacity 0.2s ease, transform 0.2s ease";
+      this.dialog.style.opacity = "0";
+      this.dialog.style.transform = "translateY(-10px)";
 
       requestAnimationFrame(() => {
-        this.dialog.style.opacity = '1';
-        this.dialog.style.transform = 'translateY(0)';
+        this.dialog.style.opacity = "1";
+        this.dialog.style.transform = "translateY(0)";
       });
     }
   }
@@ -172,21 +176,21 @@ export class Dialog {
     const prefersReducedMotion = checkReducedMotion();
 
     if (!prefersReducedMotion) {
-      this.dialog.style.opacity = '0';
-      this.dialog.style.transform = 'translateY(-10px)';
+      this.dialog.style.opacity = "0";
+      this.dialog.style.transform = "translateY(-10px)";
 
       setTimeout(() => {
         if (!this.isOpen) {
-          this.dialog.style.display = 'none';
+          this.dialog.style.display = "none";
         }
       }, 200);
     } else {
-      this.dialog.style.display = 'none';
+      this.dialog.style.display = "none";
     }
   }
 
   private handleKeyDown(e: KeyboardEvent): void {
-    if (e.key === 'Escape' && this.isOpen) {
+    if (e.key === "Escape" && this.isOpen) {
       e.preventDefault();
       this.close();
     }
@@ -196,8 +200,8 @@ export class Dialog {
    * Remove all event listeners and clean up the dialog.
    */
   public destroy(): void {
-    this.trigger.removeEventListener('click', this.triggerClickHandler);
-    this.dialog.removeEventListener('keydown', this.dialogKeydownHandler);
+    this.trigger.removeEventListener("click", this.triggerClickHandler);
+    this.dialog.removeEventListener("keydown", this.dialogKeydownHandler);
 
     if (this.isOpen) {
       this.close();

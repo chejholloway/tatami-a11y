@@ -8,7 +8,7 @@
  * - Respects reduced motion preference
  */
 
-import { checkReducedMotion } from '../shared/reducedMotion.js';
+import { checkReducedMotion } from "../shared/reducedMotion.js";
 
 /**
  * Options for configuring the {@link Tooltip} component.
@@ -87,15 +87,15 @@ export class Tooltip {
     }
 
     // Set ARIA attributes
-    this.trigger.setAttribute('aria-describedby', this.tooltip.id);
-    this.tooltip.setAttribute('role', 'tooltip');
-    
+    this.trigger.setAttribute("aria-describedby", this.tooltip.id);
+    this.tooltip.setAttribute("role", "tooltip");
+
     // Attach event listeners for mouse and keyboard interactions
-    this.trigger.addEventListener('mouseenter', this.triggerMouseEnterHandler);
-    this.trigger.addEventListener('mouseleave', this.triggerMouseLeaveHandler);
-    this.trigger.addEventListener('focus', this.triggerFocusHandler);
-    this.trigger.addEventListener('blur', this.triggerBlurHandler);
-    this.trigger.addEventListener('keydown', this.triggerKeydownHandler);
+    this.trigger.addEventListener("mouseenter", this.triggerMouseEnterHandler);
+    this.trigger.addEventListener("mouseleave", this.triggerMouseLeaveHandler);
+    this.trigger.addEventListener("focus", this.triggerFocusHandler);
+    this.trigger.addEventListener("blur", this.triggerBlurHandler);
+    this.trigger.addEventListener("keydown", this.triggerKeydownHandler);
 
     this.hideImmediately();
   }
@@ -110,14 +110,14 @@ export class Tooltip {
     this.isVisible = true;
 
     const prefersReducedMotion = checkReducedMotion();
-    this.tooltip.style.display = 'block';
+    this.tooltip.style.display = "block";
 
     if (!prefersReducedMotion) {
-      this.tooltip.style.transition = 'opacity 0.2s ease';
-      this.tooltip.style.opacity = '0';
+      this.tooltip.style.transition = "opacity 0.2s ease";
+      this.tooltip.style.opacity = "0";
 
       requestAnimationFrame(() => {
-        this.tooltip.style.opacity = '1';
+        this.tooltip.style.opacity = "1";
       });
     }
 
@@ -136,14 +136,14 @@ export class Tooltip {
     const prefersReducedMotion = checkReducedMotion();
 
     if (!prefersReducedMotion) {
-      this.tooltip.style.opacity = '0';
+      this.tooltip.style.opacity = "0";
       setTimeout(() => {
         if (!this.isVisible) {
-          this.tooltip.style.display = 'none';
+          this.tooltip.style.display = "none";
         }
       }, 200);
     } else {
-      this.tooltip.style.display = 'none';
+      this.tooltip.style.display = "none";
     }
 
     this.onClose?.();
@@ -151,12 +151,12 @@ export class Tooltip {
 
   private hideImmediately(): void {
     this.isVisible = false;
-    this.tooltip.style.display = 'none';
-    this.tooltip.style.opacity = '0';
+    this.tooltip.style.display = "none";
+    this.tooltip.style.opacity = "0";
   }
 
   private handleKeyDown(e: KeyboardEvent): void {
-    if (e.key === 'Escape' && this.isVisible) {
+    if (e.key === "Escape" && this.isVisible) {
       e.preventDefault();
       this.hide();
     }
@@ -166,11 +166,11 @@ export class Tooltip {
    * Remove all event listeners and clean up the tooltip.
    */
   public destroy(): void {
-    this.trigger.removeEventListener('mouseenter', this.triggerMouseEnterHandler);
-    this.trigger.removeEventListener('mouseleave', this.triggerMouseLeaveHandler);
-    this.trigger.removeEventListener('focus', this.triggerFocusHandler);
-    this.trigger.removeEventListener('blur', this.triggerBlurHandler);
-    this.trigger.removeEventListener('keydown', this.triggerKeydownHandler);
+    this.trigger.removeEventListener("mouseenter", this.triggerMouseEnterHandler);
+    this.trigger.removeEventListener("mouseleave", this.triggerMouseLeaveHandler);
+    this.trigger.removeEventListener("focus", this.triggerFocusHandler);
+    this.trigger.removeEventListener("blur", this.triggerBlurHandler);
+    this.trigger.removeEventListener("keydown", this.triggerKeydownHandler);
 
     if (this.isVisible) {
       this.hideImmediately();

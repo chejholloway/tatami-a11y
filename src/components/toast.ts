@@ -11,9 +11,9 @@
  * - HMR-safe singleton pattern
  */
 
-import { announce } from '../shared/announcer.js';
-import { checkReducedMotion } from '../shared/reducedMotion.js';
-import { registerCleanup } from '../shared/globalRegistry.js';
+import { announce } from "../shared/announcer.js";
+import { checkReducedMotion } from "../shared/reducedMotion.js";
+import { registerCleanup } from "../shared/globalRegistry.js";
 
 /**
  * Variant type for a toast notification.
@@ -22,12 +22,18 @@ import { registerCleanup } from '../shared/globalRegistry.js';
  * - `warning`: Cautionary message
  * - `error`: Error or problem message
  */
-export type ToastVariant = 'info' | 'success' | 'warning' | 'error';
+export type ToastVariant = "info" | "success" | "warning" | "error";
 
 /**
  * Screen position for the toast stack container.
  */
-export type ToastPosition = 'top-right' | 'top-left' | 'top-center' | 'bottom-right' | 'bottom-left' | 'bottom-center';
+export type ToastPosition =
+  | "top-right"
+  | "top-left"
+  | "top-center"
+  | "bottom-right"
+  | "bottom-left"
+  | "bottom-center";
 
 /**
  * Options for displaying a single toast notification via {@link Toast.show}.
@@ -70,18 +76,18 @@ interface ActiveToast {
   startTimestamp: number | null;
 }
 
-const TOAST_VARIANT_TO_ROLE: Record<ToastVariant, 'status' | 'alert'> = {
-  info: 'status',
-  success: 'status',
-  warning: 'alert',
-  error: 'alert',
+const TOAST_VARIANT_TO_ROLE: Record<ToastVariant, "status" | "alert"> = {
+  info: "status",
+  success: "status",
+  warning: "alert",
+  error: "alert",
 };
 
 const DEFAULT_AUTO_DISMISS_DURATION_MS = 5000;
 const MAX_SIMULTANEOUS_TOASTS = 5;
 const EXIT_ANIMATION_DURATION_MS = 200;
 const MAX_FOCUS_STACK_SIZE = 20;
-const GLOBAL_LISTENERS_KEY = '__toastGlobalListeners__';
+const GLOBAL_LISTENERS_KEY = "__toastGlobalListeners__";
 
 /**
  * An accessible toast notification system following WAI-ARIA live region patterns.
@@ -104,7 +110,7 @@ export class Toast {
   private static stackWrapper: HTMLElement | null = null;
   private static politeLiveRegion: HTMLElement | null = null;
   private static assertiveLiveRegion: HTMLElement | null = null;
-  private static toastPlacement: ToastPosition = 'top-right';
+  private static toastPlacement: ToastPosition = "top-right";
   private static activeToasts = new Map<string, ActiveToast>();
   private static toastIdCounter = 0;
   private static focusStack: HTMLElement[] = [];
@@ -118,49 +124,49 @@ export class Toast {
 
   private static isInsideToast(el: EventTarget | null): boolean {
     if (!(el instanceof Element)) return false;
-    return !!el.closest('.toast');
+    return !!el.closest(".toast");
   }
 
   private static createStackWrapper(): HTMLElement {
-    const wrapper = document.createElement('div');
-    wrapper.className = 'toast-stack';
-    wrapper.setAttribute('data-position', this.toastPlacement);
+    const wrapper = document.createElement("div");
+    wrapper.className = "toast-stack";
+    wrapper.setAttribute("data-position", this.toastPlacement);
     document.body.appendChild(wrapper);
     return wrapper;
   }
 
-  private static createLiveRegion(liveType: 'polite' | 'assertive'): HTMLElement {
-    const region = document.createElement('div');
+  private static createLiveRegion(liveType: "polite" | "assertive"): HTMLElement {
+    const region = document.createElement("div");
     region.className = `toast-region toast-region--${liveType}`;
-    region.setAttribute('role', liveType === 'assertive' ? 'alert' : 'status');
-    region.setAttribute('aria-live', liveType);
-    region.setAttribute('aria-atomic', 'false');
-    region.setAttribute('aria-label', 'Notifications');
+    region.setAttribute("role", liveType === "assertive" ? "alert" : "status");
+    region.setAttribute("aria-live", liveType);
+    region.setAttribute("aria-atomic", "false");
+    region.setAttribute("aria-label", "Notifications");
     return region;
   }
 
   private static ensureLiveRegions(): void {
-    const existingWrapper = document.querySelector('.toast-stack');
+    const existingWrapper = document.querySelector(".toast-stack");
     if (existingWrapper) {
       this.stackWrapper = existingWrapper as HTMLElement;
-      this.stackWrapper.setAttribute('data-position', this.toastPlacement);
+      this.stackWrapper.setAttribute("data-position", this.toastPlacement);
     } else {
       this.stackWrapper = this.createStackWrapper();
     }
 
-    const existingPolite = this.stackWrapper.querySelector('.toast-region--polite');
+    const existingPolite = this.stackWrapper.querySelector(".toast-region--polite");
     if (existingPolite) {
       this.politeLiveRegion = existingPolite as HTMLElement;
     } else {
-      this.politeLiveRegion = this.createLiveRegion('polite');
+      this.politeLiveRegion = this.createLiveRegion("polite");
       this.stackWrapper.appendChild(this.politeLiveRegion);
     }
 
-    const existingAssertive = this.stackWrapper.querySelector('.toast-region--assertive');
+    const existingAssertive = this.stackWrapper.querySelector(".toast-region--assertive");
     if (existingAssertive) {
       this.assertiveLiveRegion = existingAssertive as HTMLElement;
     } else {
-      this.assertiveLiveRegion = this.createLiveRegion('assertive');
+      this.assertiveLiveRegion = this.createLiveRegion("assertive");
       this.stackWrapper.appendChild(this.assertiveLiveRegion);
     }
   }
@@ -169,14 +175,17 @@ export class Toast {
     this.toastPlacement = options.position ?? this.toastPlacement;
     this.ensureLiveRegions();
     if (this.stackWrapper) {
-      this.stackWrapper.setAttribute('data-position', this.toastPlacement);
+      this.stackWrapper.setAttribute("data-position", this.toastPlacement);
     }
   }
 
   private static scheduleToastDismissal(toastRecord: ActiveToast): void {
     if (toastRecord.totalDurationMs <= 0) return;
     toastRecord.startTimestamp = Date.now();
-    toastRecord.timer = window.setTimeout(() => this.dismissToast(toastRecord.id), toastRecord.remainingMs);
+    toastRecord.timer = window.setTimeout(
+      () => this.dismissToast(toastRecord.id),
+      toastRecord.remainingMs,
+    );
   }
 
   private static pauseToastTimer(toastRecord: ActiveToast): void {
@@ -190,7 +199,12 @@ export class Toast {
   }
 
   private static resumeToastTimer(toastRecord: ActiveToast): void {
-    if (toastRecord.totalDurationMs <= 0 || toastRecord.timer || !this.activeToasts.has(toastRecord.id)) return;
+    if (
+      toastRecord.totalDurationMs <= 0 ||
+      toastRecord.timer ||
+      !this.activeToasts.has(toastRecord.id)
+    )
+      return;
     this.scheduleToastDismissal(toastRecord);
   }
 
@@ -207,7 +221,7 @@ export class Toast {
       const toastValues = [...this.activeToasts.values()];
       const nextToast = toastValues[toastValues.length - 1];
       if (nextToast) {
-        (nextToast.element.querySelector('.toast__close') as HTMLElement)?.focus();
+        (nextToast.element.querySelector(".toast__close") as HTMLElement)?.focus();
       } else {
         let restored = false;
         while (this.focusStack.length > 0 && !restored) {
@@ -232,14 +246,14 @@ export class Toast {
       return;
     }
 
-    toastRecord.element.classList.add('toast--hide');
+    toastRecord.element.classList.add("toast--hide");
 
     const cleanup = () => {
       if (toastRecord.cleanupTimer) clearTimeout(toastRecord.cleanupTimer);
       toastRecord.element.remove();
     };
 
-    toastRecord.element.addEventListener('transitionend', cleanup, { once: true });
+    toastRecord.element.addEventListener("transitionend", cleanup, { once: true });
     toastRecord.cleanupTimer = window.setTimeout(cleanup, EXIT_ANIMATION_DURATION_MS + 100);
   }
 
@@ -248,20 +262,22 @@ export class Toast {
   }
 
   private static setupGlobalListeners(): void {
-    if (typeof window === 'undefined') return;
+    if (typeof window === "undefined") return;
 
-    const previous = (window as unknown as Record<string, unknown>)[GLOBAL_LISTENERS_KEY] as {
-      focusin?: (e: FocusEvent) => void;
-      keydown?: (e: KeyboardEvent) => void;
-      initialFocusReference?: HTMLElement;
-    } | undefined;
+    const previous = (window as unknown as Record<string, unknown>)[GLOBAL_LISTENERS_KEY] as
+      | {
+          focusin?: (e: FocusEvent) => void;
+          keydown?: (e: KeyboardEvent) => void;
+          initialFocusReference?: HTMLElement;
+        }
+      | undefined;
 
     if (previous) {
       if (previous.focusin) {
-        window.removeEventListener('focusin', previous.focusin);
+        window.removeEventListener("focusin", previous.focusin);
       }
       if (previous.keydown) {
-        window.removeEventListener('keydown', previous.keydown);
+        window.removeEventListener("keydown", previous.keydown);
       }
     }
 
@@ -277,7 +293,7 @@ export class Toast {
 
     this.globalKeydownHandler = (e: Event) => {
       if (!(e instanceof KeyboardEvent)) return;
-      if (!(e.altKey && e.key.toLowerCase() === 't')) return;
+      if (!(e.altKey && e.key.toLowerCase() === "t")) return;
       const toastValues = [...this.activeToasts.values()];
       const latestToast = toastValues[toastValues.length - 1];
       if (!latestToast) return;
@@ -291,11 +307,11 @@ export class Toast {
           this.focusStack.shift();
         }
       }
-      (latestToast.element.querySelector('.toast__close') as HTMLElement)?.focus();
+      (latestToast.element.querySelector(".toast__close") as HTMLElement)?.focus();
     };
 
-    window.addEventListener('focusin', this.globalFocusInHandler);
-    window.addEventListener('keydown', this.globalKeydownHandler);
+    window.addEventListener("focusin", this.globalFocusInHandler);
+    window.addEventListener("keydown", this.globalKeydownHandler);
 
     (window as unknown as Record<string, unknown>)[GLOBAL_LISTENERS_KEY] = {
       focusin: this.globalFocusInHandler,
@@ -305,10 +321,10 @@ export class Toast {
 
     registerCleanup(GLOBAL_LISTENERS_KEY, () => {
       if (this.globalFocusInHandler) {
-        window.removeEventListener('focusin', this.globalFocusInHandler);
+        window.removeEventListener("focusin", this.globalFocusInHandler);
       }
       if (this.globalKeydownHandler) {
-        window.removeEventListener('keydown', this.globalKeydownHandler);
+        window.removeEventListener("keydown", this.globalKeydownHandler);
       }
     });
   }
@@ -324,16 +340,16 @@ export class Toast {
    * @returns The toast's unique ID (for use with {@link Toast.dismiss})
    */
   public static show(message: string, options: ToastOptions = {}): string {
-    if (typeof document === 'undefined') {
-      console.warn('[Toast] show() called outside a browser environment; ignoring.');
-      return '';
+    if (typeof document === "undefined") {
+      console.warn("[Toast] show() called outside a browser environment; ignoring.");
+      return "";
     }
 
     this.ensureLiveRegions();
     this.setupGlobalListeners();
 
     const {
-      variant = 'info',
+      variant = "info",
       duration = DEFAULT_AUTO_DISMISS_DURATION_MS,
       id = `toast-${++this.toastIdCounter}`,
     } = options;
@@ -345,30 +361,30 @@ export class Toast {
       if (oldestToastId) this.dismissToast(oldestToastId, { immediate: true });
     }
 
-    const toastElement = document.createElement('div');
+    const toastElement = document.createElement("div");
     toastElement.className = `toast toast--${variant}`;
-    toastElement.setAttribute('role', ariaRole);
+    toastElement.setAttribute("role", ariaRole);
     toastElement.dataset.toastId = id;
 
-    const messageSpan = document.createElement('span');
-    messageSpan.className = 'toast__message';
+    const messageSpan = document.createElement("span");
+    messageSpan.className = "toast__message";
     messageSpan.textContent = message;
 
-    const closeButton = document.createElement('button');
-    closeButton.type = 'button';
-    closeButton.className = 'toast__close';
-    closeButton.setAttribute('aria-label', 'Dismiss notification');
-    closeButton.textContent = '\u00D7';
-    closeButton.addEventListener('click', () => this.dismissToast(id));
+    const closeButton = document.createElement("button");
+    closeButton.type = "button";
+    closeButton.className = "toast__close";
+    closeButton.setAttribute("aria-label", "Dismiss notification");
+    closeButton.textContent = "\u00D7";
+    closeButton.addEventListener("click", () => this.dismissToast(id));
 
     toastElement.append(messageSpan, closeButton);
-    toastElement.addEventListener('keydown', (e: Event) => {
-      if (e instanceof KeyboardEvent && e.key === 'Escape') this.dismissToast(id);
+    toastElement.addEventListener("keydown", (e: Event) => {
+      if (e instanceof KeyboardEvent && e.key === "Escape") this.dismissToast(id);
     });
 
     this.stackWrapper?.appendChild(toastElement);
 
-    announce(message, { urgent: ariaRole === 'alert' });
+    announce(message, { urgent: ariaRole === "alert" });
 
     const toastRecord: ActiveToast = {
       id,
@@ -383,10 +399,10 @@ export class Toast {
     this.activeToasts.set(id, toastRecord);
     this.scheduleToastDismissal(toastRecord);
 
-    toastElement.addEventListener('mouseenter', () => this.pauseToastTimer(toastRecord));
-    toastElement.addEventListener('mouseleave', () => this.resumeToastTimer(toastRecord));
-    toastElement.addEventListener('focusin', () => this.pauseToastTimer(toastRecord));
-    toastElement.addEventListener('focusout', () => this.resumeToastTimer(toastRecord));
+    toastElement.addEventListener("mouseenter", () => this.pauseToastTimer(toastRecord));
+    toastElement.addEventListener("mouseleave", () => this.resumeToastTimer(toastRecord));
+    toastElement.addEventListener("focusin", () => this.pauseToastTimer(toastRecord));
+    toastElement.addEventListener("focusout", () => this.resumeToastTimer(toastRecord));
 
     return id;
   }
@@ -399,7 +415,7 @@ export class Toast {
    * @returns The toast's unique ID
    */
   public static success(message: string, options?: ToastOptions): string {
-    return this.show(message, { ...options, variant: 'success' });
+    return this.show(message, { ...options, variant: "success" });
   }
 
   /**
@@ -410,7 +426,7 @@ export class Toast {
    * @returns The toast's unique ID
    */
   public static error(message: string, options?: ToastOptions): string {
-    return this.show(message, { ...options, variant: 'error' });
+    return this.show(message, { ...options, variant: "error" });
   }
 
   /**
@@ -421,7 +437,7 @@ export class Toast {
    * @returns The toast's unique ID
    */
   public static warning(message: string, options?: ToastOptions): string {
-    return this.show(message, { ...options, variant: 'warning' });
+    return this.show(message, { ...options, variant: "warning" });
   }
 
   /**
@@ -432,7 +448,7 @@ export class Toast {
    * @returns The toast's unique ID
    */
   public static info(message: string, options?: ToastOptions): string {
-    return this.show(message, { ...options, variant: 'info' });
+    return this.show(message, { ...options, variant: "info" });
   }
 
   /**

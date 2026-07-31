@@ -6,10 +6,10 @@
  * to ensure each message announces once without re-reading the entire region.
  */
 
-import { createSingleton } from './globalRegistry.js';
+import { createSingleton } from "./globalRegistry.js";
 
-const POLITE_KEY = '__a11y_announcer_polite__';
-const ASSERTIVE_KEY = '__a11y_announcer_assertive__';
+const POLITE_KEY = "__a11y_announcer_polite__";
+const ASSERTIVE_KEY = "__a11y_announcer_assertive__";
 
 /**
  * Options for the {@link announce} function.
@@ -28,17 +28,17 @@ type AnnounceOptions = {
  * @param liveType - Either 'polite' or 'assertive'
  * @returns The live region element
  */
-const createLiveRegion = (liveType: 'polite' | 'assertive'): HTMLElement => {
-  const region = document.createElement('div');
-  region.setAttribute('role', liveType === 'assertive' ? 'alert' : 'status');
-  region.setAttribute('aria-live', liveType);
-  region.setAttribute('aria-atomic', 'false');
-  region.setAttribute('aria-label', 'Notifications');
-  region.style.position = 'absolute';
-  region.style.left = '-10000px';
-  region.style.width = '1px';
-  region.style.height = '1px';
-  region.style.overflow = 'hidden';
+const createLiveRegion = (liveType: "polite" | "assertive"): HTMLElement => {
+  const region = document.createElement("div");
+  region.setAttribute("role", liveType === "assertive" ? "alert" : "status");
+  region.setAttribute("aria-live", liveType);
+  region.setAttribute("aria-atomic", "false");
+  region.setAttribute("aria-label", "Notifications");
+  region.style.position = "absolute";
+  region.style.left = "-10000px";
+  region.style.width = "1px";
+  region.style.height = "1px";
+  region.style.overflow = "hidden";
   document.body.appendChild(region);
 
   return region;
@@ -50,10 +50,7 @@ const createLiveRegion = (liveType: 'polite' | 'assertive'): HTMLElement => {
  * @returns The polite live region element
  */
 const getPoliteRegion = (): HTMLElement => {
-  return createSingleton(
-    () => createLiveRegion('polite'),
-    POLITE_KEY
-  );
+  return createSingleton(() => createLiveRegion("polite"), POLITE_KEY);
 };
 
 /**
@@ -62,10 +59,7 @@ const getPoliteRegion = (): HTMLElement => {
  * @returns The assertive live region element
  */
 const getAssertiveRegion = (): HTMLElement => {
-  return createSingleton(
-    () => createLiveRegion('assertive'),
-    ASSERTIVE_KEY
-  );
+  return createSingleton(() => createLiveRegion("assertive"), ASSERTIVE_KEY);
 };
 
 /**
@@ -79,13 +73,13 @@ const getAssertiveRegion = (): HTMLElement => {
  * @param options.urgent - Whether this is urgent (assertive region)
  */
 export const announce = (message: string, options: AnnounceOptions = {}): void => {
-  if (typeof document === 'undefined') return;
+  if (typeof document === "undefined") return;
 
   const { urgent = false } = options;
   const region = urgent ? getAssertiveRegion() : getPoliteRegion();
 
   // Clear previous content to ensure fresh announcement
-  region.textContent = '';
+  region.textContent = "";
 
   // Small delay to ensure screen reader picks up the change
   requestAnimationFrame(() => {

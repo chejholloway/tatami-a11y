@@ -9,8 +9,8 @@
  * - Respects reduced motion preference
  */
 
-import { announce } from '../shared/announcer.js';
-import { checkReducedMotion } from '../shared/reducedMotion.js';
+import { announce } from "../shared/announcer.js";
+import { checkReducedMotion } from "../shared/reducedMotion.js";
 
 /**
  * Options for configuring the {@link Combobox} component.
@@ -79,31 +79,32 @@ export class Combobox {
     this.input = options.input;
     this.listbox = options.listbox;
     this.onSelect = options.onSelect;
-    this.filter = options.filter ?? ((item, query) => item.toLowerCase().includes(query.toLowerCase()));
+    this.filter =
+      options.filter ?? ((item, query) => item.toLowerCase().includes(query.toLowerCase()));
 
     this.init();
   }
 
   private init(): void {
-    this.input.setAttribute('role', 'combobox');
-    this.input.setAttribute('aria-autocomplete', 'list');
-    this.input.setAttribute('aria-expanded', 'false');
-    this.input.setAttribute('aria-controls', this.listbox.id || 'combobox-listbox');
-    this.listbox.setAttribute('role', 'listbox');
-    this.listbox.setAttribute('aria-hidden', 'true');
+    this.input.setAttribute("role", "combobox");
+    this.input.setAttribute("aria-autocomplete", "list");
+    this.input.setAttribute("aria-expanded", "false");
+    this.input.setAttribute("aria-controls", this.listbox.id || "combobox-listbox");
+    this.listbox.setAttribute("role", "listbox");
+    this.listbox.setAttribute("aria-hidden", "true");
 
     this.options = Array.from(this.listbox.querySelectorAll('[role="option"]'));
 
     this.options.forEach((option, index) => {
-      option.setAttribute('aria-selected', 'false');
+      option.setAttribute("aria-selected", "false");
       option.dataset.index = index.toString();
-      option.dataset.value = option.textContent || '';
+      option.dataset.value = option.textContent || "";
     });
 
-    this.input.addEventListener('input', this.inputInputHandler);
-    this.input.addEventListener('keydown', this.inputKeydownHandler);
-    this.listbox.addEventListener('click', this.listboxClickHandler);
-    document.addEventListener('click', this.documentClickHandler);
+    this.input.addEventListener("input", this.inputInputHandler);
+    this.input.addEventListener("keydown", this.inputKeydownHandler);
+    this.listbox.addEventListener("click", this.listboxClickHandler);
+    document.addEventListener("click", this.documentClickHandler);
 
     this.hideListbox();
   }
@@ -121,10 +122,10 @@ export class Combobox {
 
   private filterOptions(query: string): void {
     this.options.forEach((option) => {
-      const value = option.dataset.value || option.textContent || '';
+      const value = option.dataset.value || option.textContent || "";
       const matches = this.filter(value, query);
       option.hidden = !matches;
-      option.setAttribute('aria-hidden', matches ? 'false' : 'true');
+      option.setAttribute("aria-hidden", matches ? "false" : "true");
     });
 
     const visibleOptions = this.options.filter((opt) => !opt.hidden);
@@ -136,7 +137,7 @@ export class Combobox {
 
   private handleInputKeyDown(e: KeyboardEvent): void {
     switch (e.key) {
-      case 'ArrowDown':
+      case "ArrowDown":
         e.preventDefault();
         if (!this.isOpen) {
           this.open();
@@ -144,23 +145,23 @@ export class Combobox {
           this.moveFocus(1);
         }
         break;
-      case 'ArrowUp':
+      case "ArrowUp":
         e.preventDefault();
         if (this.isOpen) {
           this.moveFocus(-1);
         }
         break;
-      case 'Enter':
+      case "Enter":
         e.preventDefault();
         if (this.isOpen && this.currentIndex >= 0) {
           this.selectOption(this.currentIndex);
         }
         break;
-      case 'Escape':
+      case "Escape":
         e.preventDefault();
         this.close();
         break;
-      case 'Tab':
+      case "Tab":
         if (this.isOpen) {
           this.close();
         }
@@ -171,7 +172,7 @@ export class Combobox {
   private handleListboxClick(e: MouseEvent): void {
     const target = e.target as HTMLElement;
     const option = target.closest('[role="option"]') as HTMLElement;
-    
+
     if (option) {
       const visibleOptions = this.options.filter((opt) => !opt.hidden);
       const visibleIndex = visibleOptions.indexOf(option);
@@ -192,24 +193,27 @@ export class Combobox {
     const visibleOptions = this.options.filter((opt) => !opt.hidden);
     if (visibleOptions.length === 0) return;
 
-    const currentVisibleIndex = visibleOptions.findIndex((opt) => opt.getAttribute('aria-selected') === 'true');
+    const currentVisibleIndex = visibleOptions.findIndex(
+      (opt) => opt.getAttribute("aria-selected") === "true",
+    );
     const newIndex = currentVisibleIndex === -1 ? 0 : currentVisibleIndex + direction;
 
-    this.currentIndex = newIndex < 0 ? visibleOptions.length - 1 : newIndex >= visibleOptions.length ? 0 : newIndex;
+    this.currentIndex =
+      newIndex < 0 ? visibleOptions.length - 1 : newIndex >= visibleOptions.length ? 0 : newIndex;
 
     const activeOption = visibleOptions[this.currentIndex];
     this.updateActiveDescendant(activeOption);
-    if (typeof activeOption.scrollIntoView === 'function') {
-      activeOption.scrollIntoView({ block: 'nearest' });
+    if (typeof activeOption.scrollIntoView === "function") {
+      activeOption.scrollIntoView({ block: "nearest" });
     }
   }
 
   private updateActiveDescendant(option: HTMLElement): void {
     this.options.forEach((opt) => {
-      opt.setAttribute('aria-selected', 'false');
+      opt.setAttribute("aria-selected", "false");
     });
-    option.setAttribute('aria-selected', 'true');
-    this.input.setAttribute('aria-activedescendant', option.id || '');
+    option.setAttribute("aria-selected", "true");
+    this.input.setAttribute("aria-activedescendant", option.id || "");
   }
 
   /**
@@ -224,7 +228,7 @@ export class Combobox {
     if (index < 0 || index >= visibleOptions.length) return;
 
     const option = visibleOptions[index];
-    const value = option.dataset.value || '';
+    const value = option.dataset.value || "";
 
     this.input.value = value;
     this.close();
@@ -243,8 +247,8 @@ export class Combobox {
     if (this.isOpen) return;
 
     this.isOpen = true;
-    this.input.setAttribute('aria-expanded', 'true');
-    this.listbox.setAttribute('aria-hidden', 'false');
+    this.input.setAttribute("aria-expanded", "true");
+    this.listbox.setAttribute("aria-hidden", "false");
     this.showListbox();
 
     const visibleOptions = this.options.filter((opt) => !opt.hidden);
@@ -261,24 +265,24 @@ export class Combobox {
     if (!this.isOpen) return;
 
     this.isOpen = false;
-    this.input.setAttribute('aria-expanded', 'false');
-    this.listbox.setAttribute('aria-hidden', 'true');
+    this.input.setAttribute("aria-expanded", "false");
+    this.listbox.setAttribute("aria-hidden", "true");
     this.hideListbox();
 
     this.currentIndex = -1;
-    this.input.setAttribute('aria-activedescendant', '');
+    this.input.setAttribute("aria-activedescendant", "");
   }
 
   private showListbox(): void {
     const prefersReducedMotion = checkReducedMotion();
-    this.listbox.style.display = 'block';
+    this.listbox.style.display = "block";
 
     if (!prefersReducedMotion) {
-      this.listbox.style.transition = 'opacity 0.2s ease';
-      this.listbox.style.opacity = '0';
+      this.listbox.style.transition = "opacity 0.2s ease";
+      this.listbox.style.opacity = "0";
 
       requestAnimationFrame(() => {
-        this.listbox.style.opacity = '1';
+        this.listbox.style.opacity = "1";
       });
     }
   }
@@ -287,14 +291,14 @@ export class Combobox {
     const prefersReducedMotion = checkReducedMotion();
 
     if (!prefersReducedMotion) {
-      this.listbox.style.opacity = '0';
+      this.listbox.style.opacity = "0";
       setTimeout(() => {
         if (!this.isOpen) {
-          this.listbox.style.display = 'none';
+          this.listbox.style.display = "none";
         }
       }, 200);
     } else {
-      this.listbox.style.display = 'none';
+      this.listbox.style.display = "none";
     }
   }
 
@@ -304,10 +308,10 @@ export class Combobox {
    * Call this when removing the combobox from the DOM to prevent memory leaks.
    */
   public destroy(): void {
-    this.input.removeEventListener('input', this.inputInputHandler);
-    this.input.removeEventListener('keydown', this.inputKeydownHandler);
-    this.listbox.removeEventListener('click', this.listboxClickHandler);
-    document.removeEventListener('click', this.documentClickHandler);
+    this.input.removeEventListener("input", this.inputInputHandler);
+    this.input.removeEventListener("keydown", this.inputKeydownHandler);
+    this.listbox.removeEventListener("click", this.listboxClickHandler);
+    document.removeEventListener("click", this.documentClickHandler);
 
     if (this.isOpen) {
       this.close();

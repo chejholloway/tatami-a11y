@@ -14,13 +14,13 @@
  */
 const getFocusableElements = (container: HTMLElement): HTMLElement[] => {
   const focusableSelectors = [
-    'a[href]',
-    'button:not([disabled])',
-    'textarea:not([disabled])',
-    'input:not([disabled])',
-    'select:not([disabled])',
+    "a[href]",
+    "button:not([disabled])",
+    "textarea:not([disabled])",
+    "input:not([disabled])",
+    "select:not([disabled])",
     '[tabindex]:not([tabindex="-1"])',
-  ].join(', ');
+  ].join(", ");
 
   return Array.from(container.querySelectorAll<HTMLElement>(focusableSelectors));
 };
@@ -32,7 +32,7 @@ const getFocusableElements = (container: HTMLElement): HTMLElement[] => {
  * @returns Object with first and last focusable elements
  */
 const getFocusBoundary = (
-  container: HTMLElement
+  container: HTMLElement,
 ): { first: HTMLElement | null; last: HTMLElement | null } => {
   const focusable = getFocusableElements(container);
 
@@ -109,12 +109,12 @@ export const activateFocusTrap = (container: HTMLElement): void => {
 
   // Set up keyboard handler
   trapState.keydownHandler = (event: KeyboardEvent) => {
-    if (event.key === 'Tab' && trapState.isActive) {
+    if (event.key === "Tab" && trapState.isActive) {
       handleTabKey(event, container);
     }
   };
 
-  container.addEventListener('keydown', trapState.keydownHandler);
+  container.addEventListener("keydown", trapState.keydownHandler);
 };
 
 /**
@@ -127,7 +127,7 @@ export const deactivateFocusTrap = (): void => {
 
   // Remove keyboard handler
   if (trapState.container && trapState.keydownHandler) {
-    trapState.container.removeEventListener('keydown', trapState.keydownHandler);
+    trapState.container.removeEventListener("keydown", trapState.keydownHandler);
   }
 
   // Restore focus to the element that had it before trapping

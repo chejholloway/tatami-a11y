@@ -8,7 +8,7 @@
  * - Respects reduced motion preference
  */
 
-import { checkReducedMotion } from '../shared/reducedMotion.js';
+import { checkReducedMotion } from "../shared/reducedMotion.js";
 
 /**
  * Options for configuring the {@link Disclosure} component.
@@ -70,11 +70,11 @@ export class Disclosure {
     }
 
     // Set up ARIA attributes
-    this.trigger.setAttribute('aria-expanded', 'false');
-    this.trigger.setAttribute('aria-controls', this.content.id);
-    
+    this.trigger.setAttribute("aria-expanded", "false");
+    this.trigger.setAttribute("aria-controls", this.content.id);
+
     // Attach event listeners
-    this.trigger.addEventListener('click', this.triggerClickHandler);
+    this.trigger.addEventListener("click", this.triggerClickHandler);
 
     this.hideContent();
   }
@@ -97,7 +97,7 @@ export class Disclosure {
     if (this.isExpanded) return;
     this.isExpanded = true;
 
-    this.trigger.setAttribute('aria-expanded', 'true');
+    this.trigger.setAttribute("aria-expanded", "true");
     this.showContent();
 
     this.onToggle?.(true);
@@ -110,7 +110,7 @@ export class Disclosure {
     if (!this.isExpanded) return;
     this.isExpanded = false;
 
-    this.trigger.setAttribute('aria-expanded', 'false');
+    this.trigger.setAttribute("aria-expanded", "false");
     this.hideContent();
 
     this.onToggle?.(false);
@@ -118,16 +118,16 @@ export class Disclosure {
 
   private showContent(): void {
     const prefersReducedMotion = checkReducedMotion();
-    this.content.style.display = 'block';
+    this.content.style.display = "block";
 
     if (!prefersReducedMotion) {
-      this.content.style.transition = 'opacity 0.2s ease, max-height 0.2s ease';
-      this.content.style.opacity = '0';
-      this.content.style.maxHeight = '0';
+      this.content.style.transition = "opacity 0.2s ease, max-height 0.2s ease";
+      this.content.style.opacity = "0";
+      this.content.style.maxHeight = "0";
 
       requestAnimationFrame(() => {
-        this.content.style.opacity = '1';
-        this.content.style.maxHeight = '1000px'; // Arbitrary max-height for simple transition
+        this.content.style.opacity = "1";
+        this.content.style.maxHeight = "1000px"; // Arbitrary max-height for simple transition
       });
     }
   }
@@ -136,16 +136,16 @@ export class Disclosure {
     const prefersReducedMotion = checkReducedMotion();
 
     if (!prefersReducedMotion) {
-      this.content.style.opacity = '0';
-      this.content.style.maxHeight = '0';
+      this.content.style.opacity = "0";
+      this.content.style.maxHeight = "0";
 
       setTimeout(() => {
         if (!this.isExpanded) {
-          this.content.style.display = 'none';
+          this.content.style.display = "none";
         }
       }, 200);
     } else {
-      this.content.style.display = 'none';
+      this.content.style.display = "none";
     }
   }
 
@@ -153,8 +153,8 @@ export class Disclosure {
    * Remove all event listeners and clean up the disclosure.
    */
   public destroy(): void {
-    this.trigger.removeEventListener('click', this.triggerClickHandler);
-    
+    this.trigger.removeEventListener("click", this.triggerClickHandler);
+
     if (this.isExpanded) {
       this.collapse();
     }
