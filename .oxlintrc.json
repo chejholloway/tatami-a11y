@@ -118,6 +118,14 @@
   "overrides": [
     {
       "files": [
+        "**/*.cjs"
+      ],
+      "rules": {
+        "typescript/no-require-imports": "off"
+      }
+    },
+    {
+      "files": [
         "**/*.ts",
         "**/*.tsx",
         "**/*.mts",
