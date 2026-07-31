@@ -26,6 +26,12 @@ Most projects rebuild these from scratch for each component. The tenth reimpleme
 
 tatami-a11y extracts these shared primitives into a single, tested foundation, then builds fully accessible components on top of them. Every component in the library relies on the same battle-tested primitives, so a bug fixed in one is fixed in all.
 
+<img
+  src="assets/problem.png"
+  alt="Diagram comparing reimplementing accessibility per component vs. building on shared tested primitives."
+  style="display:block; margin:0 auto; width:100%; max-width:900px; height:auto;"
+/>
+
 ## Why "tatami"?
 
 A tatami is a traditional Japanese floor mat — a standardized, interchangeable module that serves as the foundation for an entire room. You don't notice the tatami, but everything stable is built on top of it. Same idea here: these primitives are the foundation; the components are the room you actually live in.
