@@ -1,8 +1,25 @@
 /** @type {import('@docusaurus/types').Config} */
+const fs = require('fs');
+const path = require('path');
+
+// Load environment variables from .env file
+const envPath = path.join(__dirname, '.env');
+if (fs.existsSync(envPath)) {
+  const envContent = fs.readFileSync(envPath, 'utf-8');
+  envContent.split('\n').forEach(line => {
+    const [key, ...valueParts] = line.split('=');
+    if (key && !key.startsWith('#') && valueParts.length > 0) {
+      process.env[key.trim()] = valueParts.join('=').trim();
+    }
+  });
+}
+
+const DOCS_URL = process.env.DOCS_URL || 'https://tatami-a11y-docs.surge.sh';
+
 module.exports = {
   title: 'tatami-a11y',
   tagline: 'Framework-agnostic, accessibility-first UI primitives for vanilla JavaScript',
-  url: 'https://tatami-a11y-demo.surge.sh',
+  url: DOCS_URL,
   baseUrl: '/',
   onBrokenLinks: 'warn',
   markdown: {
@@ -19,7 +36,7 @@ module.exports = {
       'classic',
       {
         docs: {
-          sidebarPath: require.resolve('./sidebars.js'),
+          sidebarPath: require.resolve('./sidebars.ts'),
           editUrl: 'https://github.com/chejholloway/tatani-a11y/edit/main/',
           routeBasePath: '/',
           exclude: ['**/superpowers/**'],

@@ -9,6 +9,22 @@ const rootDir = path.join(__dirname, '..');
 
 const target = process.argv[2] || 'demo';
 
+// Load environment variables from .env file
+const envPath = path.join(rootDir, '.env');
+if (fs.existsSync(envPath)) {
+  const envContent = fs.readFileSync(envPath, 'utf-8');
+  envContent.split('\n').forEach(line => {
+    const [key, ...valueParts] = line.split('=');
+    if (key && !key.startsWith('#') && valueParts.length > 0) {
+      process.env[key.trim()] = valueParts.join('=').trim();
+    }
+  });
+}
+
+const SURGE_DEMO_URL = process.env.SURGE_DEMO_URL || 'tatami-a11y-demo.surge.sh';
+const SURGE_STORYBOOK_URL = process.env.SURGE_STORYBOOK_URL || 'tatami-a11y-storybook.surge.sh';
+const SURGE_DOCS_URL = process.env.SURGE_DOCS_URL || 'tatami-a11y-docs.surge.sh';
+
 console.log(`Building for target: ${target}`);
 
 if (target === 'storybook') {
@@ -16,13 +32,13 @@ if (target === 'storybook') {
   console.log('Building Storybook...');
   execSync('pnpm run build-storybook', { cwd: rootDir, stdio: 'inherit' });
   console.log('✓ Storybook built successfully');
-  console.log('Deploy to: surge storybook-static tatami-a11y-storybook.surge.sh');
+  console.log(`Deploy to: surge storybook-static ${SURGE_STORYBOOK_URL}`);
 } else if (target === 'docs') {
   // Build API documentation (TypeDoc only, not Docusaurus)
   console.log('Building API documentation...');
   execSync('pnpm run doc:api', { cwd: rootDir, stdio: 'inherit' });
   console.log('✓ API documentation built successfully');
-  console.log('Deploy to: surge docs/api tatami-a11y-docs.surge.sh');
+  console.log(`Deploy to: surge docs/api ${SURGE_DOCS_URL}`);
 } else {
   // Build demo (original behavior)
   const surgeDir = path.join(rootDir, 'surge');
@@ -77,5 +93,5 @@ if (target === 'storybook') {
   }
 
   console.log('✓ Surge folder ready for deployment');
-  console.log('Deploy to: surge surge tatami-a11y-demo.surge.sh');
+  console.log(`Deploy to: surge surge ${SURGE_DEMO_URL}`);
 }
