@@ -103,7 +103,12 @@ popFocusStack(); // focus returns to triggerElement, or the nearest valid fallba
 -   **Screen reader:** every state change is announced via live regions
 
 
-markdown [](...)[CI](https://img.shields.io/github/actions/workflow/status/chejholloway/tatami-a11y/ci.yml) [](https://www.npmjs.com/package/tatami-a11y)[npm version](https://img.shields.io/npm/v/tatami-a11y) [](https://opensource.org/licenses/MIT)[License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg) [](https://github.com/chejholloway/tatami-a11y)[Tests: 732 passing](https://img.shields.io/badge/tests-732%20passing-brightgreen) [](https://oxc.rs)[Toolchain: Rust (oxlint/oxfmt)](https://img.shields.io/badge/toolchain-Rust%20\(oxlint%2Foxfmt\)-orange)
+[![CI](https://img.shields.io/github/actions/workflow/status/chejholloway/tatami-a11y/ci.yml)](https://github.com/chejholloway/tatami-a11y/actions/workflows/ci.yml)
+[![npm version](https://img.shields.io/npm/v/tatami-a11y)](https://www.npmjs.com/package/tatami-a11y)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Tests: 732 passing](https://img.shields.io/badge/tests-732%20passing-brightgreen)](https://github.com/chejholloway/tatami-a11y/actions/workflows/ci.yml)
+[![Toolchain: Rust (oxlint/oxfmt)](https://img.shields.io/badge/toolchain-Rust%20\(oxlint%2Foxfmt\)-orange)](https://oxc.rs)
+
 
 ## Development
 
