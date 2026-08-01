@@ -37,6 +37,18 @@ A tatami is a traditional Japanese floor mat, a standardized, interchangeable mo
 
 Radix UI and React Aria solve this well, for React. Headless UI covers Vue and React. If you're not in one of those ecosystems, or you're maintaining a vanilla-JS codebase, there isn't a serious, actively-maintained equivalent. tatami-a11y is built to be that: no virtual DOM, no framework runtime, works identically whether you call it from a hand-rolled component, a Vue composable, a Svelte `use:action`, or a plain `<script>` tag.
 
+### Verified Framework Interoperability
+
+The framework-agnostic claim has been validated with automated Playwright tests across three separate Vite scaffolds, each installing `tatami-a11y` from the published npm package exactly as a real consumer would. Two components were tested in each framework — Toast (appends to `document.body`, outside any framework-managed tree) and Dropdown (attaches behavior to a DOM node the framework rendered). Both the naive usage pattern and a framework-idiomatic wrapper pattern were tested, and each was stress-tested by forcing the host framework to re-render the surrounding area while the library's DOM additions were present.
+
+| Framework | Toast (naive) | Toast (wrapper) | Dropdown (naive) | Dropdown (wrapper) |
+| --------- | ------------- | --------------- | ---------------- | ------------------ |
+| **React** | ✅ Pass        | ✅ Pass          | ✅ Pass           | ✅ Pass             |
+| **Vue**   | ✅ Pass        | ✅ Pass          | ✅ Pass           | ✅ Pass             |
+| **Svelte**| ✅ Pass        | ✅ Pass          | ✅ Pass           | ✅ Pass             |
+
+All 12 tests passed with zero glue code required for Toast. Dropdown works naively in all three frameworks and also passes with a wrapper (`useRef`+`useEffect` in React, `ref`+`onMounted`/`onUnmounted` in Vue, `use:action` in Svelte). Full findings and raw test output live in [`framework-interop-check/`](./framework-interop-check/).
+
 ## Quick Start
 
 ```bash

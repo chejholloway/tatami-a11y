@@ -1,0 +1,20 @@
+{
+  "react": {
+    "toastNaive": "PASS: Toast survived re-render (naive)",
+    "toastWrapper": "PASS: Toast survived re-render (wrapper)",
+    "dropdownNaive": "PASS: Dropdown works after re-render (naive)",
+    "dropdownWrapper": "PASS: Dropdown works after re-render (wrapper)"
+  },
+  "vue": {
+    "toastNaive": "PASS: Toast survived re-render (naive)",
+    "toastWrapper": "PASS: Toast survived re-render (wrapper)",
+    "dropdownNaive": "PASS: Dropdown works after re-render (naive)",
+    "dropdownWrapper": "PASS: Dropdown works after re-render (wrapper)"
+  },
+  "svelte": {
+    "toastNaive": "PASS: Toast survived re-render (naive)",
+    "toastWrapper": "PASS: Toast survived re-render (wrapper)",
+    "dropdownNaive": "PASS: Dropdown works after re-render (naive)",
+    "dropdownWrapper": "PASS: Dropdown works after re-render (wrapper)"
+  }
+}

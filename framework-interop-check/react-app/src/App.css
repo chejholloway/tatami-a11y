@@ -1,0 +1,32 @@
+.app {
+  font-family: system-ui, sans-serif;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.test-section {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.test-section h3 {
+  margin-top: 0;
+}
+
+.test-section button {
+  margin-right: 8px;
+  margin-bottom: 8px;
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
+.result {
+  font-weight: bold;
+  margin-top: 8px;
+  padding: 8px;
+  border-radius: 4px;
+  background: #f5f5f5;
+}
