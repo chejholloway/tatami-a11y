@@ -1,5 +1,6 @@
 <script>
   import { Toast, Dropdown } from 'tatami-a11y';
+  import { tatami } from '../../adapters/tatami.js';
 
   // --- Toast Naive ---
   let toastCount = $state(0);
@@ -85,36 +86,33 @@
     }, 100);
   }
 
-  // --- Dropdown Wrapper (use: action) ---
+  // --- Dropdown Wrapper (use: action backed by tatami()) ---
   let dropdownWrapCount = $state(0);
   let dropdownWrapResult = $state('Idle');
   let triggerWrapEl = $state(null);
   let menuWrapEl = $state(null);
-  let dropdownWrap = null;
+  let dropdownWrapCtrl = null;
 
+  // Svelte use: action — tatami() replaces the inline new Dropdown() boilerplate.
+  // Works for any tatami-a11y component: same pattern, different class name.
   function dropdownAction(node) {
-    // menuWrapEl may be null at action mount time because bind:this on the
-    // menu div resolves in the same render pass. Schedule init for next tick.
     let initId = setTimeout(() => {
       if (node && menuWrapEl) {
-        dropdownWrap = new Dropdown({
-          trigger: node,
-          menu: menuWrapEl,
-        });
+        dropdownWrapCtrl = tatami(Dropdown, { trigger: node, menu: menuWrapEl });
       }
     }, 0);
     return {
       destroy() {
         clearTimeout(initId);
-        dropdownWrap?.destroy();
-        dropdownWrap = null;
+        dropdownWrapCtrl?.destroy();
+        dropdownWrapCtrl = null;
       },
     };
   }
 
   function handleOpenDropdownWrapper() {
     try {
-      dropdownWrap?.open();
+      dropdownWrapCtrl?.open();
       dropdownWrapResult = 'Dropdown opened';
     } catch (e) {
       dropdownWrapResult = 'ERROR on open: ' + e.message;
@@ -125,9 +123,9 @@
     dropdownWrapCount++;
     setTimeout(() => {
       try {
-        dropdownWrap?.open();
+        dropdownWrapCtrl?.open();
         if (menuWrapEl && menuWrapEl.getAttribute('aria-hidden') === 'false') {
-          dropdownWrapResult = 'PASS: Dropdown works after re-render (wrapper)';
+          dropdownWrapResult = 'PASS: Dropdown works after re-render (tatami() wrapper)';
         } else {
           dropdownWrapResult = 'FAIL: Dropdown menu not openable after re-render';
         }
@@ -169,7 +167,7 @@
   </div>
 
   <div class="test-section">
-    <h3>Dropdown — Wrapper (use: action)</h3>
+    <h3>Dropdown — Wrapper (mount() utility via use: action)</h3>
     <button use:dropdownAction={menuWrapEl} bind:this={triggerWrapEl}>Trigger</button>
     <div bind:this={menuWrapEl}>
       <div role="menuitem">Item 1</div>

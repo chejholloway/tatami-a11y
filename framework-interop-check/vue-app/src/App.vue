@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
 import { Toast, Dropdown } from 'tatami-a11y';
+import { tatami } from '../../adapters/tatami.js';
 
 // --- Toast Naive ---
 const toastCount = ref(0);
@@ -92,25 +93,25 @@ const dropdownWrapCount = ref(0);
 const dropdownWrapResult = ref('Idle');
 const triggerWrapRef = ref(null);
 const menuWrapRef = ref(null);
-let dropdownWrap = null;
+let dropdownWrapCtrl = null;
 
 onMounted(() => {
-  if (triggerWrapRef.value && menuWrapRef.value) {
-    dropdownWrap = new Dropdown({
-      trigger: triggerWrapRef.value,
-      menu: menuWrapRef.value,
-    });
-  }
+  // tatami() replaces the manual new Dropdown() + destroy() boilerplate.
+  // Works for any tatami-a11y component — same three lines every time.
+  dropdownWrapCtrl = tatami(Dropdown, {
+    trigger: triggerWrapRef.value,
+    menu: menuWrapRef.value,
+  });
 });
 
 onUnmounted(() => {
-  dropdownWrap?.destroy();
-  dropdownWrap = null;
+  dropdownWrapCtrl?.destroy();
+  dropdownWrapCtrl = null;
 });
 
 function handleOpenDropdownWrapper() {
   try {
-    dropdownWrap?.open();
+    dropdownWrapCtrl?.open();
     dropdownWrapResult.value = 'Dropdown opened';
   } catch (e) {
     dropdownWrapResult.value = 'ERROR on open: ' + e.message;
@@ -121,10 +122,10 @@ function handleRerenderDropdownWrapper() {
   dropdownWrapCount.value++;
   setTimeout(() => {
     try {
-      dropdownWrap?.open();
+      dropdownWrapCtrl?.open();
       const menu = menuWrapRef.value;
       if (menu && menu.getAttribute('aria-hidden') === 'false') {
-        dropdownWrapResult.value = 'PASS: Dropdown works after re-render (wrapper)';
+        dropdownWrapResult.value = 'PASS: Dropdown works after re-render (tatami() wrapper)';
       } else {
         dropdownWrapResult.value = 'FAIL: Dropdown menu not openable after re-render';
       }
@@ -167,7 +168,7 @@ function handleRerenderDropdownWrapper() {
     </div>
 
     <div class="test-section">
-      <h3>Dropdown — Wrapper (ref + onMounted/onUnmounted)</h3>
+      <h3>Dropdown — Wrapper (mount() utility)</h3>
       <button ref="triggerWrapRef">Trigger</button>
       <div ref="menuWrapRef">
         <div role="menuitem">Item 1</div>

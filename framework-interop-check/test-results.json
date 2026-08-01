@@ -3,18 +3,18 @@
     "toastNaive": "PASS: Toast survived re-render (naive)",
     "toastWrapper": "PASS: Toast survived re-render (wrapper)",
     "dropdownNaive": "PASS: Dropdown works after re-render (naive)",
-    "dropdownWrapper": "PASS: Dropdown works after re-render (wrapper)"
+    "dropdownWrapper": "PASS: Dropdown works after re-render (mount() wrapper)"
   },
   "vue": {
     "toastNaive": "PASS: Toast survived re-render (naive)",
     "toastWrapper": "PASS: Toast survived re-render (wrapper)",
     "dropdownNaive": "PASS: Dropdown works after re-render (naive)",
-    "dropdownWrapper": "PASS: Dropdown works after re-render (wrapper)"
+    "dropdownWrapper": "PASS: Dropdown works after re-render (mount() wrapper)"
   },
   "svelte": {
     "toastNaive": "PASS: Toast survived re-render (naive)",
     "toastWrapper": "PASS: Toast survived re-render (wrapper)",
     "dropdownNaive": "PASS: Dropdown works after re-render (naive)",
-    "dropdownWrapper": "PASS: Dropdown works after re-render (wrapper)"
+    "dropdownWrapper": "PASS: Dropdown works after re-render (mount() wrapper)"
   }
 }
