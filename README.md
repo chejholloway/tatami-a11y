@@ -1,5 +1,11 @@
 # tatami-a11y
 
+[![CI](https://img.shields.io/github/actions/workflow/status/chejholloway/tatami-a11y/ci.yml)](https://github.com/chejholloway/tatami-a11y/actions/workflows/ci.yml)
+[![npm version](https://img.shields.io/npm/v/tatami-a11y)](https://www.npmjs.com/package/tatami-a11y)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Tests: 732 passing](https://img.shields.io/badge/tests-732%20passing-brightgreen)](https://github.com/chejholloway/tatami-a11y/actions/workflows/ci.yml)
+[![Toolchain: Rust (oxlint/oxfmt)](https://img.shields.io/badge/toolchain-Rust%20\(oxlint%2Foxfmt\)-orange)](https://oxc.rs)
+
 <!-- keep your existing badge line here exactly as it is: CI, npm version, license, tested with axe-core, WCAG AA, vitest -->
 
 Framework-agnostic, accessibility-first UI primitives and components for vanilla JavaScript.
@@ -101,14 +107,6 @@ popFocusStack(); // focus returns to triggerElement, or the nearest valid fallba
 -   **Reduced motion:** every animation respects `prefers-reduced-motion`
 -   **Keyboard navigation:** every interactive element is fully operable by keyboard
 -   **Screen reader:** every state change is announced via live regions
-
-
-[![CI](https://img.shields.io/github/actions/workflow/status/chejholloway/tatami-a11y/ci.yml)](https://github.com/chejholloway/tatami-a11y/actions/workflows/ci.yml)
-[![npm version](https://img.shields.io/npm/v/tatami-a11y)](https://www.npmjs.com/package/tatami-a11y)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Tests: 732 passing](https://img.shields.io/badge/tests-732%20passing-brightgreen)](https://github.com/chejholloway/tatami-a11y/actions/workflows/ci.yml)
-[![Toolchain: Rust (oxlint/oxfmt)](https://img.shields.io/badge/toolchain-Rust%20\(oxlint%2Foxfmt\)-orange)](https://oxc.rs)
-
 
 ## Development
 
