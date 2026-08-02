@@ -24,6 +24,10 @@ Framework-agnostic, accessibility-first UI primitives and components for vanilla
 | 🇯🇵 日本語 (Japanese) | [README_jp.md](./README_jp.md) |
 | 🇰🇷 한국어 (Korean) | [README_kr.md](./README_kr.md) |
 
+### 🙏🏽 Translation Credits
+
+A special thanks to [Mark Mind](https://www.markmind.dev/) for making these translations possible.
+
 ## The Problem
 
 Every accessible interactive component needs the same hard, easy-to-get-wrong infrastructure:
