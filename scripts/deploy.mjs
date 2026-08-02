@@ -19,22 +19,45 @@ if (fs.existsSync(envPath)) {
   });
 }
 
-const SURGE_DEMO_URL = process.env.SURGE_DEMO_URL || "tatami-a11y-demo.surge.sh";
-const SURGE_STORYBOOK_URL = process.env.SURGE_STORYBOOK_URL || "tatami-a11y-storybook.surge.sh";
-const SURGE_DOCS_URL = process.env.SURGE_DOCS_URL || "tatami-a11y-docs.surge.sh";
+/**
+ * Resolve a Surge deploy URL for a target.
+ *
+ * This script actually runs `surge`, so an unset env var is a hard failure:
+ * falling back to a hardcoded URL here would silently push a deploy toward a
+ * domain the current user may not own. Throw loudly instead, naming the exact
+ * .env variable to set and what it's for.
+ */
+function requireSurgeUrl(envVar, label) {
+  const url = process.env[envVar];
+  if (!url) {
+    throw new Error(
+      `${label} deploy URL is not set. Add ${envVar} to your .env file ` +
+        `(see .env.example), e.g. ${envVar}=https://your-project-name.surge.sh`,
+    );
+  }
+  return url;
+}
 
 const target = process.argv[2] || "demo";
 
 if (target === "storybook") {
-  console.log(`Deploying storybook to ${SURGE_STORYBOOK_URL}...`);
-  execSync(`surge storybook-static ${SURGE_STORYBOOK_URL}`, { cwd: rootDir, stdio: "inherit" });
+  const url = requireSurgeUrl("SURGE_STORYBOOK_URL", "Storybook");
+  console.log(`Deploying storybook to ${url}...`);
+  execSync(`surge storybook-static ${url}`, { cwd: rootDir, stdio: "inherit" });
   console.log("✓ Storybook deployed successfully");
 } else if (target === "docs") {
-  console.log(`Deploying docs to ${SURGE_DOCS_URL}...`);
-  execSync(`surge docs/api ${SURGE_DOCS_URL}`, { cwd: rootDir, stdio: "inherit" });
+  const url = requireSurgeUrl("SURGE_DOCS_URL", "Docs");
+  console.log(`Deploying docs to ${url}...`);
+  execSync(`surge docs/api ${url}`, { cwd: rootDir, stdio: "inherit" });
   console.log("✓ Docs deployed successfully");
+} else if (target === "astro") {
+  const url = requireSurgeUrl("SURGE_ASTRO_URL", "Astro demo");
+  console.log(`Deploying astro demo to ${url}...`);
+  execSync(`surge astro-demo/dist ${url}`, { cwd: rootDir, stdio: "inherit" });
+  console.log("✓ Astro demo deployed successfully");
 } else {
-  console.log(`Deploying demo to ${SURGE_DEMO_URL}...`);
-  execSync(`surge surge ${SURGE_DEMO_URL}`, { cwd: rootDir, stdio: "inherit" });
+  const url = requireSurgeUrl("SURGE_DEMO_URL", "Demo");
+  console.log(`Deploying demo to ${url}...`);
+  execSync(`surge surge ${url}`, { cwd: rootDir, stdio: "inherit" });
   console.log("✓ Demo deployed successfully");
 }

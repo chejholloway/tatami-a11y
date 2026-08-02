@@ -6,8 +6,6 @@
 [![Tests: 732 passing](https://img.shields.io/badge/tests-732%20passing-brightgreen)](https://github.com/chejholloway/tatami-a11y/actions/workflows/ci.yml)
 [![Toolchain: Rust (oxlint/oxfmt)](https://img.shields.io/badge/toolchain-Rust%20\(oxlint%2Foxfmt\)-orange)](https://oxc.rs)
 
-<!-- keep your existing badge line here exactly as it is: CI, npm version, license, tested with axe-core, WCAG AA, vitest -->
-
 Framework-agnostic, accessibility-first UI primitives and components for vanilla JavaScript.
 
 **16 components, 6 shared primitives, 742 unit tests, 16 browser-level Storybook integration tests with a11y checks, zero runtime dependencies**, all implementing WAI-ARIA authoring practices with verified WCAG 2.2 AA compliance.
@@ -53,7 +51,7 @@ All 12 tests passed with zero glue code required for Toast. Dropdown works naive
 
 ### `tatami()` — the lifecycle utility
 
-The wrapper tests exposed a repeating pattern: every framework needs the same three things from any imperative DOM library — initialise once the DOM is ready, hand it references to framework-managed elements, clean up when those elements leave. The boilerplate for that is identical across React, Vue, and Svelte, just in different syntax.
+The wrapper tests exposed a repeating pattern: every framework needs the same three things from any imperative DOM library — initialise once the DOM is ready, hand it references to framework-managed elements, clean up when those elements leave. The boilerplate for that is identical across frameworks, just in different syntax.
 
 `tatami()` is a single, framework-agnostic utility that handles that handshake for all 16 components. It is not a React version of the library, not a Vue version — one function, no framework imports, works anywhere.
 
@@ -78,11 +76,31 @@ export function dropdown(node, { menu }) {
 // Plain JS, no framework at all
 const ctrl = tatami(Modal, { trigger: btn, modal: dialog });
 openBtn.addEventListener('click', () => ctrl.open());
+
+// Next.js App Router — Client Component required ('use client' at the
+// top of the file), then the same useEffect pattern as plain React
+'use client';
+useEffect(() => {
+  const ctrl = tatami(Dropdown, { trigger: triggerRef.current, menu: menuRef.current });
+  return () => ctrl.destroy();
+}, []);
+
+// Nuxt — same onMounted/onUnmounted pattern as Vue, guarded with
+// import.meta.client for extra safety in universal-rendering setups
+let ctrl;
+onMounted(() => {
+  if (import.meta.client) {
+    ctrl = tatami(Accordion, { container: containerRef.value });
+  }
+});
+onUnmounted(() => ctrl?.destroy());
 ```
 
 `tatami()` returns a controller with `destroy()` and forwards every public method the instantiated component actually has (derived at runtime via reflection — no hardcoded method list). In development mode, calling a forwarded method after `destroy()` or calling a method the component doesn't have both produce a `console.warn` with the component name and method name. The framework only needs to know two things: call `tatami()` when the DOM is ready, call `ctrl.destroy()` on cleanup. Everything else is handled by the component itself.
 
 `Toast` is handled as a special case: it uses a static-only API (`Toast.show()`, `Toast.configure()`, etc.) rather than instances, and `tatami()` detects this automatically and forwards the static methods directly.
+
+> **On the Next.js and Nuxt examples above:** these are standard, current, documented lifecycle patterns for each framework, but unlike React, Vue, and Svelte in the verified table above, they haven't been run through the same automated cross-framework harness (a real scaffolded app, forced re-renders, Playwright). Treat them as correct guidance, not yet as independently verified against this library the way the three frameworks above were.
 
 ### Development-mode warnings
 
@@ -131,7 +149,7 @@ popFocusStack(); // focus returns to triggerElement, or the nearest valid fallba
 
 | Adapter | Description |
 | ------- | ----------- |
-| `tatami()` | Framework-agnostic lifecycle utility that instantiates any component, forwards public methods, and handles cleanup. Works from React `useEffect`, Vue `onMounted`/`onUnmounted`, Svelte `use:action`, or plain `<script>` tags. |
+| `tatami()` | Framework-agnostic lifecycle utility that instantiates any component, forwards public methods, and handles cleanup. Works from React `useEffect`, Vue/Nuxt `onMounted`/`onUnmounted`, Svelte `use:action`, or plain `<script>` tags. |
 
 ### Shared Primitives
 
@@ -176,7 +194,6 @@ popFocusStack(); // focus returns to triggerElement, or the nearest valid fallba
 -   **Keyboard navigation:** every interactive element is fully operable by keyboard
 -   **Screen reader:** every state change is announced via live regions
 
-
 ## Development
 
 ```bash
@@ -191,7 +208,7 @@ pnpm run format             # Rust-based formatter (oxfmt, 35× faster than Pret
 pnpm run doc                # Build API documentation
 ```
 
-### Dev Toolchain 🛠️
+### Dev Toolchain
 
 | Tool | Stack | Speed Gain |
 | --- | --- | --- |
@@ -215,7 +232,25 @@ pnpm run deploy:docs        # Build and deploy API docs to Surge
 
 ## Browser Support
 
-Targets modern browsers (ES2020): Chrome 80+, Firefox 80+, Safari 14.1+, Edge 80+. Requires DOM APIs, not designed for server-side rendering.
+Targets modern browsers (ES2020): Chrome 80+, Firefox 80+, Safari 14.1+, Edge 80+. Requires DOM APIs.
+
+**Safe to import in a server-side rendering context.** Every DOM access in `src/components/` and `src/shared/` lives inside a function or method body — nothing reads `document`, `window`, `navigator`, or any other browser-only global at module scope, so nothing executes at import time beyond declarations. Verified by building the package and importing every entry point in a bare Node process with no DOM shims of any kind. CJS (the `.js` files — this package has no `"type": "module"` field, so `.js` is the `require` build and `.mjs` is the `import` build, per the `exports` map):
+
+```bash
+node -e "require('./dist/index.js')"
+node -e "require('./dist/adapters/tatami.js')"
+```
+
+Both succeed with no errors. The ESM builds, the same way:
+
+```bash
+node --input-type=module -e "import('./dist/index.mjs')"
+node --input-type=module -e "import('./dist/adapters/tatami.mjs')"
+```
+
+Both succeed with no errors. The README's code examples use `import` syntax because that's how consumers are expected to use the package — the `exports` map routes those `import`s to the `.mjs` build and any `require()` to the `.js` build.
+
+Importing is safe, but *using* the components still requires a real DOM. The standard lifecycle-hook pattern applies, exactly as it does in the already-verified client-only React, Vue, and Svelte integrations: `useEffect` for React/Next.js, `onMounted` for Vue/Nuxt.
 
 ## License
 

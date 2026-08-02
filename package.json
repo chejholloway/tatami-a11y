@@ -46,6 +46,7 @@
     "ci": "pnpm run lint && pnpm run format && pnpm run test:storybook && pnpm run test && pnpm run build",
     "deploy:docs": "node scripts/build-surge.mjs docs && node scripts/deploy.mjs docs",
     "deploy:storybook": "node scripts/build-surge.mjs storybook && node scripts/deploy.mjs storybook",
+    "deploy:astro": "node scripts/build-surge.mjs astro && node scripts/deploy.mjs astro",
     "deploy": "node scripts/deploy.mjs",
     "dev": "tsup src/index.ts --format esm,cjs --dts --watch --tsconfig config/tsconfig.json",
     "doc:api": "typedoc --out docs/api src/index.ts --tsconfig config/tsconfig.json --hideGenerator --disableSources --excludeExternals",

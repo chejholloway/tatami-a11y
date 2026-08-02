@@ -21,26 +21,54 @@ if (fs.existsSync(envPath)) {
   });
 }
 
-const SURGE_DEMO_URL = process.env.SURGE_DEMO_URL || "tatami-a11y-demo.surge.sh";
-const SURGE_STORYBOOK_URL = process.env.SURGE_STORYBOOK_URL || "tatami-a11y-storybook.surge.sh";
-const SURGE_DOCS_URL = process.env.SURGE_DOCS_URL || "tatami-a11y-docs.surge.sh";
+const PLACEHOLDER_URL = "https://your-project-name.surge.sh";
+
+/**
+ * Resolve a Surge deploy URL for a build target.
+ *
+ * This script runs in CI via `pnpm run build` where no .env exists, so it
+ * must not fail when an env var is missing. Instead it falls back to an
+ * obviously generic placeholder that would visibly fail if someone tried to
+ * deploy with it unchanged — never a real, maintainer-owned subdomain.
+ */
+function resolveSurgeUrl(envVar, label) {
+  const url = process.env[envVar];
+  if (!url) {
+    console.warn(
+      `⚠ ${label} URL (${envVar}) not set — using placeholder ${PLACEHOLDER_URL}. ` +
+        `Set ${envVar} in .env (see .env.example) before deploying.`,
+    );
+    return PLACEHOLDER_URL;
+  }
+  return url;
+}
 
 console.log(`Building for target: ${target}`);
 
 if (target === "storybook") {
   // Build Storybook
+  const url = resolveSurgeUrl("SURGE_STORYBOOK_URL", "Storybook");
   console.log("Building Storybook...");
   execSync("pnpm run build-storybook", { cwd: rootDir, stdio: "inherit" });
   console.log("✓ Storybook built successfully");
-  console.log(`Deploy to: surge storybook-static ${SURGE_STORYBOOK_URL}`);
+  console.log(`Deploy to: surge storybook-static ${url}`);
 } else if (target === "docs") {
   // Build API documentation (TypeDoc only, not Docusaurus)
+  const url = resolveSurgeUrl("SURGE_DOCS_URL", "API docs");
   console.log("Building API documentation...");
   execSync("pnpm run doc:api", { cwd: rootDir, stdio: "inherit" });
   console.log("✓ API documentation built successfully");
-  console.log(`Deploy to: surge docs/api ${SURGE_DOCS_URL}`);
+  console.log(`Deploy to: surge docs/api ${url}`);
+} else if (target === "astro") {
+  // Build the Astro demo (islands page exercising all four framework paths)
+  const url = resolveSurgeUrl("SURGE_ASTRO_URL", "Astro demo");
+  console.log("Building Astro demo...");
+  execSync("pnpm run build", { cwd: path.join(rootDir, "astro-demo"), stdio: "inherit" });
+  console.log("✓ Astro demo built successfully");
+  console.log(`Deploy to: surge astro-demo/dist ${url}`);
 } else {
   // Build demo (original behavior)
+  const url = resolveSurgeUrl("SURGE_DEMO_URL", "Demo");
   const surgeDir = path.join(rootDir, "surge");
   const distDir = path.join(rootDir, "dist");
   const demoDir = path.join(rootDir, "demo");
@@ -93,5 +121,5 @@ if (target === "storybook") {
   }
 
   console.log("✓ Surge folder ready for deployment");
-  console.log(`Deploy to: surge surge ${SURGE_DEMO_URL}`);
+  console.log(`Deploy to: surge surge ${url}`);
 }
