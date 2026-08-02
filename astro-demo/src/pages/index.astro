@@ -1,0 +1,392 @@
+---
+import { ReactModalIsland } from '../components/ReactModalIsland';
+import VueTabsIsland from '../components/VueTabsIsland.vue';
+import SvelteAccordionIsland from '../components/SvelteAccordionIsland.svelte';
+---
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>tatami-a11y Astro Multi-Framework Demo</title>
+<style is:global>
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  :root {
+    --color-background: #1a1a2e;
+    --color-surface: #16213e;
+    --color-text: #e0e0e0;
+    --color-text-muted: #a0a0b0;
+    --color-border: #2a2a4a;
+    --color-hover: #1a1a3e;
+    --color-primary: #1a7f37;
+  }
+
+  body {
+    background: var(--color-background);
+    color: var(--color-text);
+    font-family: system-ui, -apple-system, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+  }
+
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2.5rem;
+  }
+
+  header {
+    text-align: center;
+    padding: 2rem 0 1rem;
+    border-bottom: 1px solid var(--color-border);
+    margin-bottom: 1rem;
+    width: 100%;
+  }
+
+  header h1 {
+    font-size: 2rem;
+    margin: 0 0 0.5rem 0;
+  }
+
+  .subtitle {
+    color: var(--color-text-muted);
+    font-size: 1.1rem;
+    margin: 0;
+  }
+
+  .island-section {
+    width: 100%;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+    text-align: center;
+  }
+
+  .island-section > h2 {
+    font-size: 1.2rem;
+    margin: 0 0 0.5rem 0;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid var(--color-border);
+    width: 100%;
+  }
+
+/* ── Base button styling (global — applies to framework island
+     content and runtime-injected DOM via <style is:global>) ── */
+
+  button {
+    background: var(--color-surface);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-family: inherit;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background: var(--color-hover);
+  }
+
+  button[role="tab"][aria-selected="true"],
+  .accordion-trigger[aria-expanded="true"] {
+    background: var(--color-hover);
+  }
+
+  .toast-stack {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    left: auto;
+    bottom: auto;
+    z-index: 9999;
+  }
+
+  .toast {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    min-width: 250px;
+    max-width: 400px;
+    text-align: left;
+  }
+
+  .toast--info { background: #0d3a66; color: #cfe8ff; border-left: 4px solid #2196f3; }
+  .toast--success { background: #1b3a1e; color: #c8f0cc; border-left: 4px solid #4caf50; }
+  .toast--warning { background: #4a2e0d; color: #ffdfb3; border-left: 4px solid #ff9800; }
+  .toast--error { background: #4a1414; color: #ffd0d0; border-left: 4px solid #f44336; }
+
+  .accordion-trigger {
+    width: 100%;
+    padding: 1rem 1.25rem;
+    background: var(--color-hover);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    cursor: pointer;
+    color: var(--color-text);
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .accordion-trigger[aria-expanded="true"] {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  .accordion-panel {
+    padding: 1rem 1.25rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-top: none;
+    border-radius: 0 0 6px 6px;
+    font-size: 1rem;
+    text-align: left;
+  }
+
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: grid;
+    place-items: center;
+    z-index: 1000;
+  }
+
+  .modal {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    max-width: 400px;
+    width: min(400px, 90vw);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  .tablist {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    border-bottom: 1px solid var(--color-border);
+    width: 100%;
+  }
+
+  [role="tab"] {
+    padding: 0.75rem 1.5rem;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    color: var(--color-text-muted);
+    font-size: 1rem;
+  }
+
+  [role="tab"][aria-selected="true"] {
+    color: var(--color-primary);
+    border-bottom-color: var(--color-primary);
+  }
+
+  [role="tab"]:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: -2px;
+  }
+
+  [role="tabpanel"] {
+    padding: 1rem;
+    width: 100%;
+    text-align: left;
+  }
+
+  [role="tabpanel"][hidden] { display: none; }
+
+  .dropdown-menu {
+    position: absolute;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    min-width: 200px;
+    max-width: 300px;
+    padding: 0.5rem 0;
+  }
+
+  .dropdown-menu p {
+    margin: 0;
+    padding: 0.5rem 1rem;
+  }
+
+  .dropdown-menu [role="menuitem"] {
+    display: block;
+    width: 100%;
+    padding: 0.5rem 1rem;
+    text-align: left;
+    background: none;
+    border: none;
+    color: var(--color-text);
+    cursor: pointer;
+  }
+
+  .dropdown-menu [role="menuitem"]:hover,
+  .dropdown-menu [role="menuitem"]:focus {
+    background: var(--color-hover);
+  }
+
+  /* ── Cross-island test panel ── */
+
+  .cross-island-test {
+    width: 100%;
+    background: #1a1a2e;
+    border: 2px solid #ffa000;
+    border-radius: 12px;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    text-align: center;
+  }
+
+  .cross-island-test h2 { color: #e65100; margin: 0; }
+  .cross-island-test p { margin: 0; }
+
+  #cross-island-result {
+    margin-top: 0.5rem;
+    padding: 1rem;
+    background: var(--color-surface);
+    border-radius: 4px;
+    font-family: monospace;
+    white-space: pre-wrap;
+    color: var(--color-text);
+    text-align: left;
+    width: 100%;
+  }
+
+  .island {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  #js-dropdown-trigger { width: 100%; margin: 0 0 0.75rem 0; }
+  #js-toast-btn { width: 100%; margin: 0.75rem 0 0 0; }
+
+  #check-coordination {
+    width: 100%;
+    margin: 0;
+    background: #ffa000;
+    color: #1a1a2e;
+    border: none;
+    font-weight: 600;
+  }
+
+  #check-coordination:hover { background: #e68a00; }
+</style>
+  </head>
+  <body>
+    <header>
+      <h1>tatami-a11y — Astro Islands Demo</h1>
+      <p class="subtitle">Four framework islands on one page, each using tatami() adapter</p>
+    </header>
+
+    <main>
+      <section class="island-section">
+        <h2>React Island — Modal</h2>
+        <ReactModalIsland client:load />
+      </section>
+
+      <section class="island-section">
+        <h2>Vue Island — Tabs</h2>
+        <VueTabsIsland client:load />
+      </section>
+
+      <section class="island-section">
+        <h2>Svelte Island — Accordion</h2>
+        <SvelteAccordionIsland client:load />
+      </section>
+
+      <section class="island-section">
+        <h2>Plain JS Island — Dropdown</h2>
+        <div id="js-dropdown-container" class="island" data-framework="plain-js">
+          <button id="js-dropdown-trigger">Open Dropdown</button>
+          <div id="js-dropdown-menu" class="dropdown-menu" hidden>
+            <p>Dropdown content</p>
+          </div>
+        </div>
+        <button id="js-toast-btn">Toast from Plain JS</button>
+      </section>
+
+      <section class="cross-island-test">
+        <h2>Cross-Island Coordination Test</h2>
+        <p>Click the toast buttons above from different islands in quick succession, then click "Check Result".</p>
+        <button id="check-coordination">Check Result</button>
+        <pre id="cross-island-result">Result: not yet tested</pre>
+      </section>
+    </main>
+
+    <script type="module">
+      const trigger = document.getElementById('js-dropdown-trigger');
+      const menu = document.getElementById('js-dropdown-menu');
+      const toastBtn = document.getElementById('js-toast-btn');
+      const checkBtn = document.getElementById('check-coordination');
+      const resultEl = document.getElementById('cross-island-result');
+
+      if (trigger && menu) {
+        const mod = await import('tatami-a11y/adapters/tatami.js');
+        const tatami = mod.tatami;
+        const Dropdown = (await import('tatami-a11y')).Dropdown;
+        const Toast = (await import('tatami-a11y')).Toast;
+
+        const ctrl = tatami(Dropdown, { trigger, menu });
+
+        trigger.addEventListener('click', () => ctrl.open());
+
+        document.addEventListener('click', (e) => {
+          if (!trigger.contains(e.target) && !menu.contains(e.target)) {
+            ctrl.close();
+          }
+        });
+
+        if (toastBtn) {
+          toastBtn.addEventListener('click', () => {
+            Toast.show('Toast from Plain JS island', { variant: 'info' });
+          });
+        }
+      }
+
+      if (checkBtn && resultEl) {
+        checkBtn.addEventListener('click', () => {
+          const stacks = document.querySelectorAll('.toast-stack');
+          if (stacks.length <= 1) {
+            resultEl.textContent = `PASS: ${stacks.length} toast stack(s) found — state IS shared across islands.`;
+          } else {
+            resultEl.textContent = `FAIL: ${stacks.length} separate toast-stack containers found — each island has its own isolated toast stack. State is NOT shared across islands.`;
+          }
+        });
+      }
+    </script>
+  </body>
+</html>
