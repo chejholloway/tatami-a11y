@@ -10,6 +10,20 @@ Framework-agnostic, accessibility-first UI primitives and components for vanilla
 
 **16 components, 6 shared primitives, 746 unit tests, 16 browser-level Storybook integration tests with a11y checks, zero runtime dependencies**, all implementing WAI-ARIA authoring practices with verified WCAG 2.2 AA compliance.
 
+## Read This README in Your Language
+
+| Language | README |
+| -------- | ------ |
+| 🇺🇸 English | [README.md](./README.md) |
+| 🌐 <span dir="ltr">العربية (Arabic)</span> | [README_ar.md](./README_ar.md) |
+| 🇧🇷 Português do Brasil (Brazilian Portuguese) | [README_br-pt.md](./README_br-pt.md) |
+| 🇨🇳 简体中文 (Simplified Chinese) | [README_cn.md](./README_cn.md) |
+| 🇩🇪 Deutsch (German) | [README_de.md](./README_de.md) |
+| 🇪🇸 Español (Spanish) | [README_es.md](./README_es.md) |
+| 🇫🇷 Français (French) | [README_fr.md](./README_fr.md) |
+| 🇯🇵 日本語 (Japanese) | [README_jp.md](./README_jp.md) |
+| 🇰🇷 한국어 (Korean) | [README_kr.md](./README_kr.md) |
+
 ## The Problem
 
 Every accessible interactive component needs the same hard, easy-to-get-wrong infrastructure:
