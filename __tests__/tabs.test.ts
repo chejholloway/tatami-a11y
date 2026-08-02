@@ -40,7 +40,7 @@ describe('Tabs', () => {
 
     vi.spyOn(window, 'setTimeout').mockImplementation((cb: (...args: unknown[]) => void, _delay?: number) => {
       cb();
-      return 0 as unknown as number;
+      return 0 as unknown as ReturnType<typeof setTimeout>;
     });
   });
 

@@ -40,7 +40,7 @@ describe('DatePicker', () => {
     });
     vi.spyOn(window, 'setTimeout').mockImplementation((cb: (...args: unknown[]) => void) => {
       cb();
-      return 0 as unknown as number;
+      return 0 as unknown as ReturnType<typeof setTimeout>;
     });
   });
 

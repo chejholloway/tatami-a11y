@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Toast, Dropdown } from 'tatami-a11y';
 import { tatami } from '../../adapters/tatami.js';
 import './App.css';

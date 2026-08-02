@@ -55,7 +55,7 @@ describe('Carousel', () => {
     });
 
     // Keep setInterval as a real timer but track calls
-    vi.spyOn(window, 'setInterval').mockImplementation((_cb, _delay) => 1 as unknown as number);
+    vi.spyOn(window, 'setInterval').mockImplementation((_cb, _delay) => 1 as unknown as ReturnType<typeof setInterval>);
     vi.spyOn(window, 'clearInterval').mockImplementation(() => {});
   });
 
