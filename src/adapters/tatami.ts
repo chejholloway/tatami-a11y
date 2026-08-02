@@ -1,11 +1,13 @@
 /**
- * tatami(ComponentClass, options) — framework-agnostic lifecycle utility
+ * @module tatami
  *
- * Instantiates any tatami-a11y component and returns a controller with a
- * stable `destroy()` and forwarded public instance methods. Works identically
- * from a React `useEffect`, Vue `onMounted`, Svelte `use:action`, or a plain
- * `<script>` tag — the framework only needs to know two things: call `tatami()`
- * when the DOM is ready, call `ctrl.destroy()` on cleanup.
+ * Framework-agnostic lifecycle utility for tatami-a11y components.
+ *
+ * `tatami(ComponentClass, options)` instantiates any tatami-a11y component and
+ * returns a controller with a stable `destroy()` and forwarded public instance
+ * methods. Works identically from a React `useEffect`, Vue `onMounted`, Svelte
+ * `use:action`, or a plain `<script>` tag — the framework only needs to know two
+ * things: call `tatami()` when the DOM is ready, call `ctrl.destroy()` on cleanup.
  *
  * Unlike framework-specific wrappers, one function handles all 16 components.
  *
@@ -86,7 +88,22 @@ type StaticClass = { destroy?: () => void };
 /** Resolved set of forwarded method names on the controller. */
 type ForwardedMethods = Record<string, (...args: unknown[]) => unknown>;
 
-/** The controller object returned by `tatami()`. */
+/**
+ * The controller object returned by `tatami()`.
+ *
+ * Forwards every public method the wrapped component exposes (derived at runtime via
+ * prototype-chain reflection — there is no hardcoded method list). It always includes a
+ * stable `destroy()` for cleanup, which is idempotent (safe to call more than once).
+ *
+ * @example
+ * ```ts
+ * const ctrl = tatami(Dropdown, { trigger, menu });
+ * ctrl.open();       // forwarded to the Dropdown instance
+ * ctrl.destroy();    // cleans up the component
+ * ```
+ *
+ * @see tatami
+ */
 export interface TatamiController extends ForwardedMethods {
   /** Destroy the component and release all listeners. Idempotent — safe to call more than once. */
   destroy(): void;
@@ -99,10 +116,21 @@ let _manualDebugOverride: boolean | null = null;
 /**
  * Manually enable or disable tatami dev-mode warnings.
  *
- * This is the only reliable way to get warnings in a bundler-free
- * `<script>` tag environment where `import.meta.env` and
- * `process.env.NODE_ENV` are both unavailable. It always takes
- * priority over automatic detection.
+ * This is the only reliable way to get warnings in a bundler-free `<script>` tag
+ * environment where `import.meta.env` and `process.env.NODE_ENV` are both
+ * unavailable. It always takes priority over automatic detection.
+ *
+ * @param enabled - `true` to force dev-mode warnings on, `false` to force them off.
+ * @returns Nothing. The override is applied globally and persists for the lifetime
+ *   of the module.
+ *
+ * @example
+ * ```ts
+ * import { tatami, setTatamiDebug } from 'tatami-a11y/adapters/tatami.js';
+ *
+ * // Enable warnings during development (required for <script> tag usage)
+ * setTatamiDebug(true);
+ * ```
  */
 export function setTatamiDebug(enabled: boolean): void {
   _manualDebugOverride = enabled;
@@ -128,6 +156,10 @@ function isDevMode(): boolean {
  * Determines whether `name` looks like a private or internal member.
  * Excludes: underscore-prefixed names, symbol keys, constructor, built-in Object
  * prototype methods, and anything that isn't a function.
+ *
+ * @param name - The property name to inspect.
+ * @param value - The property value at `name` on the object or prototype.
+ * @returns `true` if `name` is a public, forwardable method; `false` otherwise.
  */
 function isPublicMethod(name: string, value: unknown): boolean {
   if (typeof value !== "function") return false;
@@ -141,6 +173,9 @@ function isPublicMethod(name: string, value: unknown): boolean {
 /**
  * Collect all public method names from an instance by walking its prototype chain
  * up to (but not including) Object.prototype.
+ *
+ * @param instance - The instantiated component (or any object).
+ * @returns An array of forwardable public method names, in prototype-chain order.
  */
 function collectInstanceMethods(instance: object): string[] {
   const names = new Set<string>();
@@ -162,6 +197,9 @@ function collectInstanceMethods(instance: object): string[] {
 /**
  * Collect all public static method names from a class (static-only pattern, e.g. Toast).
  * Walks the class's own properties only — does not include inherited Function.prototype methods.
+ *
+ * @param klass - The static-only class to inspect.
+ * @returns An array of forwardable public static method names.
  */
 function collectStaticMethods(klass: StaticClass): string[] {
   const names: string[] = [];
@@ -180,6 +218,9 @@ function collectStaticMethods(klass: StaticClass): string[] {
  * A class is considered "static-only" when its prototype has no enumerable or
  * own methods beyond `constructor` — meaning it was never designed to be
  * instantiated. Toast is the canonical example: every method is `static`.
+ *
+ * @param klass - The component class to inspect.
+ * @returns `true` if the class has no instance methods (static-only); `false` otherwise.
  */
 function isStaticOnlyClass(klass: AnyClass): boolean {
   const proto = klass.prototype as object;
@@ -198,9 +239,36 @@ function isStaticOnlyClass(klass: AnyClass): boolean {
 /**
  * Create a tatami controller for a tatami-a11y component.
  *
- * @param ComponentClass - The component class to instantiate (or a static-only class like Toast)
- * @param options - Options forwarded directly to the component constructor
- * @returns A controller with `destroy()` and all forwarded public methods
+ * Instantiates `ComponentClass` with the given `options` (or, for static-only
+ * classes like `Toast`, forwards static methods directly) and returns a
+ * controller object. The controller forwards every public method of the
+ * component — derived at runtime via prototype-chain reflection, so there is no
+ * hardcoded method list — plus an idempotent `destroy()`.
+ *
+ * In development mode, calling a forwarded method after `destroy()`, or calling
+ * a method the component doesn't have, emits a `console.warn` with the component
+ * and method names. See {@link setTatamiDebug} to control dev mode explicitly.
+ *
+ * @param ComponentClass - The component class to instantiate. For the 15
+ *   instance-based components, pass the class itself (e.g. `Dropdown`). For
+ *   `Toast` (static-only API), pass the `Toast` class.
+ * @param options - Options forwarded directly to the component constructor. The
+ *   shape depends on the component; see each component's documented options.
+ * @returns A controller with `destroy()` and all forwarded public methods.
+ *
+ * @example React
+ * ```ts
+ * import { tatami } from 'tatami-a11y/adapters/tatami.js';
+ * import { Dropdown } from 'tatami-a11y';
+ *
+ * useEffect(() => {
+ *   const ctrl = tatami(Dropdown, { trigger: triggerRef.current, menu: menuRef.current });
+ *   return () => ctrl.destroy();
+ * }, []);
+ * ```
+ *
+ * @see TatamiController
+ * @see setTatamiDebug
  */
 export function tatami<O extends object>(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
