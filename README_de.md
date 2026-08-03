@@ -1,4 +1,13 @@
-# tatami-a11y
+<table>
+  <tr>
+    <td width="120">
+      <img src="./assets/logo.png" alt="tatami-a11y logo — a smiling tatami mat tile" width="100" />
+    </td>
+    <td>
+      <h1>tatami-a11y</h1>
+    </td>
+  </tr>
+</table>
 
 [![CI](https://img.shields.io/github/actions/workflow/status/chejholloway/tatami-a11y/ci.yml)](https://github.com/chejholloway/tatami-a11y/actions/workflows/ci.yml)
 [![npm version](https://img.shields.io/npm/v/tatami-a11y)](https://www.npmjs.com/package/tatami-a11y)

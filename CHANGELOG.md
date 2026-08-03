@@ -27,32 +27,32 @@ All notable changes to this project will be documented in this file. See [standa
 - **demo:** 🎨 fix kbd opacity contrast in demo/index.html, 🔧 update package.json entry points and metadata, 📝 polish README ([4863042](https://github.com/chejholloway/tatami-a11y/commit/4863042f308dea5efe1b67186b53b411eefa8df7))
 - **storybook:** 🎭 fix version mismatch and JavaScript functionality across 16 components ([3129f31](https://github.com/chejholloway/tatami-a11y/commit/3129f31885d1871168fc0f449627dcba2ab7734b))
 
-## [1.0.0](https://github.com/chejholloway/tatani-a11y/compare/v0.2.1...v1.0.0) (2026-07-30)
+## [1.0.0](https://github.com/chejholloway/tatami-a11y/compare/v0.2.1...v1.0.0) (2026-07-30)
 
 ### Features
 
-- **components:** ✨ add MultiselectListbox component with tests and demo, 🔀 add drag-and-drop to ReorderableList, 📝 document MultiselectListbox in README, 🎨 add MSL + DnD demo styles, 🐛 fix missing Reorderable List demo section, 🐛 fix draggable attribute reset ([35c11ee](https://github.com/chejholloway/tatani-a11y/commit/35c11ee5a58634654b56cbb61f9d31b4821d2443))
-- **components:** ✨ add MultiselectListbox with tests, Storybook stories, and demo, 🔀 add drag-and-drop to ReorderableList, 📝 set up Docusaurus docs site, 🎨 add retro themes (Win2K/98/7) and demo styles, 🐛 fix missing ReorderableList import in demo index.html, 🔧 add CI, ESLint, Prettier, Husky, and pnpm workspace config ([f23308c](https://github.com/chejholloway/tatani-a11y/commit/f23308c17b8a5974a685480a5b3122688b32047b))
-- **components:** 🔀 add ReorderableList with tests and demo, 📝 add TreeView + ReorderableList docs to README, 🐛 fix ComboBox click selection with filtered list, 📅 update DatePicker demo to MM/DD/YYYY, 🎨 add reorderable list styles ([ff4f3ed](https://github.com/chejholloway/tatani-a11y/commit/ff4f3edfdee1331ac12cba207d566abbeb288984))
-- **components:** 🔀 add ReorderableList with tests and demo, 📝 add TreeView + ReorderableList docs to README, 🐛 fix ComboBox click selection with filtered list, 📅 update DatePicker demo to MM/DD/YYYY, 🎨 add reorderable list styles ([3764b25](https://github.com/chejholloway/tatani-a11y/commit/3764b25dbd85585b9d937b995746d14224b96748))
-- **docs:** 📝 add Storybook, Docusaurus, CI, and retro theme documentation to README, 🐛 fix drag-and-drop not working in demo by enabling dragAndDrop option, 🔥 comment out theme switcher in demo until font assets are ready, 🔀 document ReorderableList drag-and-drop usage in README, 📋 add code quality and CI pipeline sections to README, 🎨 expand development section with all project commands and tooling ([976b564](https://github.com/chejholloway/tatani-a11y/commit/976b564c55e99169f02485739f8b312c09b6ffc4))
+- **components:** ✨ add MultiselectListbox component with tests and demo, 🔀 add drag-and-drop to ReorderableList, 📝 document MultiselectListbox in README, 🎨 add MSL + DnD demo styles, 🐛 fix missing Reorderable List demo section, 🐛 fix draggable attribute reset ([35c11ee](https://github.com/chejholloway/tatami-a11y/commit/35c11ee5a58634654b56cbb61f9d31b4821d2443))
+- **components:** ✨ add MultiselectListbox with tests, Storybook stories, and demo, 🔀 add drag-and-drop to ReorderableList, 📝 set up Docusaurus docs site, 🎨 add retro themes (Win2K/98/7) and demo styles, 🐛 fix missing ReorderableList import in demo index.html, 🔧 add CI, ESLint, Prettier, Husky, and pnpm workspace config ([f23308c](https://github.com/chejholloway/tatami-a11y/commit/f23308c17b8a5974a685480a5b3122688b32047b))
+- **components:** 🔀 add ReorderableList with tests and demo, 📝 add TreeView + ReorderableList docs to README, 🐛 fix ComboBox click selection with filtered list, 📅 update DatePicker demo to MM/DD/YYYY, 🎨 add reorderable list styles ([ff4f3ed](https://github.com/chejholloway/tatami-a11y/commit/ff4f3edfdee1331ac12cba207d566abbeb288984))
+- **components:** 🔀 add ReorderableList with tests and demo, 📝 add TreeView + ReorderableList docs to README, 🐛 fix ComboBox click selection with filtered list, 📅 update DatePicker demo to MM/DD/YYYY, 🎨 add reorderable list styles ([3764b25](https://github.com/chejholloway/tatami-a11y/commit/3764b25dbd85585b9d937b995746d14224b96748))
+- **docs:** 📝 add Storybook, Docusaurus, CI, and retro theme documentation to README, 🐛 fix drag-and-drop not working in demo by enabling dragAndDrop option, 🔥 comment out theme switcher in demo until font assets are ready, 🔀 document ReorderableList drag-and-drop usage in README, 📋 add code quality and CI pipeline sections to README, 🎨 expand development section with all project commands and tooling ([976b564](https://github.com/chejholloway/tatami-a11y/commit/976b564c55e99169f02485739f8b312c09b6ffc4))
 
 ### Bug Fixes
 
-- **tree-view:** 🐛 fix ctrl+click test for post-expansion indices, 🌳 add demo section with single/multi-select, 🎨 add tree view styles ([30ba5c4](https://github.com/chejholloway/tatani-a11y/commit/30ba5c43094a28576a7ea58f860cc1db06575c60))
+- **tree-view:** 🐛 fix ctrl+click test for post-expansion indices, 🌳 add demo section with single/multi-select, 🎨 add tree view styles ([30ba5c4](https://github.com/chejholloway/tatami-a11y/commit/30ba5c43094a28576a7ea58f860cc1db06575c60))
 
 ### 0.2.1 (2026-07-29)
 
 ### Features
 
-- add accessible Dropdown and Tabs components ([ca151de](https://github.com/chejholloway/tatani-a11y/commit/ca151ded971ef15820ab58fe8f2208cb0441fa95))
-- **components:** 🍞 Add Toast notification component ([e842eca](https://github.com/chejholloway/tatani-a11y/commit/e842eca9a12ee01129572d2259724408ac8558fa))
-- **components:** add Tooltip, Carousel, Dialog, and Disclosure components ([1171394](https://github.com/chejholloway/tatani-a11y/commit/1171394d4ba2d28ad7f59d036a15414983dfc81f))
+- add accessible Dropdown and Tabs components ([ca151de](https://github.com/chejholloway/tatami-a11y/commit/ca151ded971ef15820ab58fe8f2208cb0441fa95))
+- **components:** 🍞 Add Toast notification component ([e842eca](https://github.com/chejholloway/tatami-a11y/commit/e842eca9a12ee01129572d2259724408ac8558fa))
+- **components:** add Tooltip, Carousel, Dialog, and Disclosure components ([1171394](https://github.com/chejholloway/tatami-a11y/commit/1171394d4ba2d28ad7f59d036a15414983dfc81f))
 
 ### Bug Fixes
 
-- **components:** 🔧 fix event listener cleanup in dropdown and tabs components ([8ae006a](https://github.com/chejholloway/tatani-a11y/commit/8ae006a1cc503c895953dc8a08a07c94f26f8aa9))
-- **demo:** 🎨 toast button colors, disclosure purple, carousel display reset ([f4fff86](https://github.com/chejholloway/tatani-a11y/commit/f4fff86d2fbbdc49717942410b0353e9c9887af4)), closes [#7c3](https://github.com/chejholloway/tatani-a11y/issues/7c3)
+- **components:** 🔧 fix event listener cleanup in dropdown and tabs components ([8ae006a](https://github.com/chejholloway/tatami-a11y/commit/8ae006a1cc503c895953dc8a08a07c94f26f8aa9))
+- **demo:** 🎨 toast button colors, disclosure purple, carousel display reset ([f4fff86](https://github.com/chejholloway/tatami-a11y/commit/f4fff86d2fbbdc49717942410b0353e9c9887af4)), closes [#7c3](https://github.com/chejholloway/tatami-a11y/issues/7c3)
 
 ## [0.3.0] — 2026-07-29
 

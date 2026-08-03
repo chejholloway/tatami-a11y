@@ -88,14 +88,14 @@ if (target === "storybook") {
     console.warn("⚠ dist/index.js not found, skipping");
   }
 
-  // Copy demo/favicon.ico to surge/favicon.ico
-  const icoPath = path.join(demoDir, "favicon.ico");
-  const surgeIcoPath = path.join(surgeDir, "favicon.ico");
+  // Copy demo/favicon.svg to surge/favicon.svg
+  const icoPath = path.join(demoDir, "favicon.svg");
+  const surgeIcoPath = path.join(surgeDir, "favicon.svg");
   if (fs.existsSync(icoPath)) {
     fs.copyFileSync(icoPath, surgeIcoPath);
-    console.log("✓ Copied demo/favicon.ico to surge/favicon.ico");
+    console.log("✓ Copied demo/favicon.svg to surge/favicon.svg");
   } else {
-    console.warn("⚠ demo/favicon.ico not found, skipping");
+    console.warn("⚠ demo/favicon.svg not found, skipping");
   }
 
   // Copy demo/style-modern.css to surge/style-modern.css

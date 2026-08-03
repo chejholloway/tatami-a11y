@@ -27,9 +27,9 @@ module.exports = {
       onBrokenMarkdownLinks: 'warn',
     },
   },
-  favicon: 'img/favicon.ico',
+  favicon: 'img/favicon.svg',
   organizationName: 'chejholloway',
-  projectName: 'tatani-a11y',
+  projectName: 'tatami-a11y',
 
   presets: [
     [
@@ -37,7 +37,7 @@ module.exports = {
       {
         docs: {
           sidebarPath: require.resolve('./sidebars.ts'),
-          editUrl: 'https://github.com/chejholloway/tatani-a11y/edit/main/',
+          editUrl: 'https://github.com/chejholloway/tatami-a11y/edit/main/',
           routeBasePath: '/',
           exclude: ['**/superpowers/**'],
         },
@@ -54,7 +54,7 @@ module.exports = {
       items: [
         { to: '/', label: 'Docs', position: 'left' },
         {
-          href: 'https://github.com/chejholloway/tatani-a11y',
+          href: 'https://github.com/chejholloway/tatami-a11y',
           label: 'GitHub',
           position: 'left',
         },

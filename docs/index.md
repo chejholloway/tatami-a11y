@@ -2,7 +2,16 @@
 sidebar_position: 1
 ---
 
-# tatami-a11y
+<table>
+  <tr>
+    <td width="120">
+      <img src="./assets/logo.png" alt="tatami-a11y logo — a smiling tatami mat tile" width="100" />
+    </td>
+    <td>
+      <h1>tatami-a11y</h1>
+    </td>
+  </tr>
+</table>
 
 Framework-agnostic accessibility primitives for vanilla JavaScript. The shared foundation underneath [kanpai](https://www.npmjs.com/package/kanpai-toast) and every accessible component built after it.
 
