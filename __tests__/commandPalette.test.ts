@@ -595,4 +595,17 @@ describe('CommandPalette', () => {
       expect(() => { cp.open(); cp.close(); }).not.toThrow();
     });
   });
+
+  describe('data-tatami-component attribute', () => {
+    it('sets correct attribute on dialog', () => {
+      cp = new CommandPalette({
+        overlay: els.overlay,
+        dialog: els.dialog,
+        input: els.input,
+        listbox: els.listbox,
+        statusRegion: els.statusRegion,
+      });
+      expect(els.dialog.getAttribute('data-tatami-component')).toBe('commandPalette');
+    });
+  });
 });

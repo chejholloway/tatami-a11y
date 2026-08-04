@@ -93,6 +93,7 @@ export class ReorderableList {
   }
 
   private init(): void {
+    this.list.setAttribute("data-tatami-component", "reorderableList");
     this.list.setAttribute("role", "list");
 
     this.applyAriaAttributes();

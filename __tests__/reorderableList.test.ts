@@ -385,4 +385,11 @@ describe('ReorderableList', () => {
       expect(newIndex).toBe(2);
     });
   });
+
+  describe('data-tatami-component attribute', () => {
+    it('sets correct attribute on list', () => {
+      instance = new ReorderableList({ list });
+      expect(list.getAttribute('data-tatami-component')).toBe('reorderableList');
+    });
+  });
 });

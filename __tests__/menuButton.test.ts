@@ -459,4 +459,11 @@ describe('MenuButton', () => {
       expect(document.activeElement).toBe(firstItem);
     });
   });
+
+  describe('data-tatami-component attribute', () => {
+    it('sets correct attribute on menu', () => {
+      menuButtonInstance = new MenuButton({ trigger, menu });
+      expect(menu.getAttribute('data-tatami-component')).toBe('menuButton');
+    });
+  });
 });

@@ -64,6 +64,7 @@ export class Disclosure {
   }
 
   private init(): void {
+    this.content.setAttribute("data-tatami-component", "disclosure");
     // Ensure content has an ID for aria-controls
     if (!this.content.id) {
       this.content.id = `disclosure-${Math.random().toString(36).substr(2, 9)}`;

@@ -74,6 +74,7 @@ export class Dropdown {
   }
 
   private init(): void {
+    this.menu.setAttribute("data-tatami-component", "dropdown");
     // Set up ARIA attributes
     this.trigger.setAttribute("aria-haspopup", "true");
     this.trigger.setAttribute("aria-expanded", "false");

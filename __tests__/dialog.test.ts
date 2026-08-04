@@ -352,4 +352,11 @@ describe('Dialog (Non-Modal)', () => {
       d2.remove();
     });
   });
+
+  describe('data-tatami-component attribute', () => {
+    it('sets correct attribute on dialog', () => {
+      dialogInstance = new Dialog({ trigger, dialog: dialogElement });
+      expect(dialogElement.getAttribute('data-tatami-component')).toBe('dialog');
+    });
+  });
 });

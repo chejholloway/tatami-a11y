@@ -551,4 +551,11 @@ describe('Dropdown', () => {
       expect(trigger.getAttribute('aria-expanded')).toBe('true');
     });
   });
+
+  describe('data-tatami-component attribute', () => {
+    it('sets correct attribute on menu', () => {
+      dropdownInstance = new Dropdown({ trigger, menu });
+      expect(menu.getAttribute('data-tatami-component')).toBe('dropdown');
+    });
+  });
 });

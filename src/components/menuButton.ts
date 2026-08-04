@@ -74,6 +74,7 @@ export class MenuButton {
   }
 
   private init(): void {
+    this.menu.setAttribute("data-tatami-component", "menuButton");
     this.trigger.setAttribute("aria-haspopup", "menu");
     this.trigger.setAttribute("aria-expanded", "false");
     this.menu.setAttribute("role", "menu");

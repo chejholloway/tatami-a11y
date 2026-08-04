@@ -193,4 +193,13 @@ describe('Toast', () => {
       expect(toastElement?.classList.contains('toast--hide')).toBe(true);
     });
   });
+
+  describe('data-tatami-component attribute', () => {
+    it('sets correct attribute on toast element', () => {
+      const id = Toast.show('Test toast');
+      const toastElement = document.querySelector(`.toast-stack [data-toast-id="${id}"]`) as HTMLElement;
+      expect(toastElement.getAttribute('data-tatami-component')).toBe('toast');
+      Toast.dismiss(id);
+    });
+  });
 });

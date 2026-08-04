@@ -212,6 +212,7 @@ export class DatePicker {
   // ─── Setup ─────────────────────────────────────────────────────────────────
 
   private init(): void {
+    this.dialog.setAttribute("data-tatami-component", "datePicker");
     // Input: type="text" with combobox role so it reads like a date field
     this.input.setAttribute("role", "combobox");
     this.input.setAttribute("aria-haspopup", "dialog");

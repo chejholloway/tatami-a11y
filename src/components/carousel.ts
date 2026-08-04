@@ -94,6 +94,7 @@ export class Carousel {
   }
 
   private init(): void {
+    this.container.setAttribute("data-tatami-component", "carousel");
     // Basic structural attributes
     this.container.setAttribute("role", "region");
     this.container.setAttribute("aria-roledescription", "carousel");

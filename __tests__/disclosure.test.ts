@@ -322,4 +322,11 @@ describe('Disclosure', () => {
       richContent.remove();
     });
   });
+
+  describe('data-tatami-component attribute', () => {
+    it('sets correct attribute on content', () => {
+      disclosureInstance = new Disclosure({ trigger, content: contentElement });
+      expect(contentElement.getAttribute('data-tatami-component')).toBe('disclosure');
+    });
+  });
 });

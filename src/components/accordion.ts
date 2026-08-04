@@ -72,7 +72,7 @@ export class Accordion {
   }
 
   private init(): void {
-    // Set up ARIA attributes on container
+    this.container.setAttribute("data-tatami-component", "accordion");
     this.container.setAttribute("role", "region");
 
     // Get headers and panels

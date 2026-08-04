@@ -95,6 +95,7 @@ export class TreeView {
   }
 
   private init(): void {
+    this.tree.setAttribute("data-tatami-component", "treeView");
     this.tree.setAttribute("role", "tree");
     if (this.multiselect) {
       this.tree.setAttribute("aria-multiselectable", "true");

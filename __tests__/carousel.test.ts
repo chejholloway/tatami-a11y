@@ -400,4 +400,12 @@ describe('Carousel', () => {
       noControls.remove();
     });
   });
+
+  describe('data-tatami-component attribute', () => {
+    it('sets correct attribute on container', () => {
+      els = buildCarousel();
+      carouselInstance = new Carousel({ container: els.container });
+      expect(els.container.getAttribute('data-tatami-component')).toBe('carousel');
+    });
+  });
 });

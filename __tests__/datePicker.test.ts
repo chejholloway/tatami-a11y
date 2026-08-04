@@ -593,4 +593,20 @@ describe('DatePicker', () => {
       }).not.toThrow();
     });
   });
+
+  describe('data-tatami-component attribute', () => {
+    it('sets correct attribute on dialog', () => {
+      const picker = new DatePicker({
+        input: document.createElement('input') as HTMLInputElement,
+        dialog: document.createElement('div'),
+        toggleButton: document.createElement('button'),
+        monthYearLabel: document.createElement('div'),
+        prevMonthButton: document.createElement('button'),
+        nextMonthButton: document.createElement('button'),
+        calendarGrid: document.createElement('div'),
+      });
+      const dialog = (picker as unknown as { dialog: HTMLElement }).dialog;
+      expect(dialog.getAttribute('data-tatami-component')).toBe('datePicker');
+    });
+  });
 });

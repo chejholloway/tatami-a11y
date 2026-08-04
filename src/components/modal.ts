@@ -82,6 +82,7 @@ export class Modal {
   }
 
   private init(): void {
+    this.modal.setAttribute("data-tatami-component", "modal");
     // Set up ARIA attributes
     this.modal.setAttribute("role", "dialog");
     this.modal.setAttribute("aria-modal", "true");

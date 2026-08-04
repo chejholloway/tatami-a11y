@@ -439,4 +439,11 @@ describe('TreeView', () => {
       expect(roving.getItems().length).toBe(0);
     });
   });
+
+  describe('data-tatami-component attribute', () => {
+    it('sets correct attribute on tree', () => {
+      instance = new TreeView({ tree });
+      expect(tree.getAttribute('data-tatami-component')).toBe('treeView');
+    });
+  });
 });

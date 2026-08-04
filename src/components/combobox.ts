@@ -86,6 +86,7 @@ export class Combobox {
   }
 
   private init(): void {
+    this.listbox.setAttribute("data-tatami-component", "combobox");
     this.input.setAttribute("role", "combobox");
     this.input.setAttribute("aria-autocomplete", "list");
     this.input.setAttribute("aria-expanded", "false");

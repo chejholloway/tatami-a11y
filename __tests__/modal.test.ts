@@ -326,4 +326,11 @@ describe('Modal', () => {
       emptyModal.remove();
     });
   });
+
+  describe('data-tatami-component attribute', () => {
+    it('sets correct attribute on modal', () => {
+      modalInstance = new Modal({ trigger, modal, backdrop });
+      expect(modal.getAttribute('data-tatami-component')).toBe('modal');
+    });
+  });
 });

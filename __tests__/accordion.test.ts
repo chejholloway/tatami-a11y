@@ -394,4 +394,11 @@ describe('Accordion', () => {
       expect(document.activeElement).toBe(header3);
     });
   });
+
+  describe('data-tatami-component attribute', () => {
+    it('sets correct attribute on container', () => {
+      accordionInstance = new Accordion({ container });
+      expect(container.getAttribute('data-tatami-component')).toBe('accordion');
+    });
+  });
 });

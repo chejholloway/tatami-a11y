@@ -363,4 +363,11 @@ describe('MultiselectListbox', () => {
       expect(instance.getSelectedIndices()).toEqual([0]);
     });
   });
+
+  describe('data-tatami-component attribute', () => {
+    it('sets correct attribute on listbox', () => {
+      instance = new MultiselectListbox({ listbox });
+      expect(listbox.getAttribute('data-tatami-component')).toBe('multiselectListbox');
+    });
+  });
 });

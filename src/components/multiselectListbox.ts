@@ -77,6 +77,7 @@ export class MultiselectListbox {
   }
 
   private init(): void {
+    this.listbox.setAttribute("data-tatami-component", "multiselectListbox");
     this.listbox.setAttribute("role", "listbox");
     if (this.multiselect) {
       this.listbox.setAttribute("aria-multiselectable", "true");

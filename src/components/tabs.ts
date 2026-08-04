@@ -63,6 +63,7 @@ export class Tabs {
   }
 
   private init(): void {
+    this.tabList.setAttribute("data-tatami-component", "tabs");
     // Set up ARIA attributes
     this.tabList.setAttribute("role", "tablist");
 

@@ -180,6 +180,7 @@ export class CommandPalette {
   // ─── Setup ─────────────────────────────────────────────────────────────────
 
   private init(): void {
+    this.dialog.setAttribute("data-tatami-component", "commandPalette");
     // Overlay acts as the focus-trap container
     this.overlay.setAttribute("role", "presentation");
 

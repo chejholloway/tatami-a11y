@@ -81,6 +81,7 @@ export class Tooltip {
   }
 
   private init(): void {
+    this.tooltip.setAttribute("data-tatami-component", "tooltip");
     // Make sure tooltip has an ID so we can link it
     if (!this.tooltip.id) {
       this.tooltip.id = `tooltip-${Math.random().toString(36).substr(2, 9)}`;

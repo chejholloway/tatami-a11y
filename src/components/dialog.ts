@@ -69,6 +69,7 @@ export class Dialog {
   }
 
   private init(): void {
+    this.dialog.setAttribute("data-tatami-component", "dialog");
     // Set up ARIA attributes
     this.trigger.setAttribute("aria-expanded", "false");
     this.trigger.setAttribute("aria-haspopup", "dialog");

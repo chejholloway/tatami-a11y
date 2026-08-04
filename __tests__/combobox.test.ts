@@ -332,4 +332,11 @@ describe('Combobox', () => {
       expect(listbox.style.display).toBe('none');
     });
   });
+
+  describe('data-tatami-component attribute', () => {
+    it('sets correct attribute on listbox', () => {
+      comboboxInstance = new Combobox({ input, listbox });
+      expect(listbox.getAttribute('data-tatami-component')).toBe('combobox');
+    });
+  });
 });

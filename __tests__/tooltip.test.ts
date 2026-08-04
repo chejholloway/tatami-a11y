@@ -336,4 +336,11 @@ describe('Tooltip', () => {
       t2.remove();
     });
   });
+
+  describe('data-tatami-component attribute', () => {
+    it('sets correct attribute on tooltip', () => {
+      tooltipInstance = new Tooltip({ trigger, tooltip: tooltipElement });
+      expect(tooltipElement.getAttribute('data-tatami-component')).toBe('tooltip');
+    });
+  });
 });

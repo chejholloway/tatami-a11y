@@ -364,6 +364,7 @@ export class Toast {
     const toastElement = document.createElement("div");
     toastElement.className = `toast toast--${variant}`;
     toastElement.setAttribute("role", ariaRole);
+    toastElement.setAttribute("data-tatami-component", "toast");
     toastElement.dataset.toastId = id;
 
     const messageSpan = document.createElement("span");

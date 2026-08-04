@@ -446,4 +446,11 @@ describe('Tabs', () => {
       expect(onTabChange.mock.calls.length).toBe(originalCallCount);
     });
   });
+
+  describe('data-tatami-component attribute', () => {
+    it('sets correct attribute on tabList', () => {
+      tabsInstance = new Tabs({ tabList });
+      expect(tabList.getAttribute('data-tatami-component')).toBe('tabs');
+    });
+  });
 });
