@@ -24,14 +24,14 @@ Framework-agnostic, accessibility-first UI primitives and components for vanilla
 | Language | README |
 | -------- | ------ |
 | 🇺🇸 English | [README.md](./README.md) |
-| 🌐 <span dir="ltr">العربية (Arabic)</span> | [README_ar.md](./README_ar.md) |
-| 🇧🇷 Português do Brasil (Brazilian Portuguese) | [README_br-pt.md](./README_br-pt.md) |
-| 🇨🇳 简体中文 (Simplified Chinese) | [README_cn.md](./README_cn.md) |
-| 🇩🇪 Deutsch (German) | [README_de.md](./README_de.md) |
-| 🇪🇸 Español (Spanish) | [README_es.md](./README_es.md) |
-| 🇫🇷 Français (French) | [README_fr.md](./README_fr.md) |
-| 🇯🇵 日本語 (Japanese) | [README_jp.md](./README_jp.md) |
-| 🇰🇷 한국어 (Korean) | [README_kr.md](./README_kr.md) |
+| 🌐 <span dir="ltr">العربية (Arabic)</span> | [README_ar.md](./i18n/locales/README_ar.md) |
+| 🇧🇷 Português do Brasil (Brazilian Portuguese) | [README_br-pt.md](./i18n/locales/README_br-pt.md) |
+| 🇨🇳 简体中文 (Simplified Chinese) | [README_cn.md](./i18n/locales/README_cn.md) |
+| 🇩🇪 Deutsch (German) | [README_de.md](./i18n/locales/README_de.md) |
+| 🇪🇸 Español (Spanish) | [README_es.md](./i18n/locales/README_es.md) |
+| 🇫🇷 Français (French) | [README_fr.md](./i18n/locales/README_fr.md) |
+| 🇯🇵 日本語 (Japanese) | [README_jp.md](./i18n/locales/README_jp.md) |
+| 🇰🇷 한국어 (Korean) | [README_kr.md](./i18n/locales/README_kr.md) |
 
 ### 🙏🏽 Translation Credits
 
