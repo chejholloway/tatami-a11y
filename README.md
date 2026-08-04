@@ -155,6 +155,12 @@ import { tatami, setTatamiDebug } from 'tatami-a11y/adapters/tatami.js';
 setTatamiDebug(true);
 ```
 
+⚠️ **Important: Requires Unreleased Core Library Update**
+
+The scanner finds components via the `data-tatami-component` attribute. This attribute does not exist in the currently published `tatami-a11y` (1.2.0). Until a core library release adds it, the extension will not find any components on a real page running the published package.
+
+Everything else (the panel, popup, audit UI, snippet generator) works — the actual detection step has nothing to detect yet. This is being tracked as a separate, explicitly-reviewed change to the core library.
+
 ## Quick Start
 
 ```bash
