@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.2.1](https://github.com/chejholloway/tatami-a11y/compare/v1.2.0...v1.2.1) (2026-08-04)
+
+
+### Features
+
+* **a11y:** 🏷️ add data-tatami-component attribute to all 16 components, 🧪 add attribute verification tests for all 16 components, 📝 add README warning about unreleased core library dependency ([afe0db6](https://github.com/chejholloway/tatami-a11y/commit/afe0db6bf2caef2898b897e64c3221c67aeed9d6))
+* migrate favicon to SVG and enhance docs with logo ([f19c0bd](https://github.com/chejholloway/tatami-a11y/commit/f19c0bd75fa2e0397382ae6d8d76c62e41a2c43b))
+
 ## [1.2.0](https://github.com/chejholloway/tatami-a11y/compare/v1.1.0...v1.2.0) (2026-08-02)
 
 ### [1.0.6](https://github.com/chejholloway/tatami-a11y/compare/v1.0.5...v1.0.6) (2026-07-31)
